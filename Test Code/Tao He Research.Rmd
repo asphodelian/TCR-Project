@@ -85,17 +85,7 @@ hdgene <- as.character(vj$vjGene)
 hdgene
 ```
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+```{r}
+combine <- merge(C19vj, vj, by = "vjGene")
+dim(combine)
+```
