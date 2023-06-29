@@ -75,6 +75,16 @@ describe(patients)
 # min-max standard or normalization
 ```
 
+```{r}
+c19gene <- as.character(C19vj$vjGene)
+c19gene
+```
+
+```{r}
+hdgene <- as.character(vj$vjGene)
+hdgene
+```
+
 
 
 
