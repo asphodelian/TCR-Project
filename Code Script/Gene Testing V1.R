@@ -121,6 +121,11 @@ min_val <- min(full$log.value)
 max_val <- max(full$log.value)
 full$normLog <- (full$log.value - min_val) / (max_val - min_val)
 
+# reorder
+genes <- select(full, patient.ID, choose, Sample.ID, vjGene, Value, log.value, 
+                normLog, diseae.stage, days.from.first.symptoms, time, ...7,
+                comment)  
+View(genes)
 
 
 
