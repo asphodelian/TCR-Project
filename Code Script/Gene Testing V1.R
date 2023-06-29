@@ -41,3 +41,24 @@ patients <- patients %>%
             as.factor)
 cat("Summary of patients as factor: \n\n")
 summary(patients)
+
+############
+# Describe #
+############
+
+describe(C19vj)
+describe(vj)
+describe(patients)
+
+
+
+
+
+
+
+
+
+
+
+
+
