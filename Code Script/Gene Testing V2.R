@@ -384,3 +384,11 @@ update <- select(update, patient.ID, Sample.ID, "TRBV10-1_TRBJ1-1",
                  "TRBV9_TRBJ2-6", "TRBV9_TRBJ2-7", log.value, normLog, Y, Y1)
 
 View(update)
+
+# saving as excel file
+#write.xlsx(genes, 
+#           "D:/Coding/R Storage/Summer TCR Project/TCR Datasets/fullgenes.xlsx", 
+#           row.names = FALSE)
+#write.csv(genes, 
+#          "D:/Coding/R Storage/Summer TCR Project/TCR Datasets/fullgenes.csv", 
+#          row.names = FALSE)
