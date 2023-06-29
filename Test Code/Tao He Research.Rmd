@@ -27,3 +27,25 @@ vj <- read_csv("D:/Coding/R Storage/Summer TCR Project/TCR Datasets/dt.HD_TCR.vj
 patients <- read_excel("D:/Coding/R Storage/Summer TCR Project/TCR Datasets/dt.info_edited.xlsx")
 ```
 
+```{r}
+# summaries
+cat("Summary of C19vj: \n")
+summary(C19vj)
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
