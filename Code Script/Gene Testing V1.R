@@ -910,6 +910,14 @@ mini710 <- genes[vj == "TRBV9_TRBJ2-7", ]
 
 update <- full[, -c(5, 7:10)]
 
+# new col: recover/active = disease; healthy = healthy
+update <- update %>%
+  mutate(Y = case_when(
+    diseae.stage %in% c("active", "recovered") ~ "disease",
+    diseae.stage == "healthy" ~ "healthy",
+    TRUE ~ NA_character_
+  ))
+
 
 
 
