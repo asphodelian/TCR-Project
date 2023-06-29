@@ -66,6 +66,15 @@ describe(vj)
 describe(patients)
 ```
 
+```{r}
+# data prep
+# combine the datasets, include patients
+# replace NAs w/ extremely small number (10e-8)
+# keep only genes that are w/in both datasets
+# log transform
+# min-max standard or normalization
+```
+
 
 
 
