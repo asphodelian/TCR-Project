@@ -113,6 +113,15 @@ full <- merge(longComb, patients, by = "Sample.ID")
 full <- full %>%
   arrange(vjGene)
 
+# log transform
+full$log.value <- log(full$Value)
+
+# min-max standard/normalization
+min_val <- min(full$log.value)
+max_val <- max(full$log.value)
+full$normLog <- (full$log.value - min_val) / (max_val - min_val)
+
+
 
 
 
