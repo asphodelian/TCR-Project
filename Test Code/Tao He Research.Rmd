@@ -60,6 +60,12 @@ names(patients)[5] <- "Weeks"
 # what is ...7
 ```
 
+```{r}
+describe(C19vj)
+describe(vj)
+describe(patients)
+```
+
 
 
 
