@@ -50,6 +50,13 @@ describe(C19vj)
 describe(vj)
 describe(patients)
 
+#############
+# Data Prep #
+#############
+
+# combine the vj datasets
+combine <- merge(C19vj, vj, by = "vjGene")
+
 
 
 
