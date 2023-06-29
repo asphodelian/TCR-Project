@@ -108,6 +108,11 @@ longComb <- pivot_longer(combine,
                          names_to = "Sample.ID", values_to = "Value")
 View(longComb)
 
+# combine patients
+full <- merge(longComb, patients, by = "Sample.ID")
+full <- full %>%
+  arrange(vjGene)
+
 
 
 
