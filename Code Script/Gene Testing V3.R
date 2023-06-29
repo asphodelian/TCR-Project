@@ -573,3 +573,11 @@ final <- select(final, patient.ID, Sample.ID, "TRBV10-1_TRBJ1-1",
                 "TRBV7-6_TRBJ1-5", "TRBV7-6_TRBJ1-6", "TRBV7-6_TRBJ2-1", 
                 "TRBV7-6_TRBJ2-2", "TRBV7-6_TRBJ2-3", "TRBV7-6_TRBJ2-4", 
                 "TRBV7-6_TRBJ2-5", "TRBV7-6_TRBJ2-6", "TRBV7-6_TRBJ2-7", Y, Y1)
+
+# saving as excel file
+#write.xlsx(final, 
+#           "D:/Coding/R Storage/Summer TCR Project/TCR Datasets/fullgenes.xlsx", 
+#           row.names = FALSE)
+#write.csv(final, 
+#          "D:/Coding/R Storage/Summer TCR Project/TCR Datasets/fullgenes.csv", 
+#          row.names = FALSE)
