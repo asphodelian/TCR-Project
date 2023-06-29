@@ -6,27 +6,27 @@ The main motivation of this research was to see if we can use the TCR/BCR (B-Cel
 ## Inside the Repo
 1. Code Script
 - contains all the code I've done for this project
-> Gene Testing V1
-> Gene Testing V2
-> Gene Testing V3
-> Gene Testing V4
+> - Gene Testing V1
+> - Gene Testing V2
+> - Gene Testing V3
+> - Gene Testing V4
 2. Datasets
 - contains all the datasets used for this project
-> dt.COVID_TCR.vjGene.p
-> dt.HD_TCR.vjGene.p
-> dt.info_edited
+> - dt.COVID_TCR.vjGene.p
+> - dt.HD_TCR.vjGene.p
+> - dt.info_edited
 > fullgenes
 3. Reading
 - contains all the reading I needed to do
-> Annotated Latex R-V Association
-> Intro to Stat Learning Ch12
-> Latex R-V Assocation
-> Rare-Variant Association Testing Article
+> - Annotated Latex R-V Association
+> - Intro to Stat Learning Ch12
+> - Latex R-V Assocation
+> - Rare-Variant Association Testing Article
 4. Test Code
 - contains code that's related to gene testing
-> Final Doc Research
-> SKAT test
-> Tao He Research
+> - Final Doc Research
+> - SKAT test
+> - Tao He Research
 5. LICENSE
 6. README
 - What you're reading now!
