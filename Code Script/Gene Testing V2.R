@@ -110,3 +110,19 @@ longComb <- pivot_longer(combine,
                          names_to = "Sample.ID", values_to = "Value")
 
 wideComb <- pivot_wider(longComb, names_from = "vjGene", values_from = "Value")
+
+# combine long & patients
+#full <- merge(longComb, patients, by = "Sample.ID")
+#full <- full %>%
+#  arrange(vjGene)
+# log transform
+#full$log.value <- log(full$Value)
+# min-max standard/normalization
+#min_val <- min(full$log.value)
+#max_val <- max(full$log.value)
+#full$normLog <- (full$log.value - min_val) / (max_val - min_val)
+# reorder
+#genes <- select(full, patient.ID, choose, Sample.ID, vjGene, Value, log.value, 
+#                normLog, diseae.stage, days.from.first.symptoms, time, ...7,
+#                comment)  
+#View(genes)
