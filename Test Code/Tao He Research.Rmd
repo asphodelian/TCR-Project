@@ -1,0 +1,94 @@
+---
+title: "Tao He Research"
+author: "Gabrielle Salamanca"
+date: "May 27, 2023"
+output: word_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r library}
+library(dplyr)
+library(psych)
+library(readr)
+library(readxl)
+```
+
+
+## Data Exploration
+
+```{r}
+# reading datasets
+C19vj <- read_csv("D:/Coding/R Storage/Summer TCR Project/TCR Datasets/dt.COVID_TCR.vjGene.p.csv",
+                  show_col_types = FALSE)
+vj <- read_csv("D:/Coding/R Storage/Summer TCR Project/TCR Datasets/dt.HD_TCR.vjGene.p.csv",
+               show_col_types = FALSE)
+patients <- read_excel("D:/Coding/R Storage/Summer TCR Project/TCR Datasets/dt.info_edited.xlsx")
+```
+
+```{r}
+# summaries
+cat("Summary of C19vj: \n")
+summary(C19vj)
+```
+
+```{r}
+vj <- vj %>% 
+  mutate_at(c('vjGene'), as.factor)
+cat("Summary of vj: \n\n")
+summary(vj)
+```
+
+```{r}
+cat("Summary of patients as factor: \n\n")
+patients <- patients %>% 
+  mutate_at(c('Sample.ID', 'diseae.stage', 'days.from.first.symptoms', 
+              'patient.ID', 'time', 'choose', '...7', 'comment'), 
+            as.factor)
+summary(patients)
+```
+
+```{r}
+# rename patients' cols
+names(patients)[1] <- "Sample ID"
+names(patients)[2] <- "Disease Stage"
+names(patients)[3] <- "Days since 1st Symptoms"
+names(patients)[4] <- "Patient ID"
+names(patients)[5] <- "Weeks"
+# what is choose
+# what is ...7
+```
+
+```{r}
+describe(C19vj)
+describe(vj)
+describe(patients)
+```
+
+```{r}
+# data prep
+# combine the datasets, include patients
+# replace NAs w/ extremely small number (10e-8)
+# keep only genes that are w/in both datasets
+# log transform
+# min-max standard or normalization
+```
+
+
+```{r}
+c19gene <- as.character(C19vj$vjGene)
+c19gene
+```
+
+```{r}
+hdgene <- as.character(vj$vjGene)
+hdgene
+```
+
+```{r}
+combine <- merge(C19vj, vj, by = "vjGene")
+dim(combine)
+```
+
