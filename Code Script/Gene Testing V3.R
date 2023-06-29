@@ -111,3 +111,11 @@ wideComb <- pivot_wider(longComb, names_from = "vjGene", values_from = "Value")
 
 # combine wide & patients
 full <- merge(wideComb, patients, by = "Sample.ID", all = TRUE)
+
+#######################
+# How we want dataset #
+#######################
+
+# Patient | VJ1 | VJ2 |    Y    |   Y1   |
+#  Pat 1  | ... | ... |    HD   |   HD   |
+#  Pat 2  | ... | ... | Disease | Active |
