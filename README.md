@@ -26,15 +26,26 @@ fullgenes
 ```
 3. Reading
 - contains all the reading I needed to do
-> - Annotated Latex R-V Association
-> - Intro to Stat Learning Ch12
-> - Latex R-V Assocation
-> - Rare-Variant Association Testing Article
+```
+Annotated Latex R-V Association
+- my annotated latex write-up
+Intro to Stat Learning Ch12
+- PCA reading
+Latex R-V Assocation
+- latex writeup of only the required reading in the article
+Rare-Variant Association Testing Article
+- the full article on SKAT
+```
 4. Test Code
 - contains code that's related to gene testing
-> - Final Doc Research
-> - SKAT test
-> - Tao He Research
+```
+Final Doc Research
+- WIP markdown
+SKAT test
+- testing the SKAT package
+Tao He Research
+- initial EDA
+```
 5. LICENSE
 6. README
 - What you're reading now!
