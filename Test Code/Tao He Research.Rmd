@@ -40,6 +40,15 @@ cat("Summary of vj: \n\n")
 summary(vj)
 ```
 
+```{r}
+cat("Summary of patients as factor: \n\n")
+patients <- patients %>% 
+  mutate_at(c('Sample.ID', 'diseae.stage', 'days.from.first.symptoms', 
+              'patient.ID', 'time', 'choose', '...7', 'comment'), 
+            as.factor)
+summary(patients)
+```
+
 
 
 
