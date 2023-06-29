@@ -137,3 +137,19 @@ full <- merge(wideComb, patients, by = "Sample.ID", all = TRUE)
 # Patient | VJ1 | VJ2 |    Y    |   Y1   |
 #  Pat 1  | ... | ... |    HD   |   HD   |
 #  Pat 2  | ... | ... | Disease | Active | 
+
+update <- full[, -c(5, 7:10)]
+
+# new col: recover/active = disease; healthy = healthy
+update1 <- update %>%
+  mutate(Y = case_when(
+    diseae.stage %in% c("active", "recovered") ~ "disease",
+    diseae.stage == "healthy" ~ "healthy",
+    TRUE ~ NA_character_
+  ))
+
+# vjGene columns
+update2 <- pivot_wider(update1, names_from = vjGene, values_from = Value) 
+
+# renaming col
+update <- rename(update, Y1 = diseae.stage)
