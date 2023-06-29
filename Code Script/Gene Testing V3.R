@@ -348,3 +348,17 @@ full <- select(full, patient.ID, Sample.ID, diseae.stage, "TRBV10-1_TRBJ1-1",
                "TRBV9_TRBJ2-3", "TRBV9_TRBJ2-4", "TRBV9_TRBJ2-5",
                "TRBV9_TRBJ2-6", "TRBV9_TRBJ2-7", days.from.first.symptoms,
                time, choose, "...7", comment)
+
+update <- full[, -632:-686] 
+#update <- update[-c(22, 94:109),] # keep the NA rows
+
+# new col: recover/active = disease; healthy = healthy
+new <- update %>%
+  mutate(Y = case_when(
+    diseae.stage %in% c("active", "recovered") ~ "disease",
+    diseae.stage == "healthy" ~ "healthy",
+    TRUE ~ NA_character_
+  ))
+
+# renaming col
+final <- rename(new, Y1 = diseae.stage)
