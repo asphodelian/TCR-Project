@@ -49,6 +49,17 @@ patients <- patients %>%
 summary(patients)
 ```
 
+```{r}
+# rename patients' cols
+names(patients)[1] <- "Sample ID"
+names(patients)[2] <- "Disease Stage"
+names(patients)[3] <- "Days since 1st Symptoms"
+names(patients)[4] <- "Patient ID"
+names(patients)[5] <- "Weeks"
+# what is choose
+# what is ...7
+```
+
 
 
 
