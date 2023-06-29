@@ -908,6 +908,8 @@ mini710 <- genes[vj == "TRBV9_TRBJ2-7", ]
 #  Pat 1  | ... | ... |    HD   |   HD   |
 #  Pat 2  | ... | ... | Disease | Active |
 
+update <- full[, -c(5, 7:10)]
+
 
 
 
