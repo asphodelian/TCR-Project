@@ -49,3 +49,19 @@ summary(patients)
 describe(C19vj)
 describe(vj)
 describe(patients)
+
+#############
+# Data Prep #
+#############
+
+# combine the vj datasets
+combine <- merge(C19vj, vj, by = "vjGene")
+
+# replace NAs w/ extremely small number (10e-8)
+combine[is.na(combine)] <- 1e-7
+
+# dim check
+dim(C19vj)
+dim(vj)
+dim(patients)
+dim(combine)
