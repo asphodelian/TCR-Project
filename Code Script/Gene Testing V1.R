@@ -892,6 +892,14 @@ mini708 <- genes[vj == "TRBV9_TRBJ2-5", ]
 mini709 <- genes[vj == "TRBV9_TRBJ2-6", ]
 mini710 <- genes[vj == "TRBV9_TRBJ2-7", ]
 
+# saving as excel file
+#write.xlsx(genes, 
+#           "D:/Coding/R Storage/Summer TCR Project/TCR Datasets/fullgenes.xlsx", 
+#           row.names = FALSE)
+#write.csv(genes, 
+#          "D:/Coding/R Storage/Summer TCR Project/TCR Datasets/fullgenes.csv", 
+#          row.names = FALSE)
+
 
 
 
