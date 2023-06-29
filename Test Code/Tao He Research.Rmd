@@ -16,7 +16,6 @@ library(readr)
 library(readxl)
 ```
 
-
 ## Data Exploration
 
 ```{r}
