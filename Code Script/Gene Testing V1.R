@@ -900,6 +900,14 @@ mini710 <- genes[vj == "TRBV9_TRBJ2-7", ]
 #          "D:/Coding/R Storage/Summer TCR Project/TCR Datasets/fullgenes.csv", 
 #          row.names = FALSE)
 
+#######################
+# How we want dataset #
+#######################
+
+# Patient | VJ1 | VJ2 |    Y    |   Y1   |
+#  Pat 1  | ... | ... |    HD   |   HD   |
+#  Pat 2  | ... | ... | Disease | Active |
+
 
 
 
