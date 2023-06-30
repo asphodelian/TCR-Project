@@ -160,3 +160,18 @@ colv48 <- grep(stringv48, names(gene), value = TRUE)
 colv49 <- grep(stringv49, names(gene), value = TRUE)
 colv50 <- grep(stringv50, names(gene), value = TRUE)
 
+# j gene
+colj1 <- grep(stringj1, names(gene), value = TRUE)
+colj2 <- grep(stringj2, names(gene), value = TRUE)
+colj3 <- grep(stringj3, names(gene), value = TRUE)
+colj4 <- grep(stringj4, names(gene), value = TRUE)
+colj5 <- grep(stringj5, names(gene), value = TRUE)
+colj6 <- grep(stringj6, names(gene), value = TRUE)
+colj7 <- grep(stringj7, names(gene), value = TRUE)
+colj8 <- grep(stringj8, names(gene), value = TRUE)
+colj9 <- grep(stringj9, names(gene), value = TRUE)
+colj10 <- grep(stringj10, names(gene), value = TRUE)
+
+colj11 <- grep(stringj11, names(gene), value = TRUE)
+colj12 <- grep(stringj12, names(gene), value = TRUE)
+colj13 <- grep(stringj13, names(gene), value = TRUE)
