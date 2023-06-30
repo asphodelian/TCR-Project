@@ -9,3 +9,9 @@ library(readr)
 library(readxl)
 library(SKAT)
 library(tidyr)
+
+###########
+# Dataset #
+###########
+
+gene <- read_excel("fullgenes.xlsx")
