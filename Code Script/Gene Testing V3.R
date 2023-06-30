@@ -581,3 +581,14 @@ final <- select(final, patient.ID, Sample.ID, "TRBV10-1_TRBJ1-1",
 #write.csv(final, 
 #          "D:/Coding/R Storage/Summer TCR Project/TCR Datasets/fullgenes.csv", 
 #          row.names = FALSE)
+
+################
+# SKAT Attempt #
+################
+
+# Note from 6/16/2023 meeting: 
+# figure out how to let code read the cols instead me manually doing 
+# 710 mini datasets
+# However, we run into the problem of the ending numbers if I wanted to do a
+# for loop. There are some that don't have dashes, and I have no clue how to
+# prep it for that. So, 50 mini datasets made. Not as bad as 710 unique combos
