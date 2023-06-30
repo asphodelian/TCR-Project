@@ -175,3 +175,61 @@ colj10 <- grep(stringj10, names(gene), value = TRUE)
 colj11 <- grep(stringj11, names(gene), value = TRUE)
 colj12 <- grep(stringj12, names(gene), value = TRUE)
 colj13 <- grep(stringj13, names(gene), value = TRUE)
+
+# Subset the dataset with the matching columns
+
+# v gene
+subv1 <- as.matrix(gene[, colv1]) # P-value = 0.668651
+subv2 <- as.matrix(gene[, colv2]) # No polymorphic SNP. P-value = 1
+subv3 <- as.matrix(gene[, colv3]) # P-value = 0.4209504
+subv4 <- as.matrix(gene[, colv4]) # P-value = 0.262211
+subv5 <- as.matrix(gene[, colv5]) # P-value = 0.5558942
+subv6 <- as.matrix(gene[, colv6]) # No polymorphic SNP. P-value = 1 
+subv7 <- as.matrix(gene[, colv7]) # No polymorphic SNP. P-value = 1
+subv8 <- as.matrix(gene[, colv8]) # P-value = 0.5011891
+subv9 <- as.matrix(gene[, colv9]) # P-value = 0.07947834
+subv10 <- as.matrix(gene[, colv10]) # No polymorphic SNP. P-value = 1
+
+subv11 <- as.matrix(gene[, colv11]) # P-value = 0.3787425 
+subv12 <- as.matrix(gene[, colv12]) # P-value = 0.5460028 
+subv13 <- as.matrix(gene[, colv13]) # P-value = 0.4974125 
+subv14 <- as.matrix(gene[, colv14]) # P-value = 1
+subv15 <- as.matrix(gene[, colv15]) # P-value = 0.6581214 (Genotypes of some variants are not the number of minor alleles! These genotypes are flipped!)x2
+subv16 <- as.matrix(gene[, colv16]) # P-value = 0.02598262 (Genotypes of some variants are not the number of minor alleles! These genotypes are flipped!)x2
+subv17 <- as.matrix(gene[, colv17]) # P-value = 0.1313319 (Genotypes of some variants are not the number of minor alleles! These genotypes are flipped!)x2
+subv18 <- as.matrix(gene[, colv18]) # P-value = 0.5860749 
+subv19 <- as.matrix(gene[, colv19]) # No polymorphic SNP. P-value = 1
+subv20 <- as.matrix(gene[, colv20]) # P-value = 0.5530025 
+
+subv21 <- as.matrix(gene[, colv21]) # No polymorphic SNP. P-value = 1 
+subv22 <- as.matrix(gene[, colv22]) # P-value = 0.10446 (Genotypes of some variants are not the number of minor alleles! These genotypes are flipped!)x2
+subv23 <- as.matrix(gene[, colv23]) # P-value = 0.1103061 
+subv24 <- as.matrix(gene[, colv24]) # P-value = 0.5410421 (Genotypes of some variants are not the number of minor alleles! These genotypes are flipped!)x2
+subv25 <- as.matrix(gene[, colv25]) # No polymorphic SNP. P-value = 1 
+subv26 <- as.matrix(gene[, colv26]) # P-value = 0.03031458 
+subv27 <- as.matrix(gene[, colv27]) # P-value = 0.001152038 
+subv28 <- as.matrix(gene[, colv28]) # P-value = 0.6322681 
+subv29 <- as.matrix(gene[, colv29]) # P-value = 0.5868148 
+subv30 <- as.matrix(gene[, colv30]) # P-value = 0.1550138 
+
+subv31 <- as.matrix(gene[, colv31]) # P-value = 0.134271 
+subv32 <- as.matrix(gene[, colv32]) # P-value = 1 
+subv33 <- as.matrix(gene[, colv33]) # P-value = 0.5981785 
+subv34 <- as.matrix(gene[, colv34]) # P-value = 0.8062594 
+subv35 <- as.matrix(gene[, colv35]) # P-value = 0.3625172 
+subv36 <- as.matrix(gene[, colv36]) # No polymorphic SNP. P-value = 1
+subv37 <- as.matrix(gene[, colv37]) # P-value = 0.7948523 
+subv38 <- as.matrix(gene[, colv38]) # No polymorphic SNP. P-value = 1
+subv39 <- as.matrix(gene[, colv39]) # P-value =  1
+subv40 <- as.matrix(gene[, colv40]) # P-value =  0.5940788 
+
+subv41 <- as.matrix(gene[, colv41]) # P-value = 0.2817744 (Genotypes of some variants are not the number of minor alleles! These genotypes are flipped!)x2
+subv42 <- as.matrix(gene[, colv42]) # P-value =  1
+subv43 <- as.matrix(gene[, colv43]) # No polymorphic SNP. P-value = 1
+subv44 <- as.matrix(gene[, colv44]) # No polymorphic SNP. P-value = 1
+subv45 <- as.matrix(gene[, colv45]) # 0.1740433 
+subv46 <- as.matrix(gene[, colv46]) # P-value = 1
+subv47 <- as.matrix(gene[, colv47]) # P-value = 0.3298455 
+subv48 <- as.matrix(gene[, colv48]) # P-value = 0.8987996 
+subv49 <- as.matrix(gene[, colv49]) # P-value = 0.2833668 
+subv50 <- as.matrix(gene[, colv50]) # P-value = 0.5717293 
