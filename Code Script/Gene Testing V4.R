@@ -233,3 +233,19 @@ subv47 <- as.matrix(gene[, colv47]) # P-value = 0.3298455
 subv48 <- as.matrix(gene[, colv48]) # P-value = 0.8987996 
 subv49 <- as.matrix(gene[, colv49]) # P-value = 0.2833668 
 subv50 <- as.matrix(gene[, colv50]) # P-value = 0.5717293 
+
+# j gene
+subj1 <- as.matrix(gene[, colj1]) # P-value = 0.626006 (Genotypes of some variants are not the number of minor alleles! These genotypes are flipped!)x2
+subj2 <- as.matrix(gene[, colj2]) # P-value = 0.496539 (Genotypes of some variants are not the number of minor alleles! These genotypes are flipped!)x2
+subj3 <- as.matrix(gene[, colj3]) # P-value = 0.660185
+subj4 <- as.matrix(gene[, colj4]) # P-value = 0.8498575
+subj5 <- as.matrix(gene[, colj5]) # P-value = 0.3305214 (Genotypes of some variants are not the number of minor alleles! These genotypes are flipped!)x2
+subj6 <- as.matrix(gene[, colj6]) # P-value = 0.2562662 
+subj7 <- as.matrix(gene[, colj7]) # P-value = 0.03634115 (Genotypes of some variants are not the number of minor alleles! These genotypes are flipped!)x2
+subj8 <- as.matrix(gene[, colj8]) # P-value = 0.2376109 (Genotypes of some variants are not the number of minor alleles! These genotypes are flipped!)x2
+subj9 <- as.matrix(gene[, colj9]) # P-value = 0.009703486 (Genotypes of some variants are not the number of minor alleles! These genotypes are flipped!)x2
+subj10 <- as.matrix(gene[, colj10]) # P-value = 0.03393813
+
+subj11 <- as.matrix(gene[, colj11]) # P-value = 0.2820424 (Genotypes of some variants are not the number of minor alleles! These genotypes are flipped!)x2 
+subj12 <- as.matrix(gene[, colj12]) # P-value = 0.3177503 
+subj13 <- as.matrix(gene[, colj13]) # P-value = 0.2551482 (Genotypes of some variants are not the number of minor alleles! These genotypes are flipped!)x2
