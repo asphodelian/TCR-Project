@@ -24,7 +24,9 @@ dt.info_edited
 fullgenes
 - combined all three datasets
 ```
-3. Reading
+3. PCA Plots
+- contains all PCA plots done for this project
+4. Reading
 - contains all the reading I needed to do
 ```
 Annotated Latex R-V Association
@@ -36,7 +38,7 @@ Latex R-V Assocation
 Rare-Variant Association Testing Article
 - the full article on SKAT
 ```
-4. Test Code
+5. Test Code
 - contains code that's related to gene testing
 ```
 Final Doc Research
@@ -46,8 +48,8 @@ SKAT test
 Tao He Research
 - initial EDA
 ```
-5. LICENSE
-6. README
+6. LICENSE
+7. README
 - What you're reading now!
 
 ## Links
