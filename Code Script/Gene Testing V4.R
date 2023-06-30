@@ -483,3 +483,10 @@ autoplot(pcaj10, data = gene, colour = 'Y')
 dfull <- gene[3:630]
 pcaFull <- prcomp(dfull, scale. = TRUE)
 autoplot(pcaFull, data = gene, colour = 'Y')
+
+# Note 6/29:try doing the pca plots with Y1
+# fill up the NAs first
+# Will need to rerun SKAT test
+# do three pairs: active/recovered, active/disease, recovered/disease
+# try running the signif v and j genes together for pca
+# Write up a google doc/github repo about the work I've done
