@@ -249,3 +249,17 @@ subj10 <- as.matrix(gene[, colj10]) # P-value = 0.03393813
 subj11 <- as.matrix(gene[, colj11]) # P-value = 0.2820424 (Genotypes of some variants are not the number of minor alleles! These genotypes are flipped!)x2 
 subj12 <- as.matrix(gene[, colj12]) # P-value = 0.3177503 
 subj13 <- as.matrix(gene[, colj13]) # P-value = 0.2551482 (Genotypes of some variants are not the number of minor alleles! These genotypes are flipped!)x2
+
+### SKAT ###
+
+# fix up Y
+set.na1 <- c(22)
+set.na2 <- c(94:109)
+Y <- gene$Y
+Y[set.na1] <- "disease"
+Y[set.na2] <- "healthy"
+one.vec <- rep(1,length(Y))
+Y.d <- rep(0, length(Y))
+Y.d[which(Y == "disease")] = 1
+
+gene$Y <- Y
