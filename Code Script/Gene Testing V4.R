@@ -101,3 +101,62 @@ stringj10 <- "TRBJ2-4"
 stringj11 <- "TRBJ2-5"
 stringj12 <- "TRBJ2-6"
 stringj13 <- "TRBJ2-7"
+
+# Find columns that match the partial string
+
+# v gene
+colv1 <- grep(stringv1, names(gene), value = TRUE)
+colv2 <- grep(stringv2, names(gene), value = TRUE)
+colv3 <- grep(stringv3, names(gene), value = TRUE)
+colv4 <- grep(stringv4, names(gene), value = TRUE)
+colv5 <- grep(stringv5, names(gene), value = TRUE)
+colv6 <- grep(stringv6, names(gene), value = TRUE)
+colv7 <- grep(stringv7, names(gene), value = TRUE)
+colv8 <- grep(stringv8, names(gene), value = TRUE)
+colv9 <- grep(stringv9, names(gene), value = TRUE)
+colv10 <- grep(stringv10, names(gene), value = TRUE)
+
+colv11 <- grep(stringv11, names(gene), value = TRUE)
+colv12 <- grep(stringv12, names(gene), value = TRUE)
+colv13 <- grep(stringv13, names(gene), value = TRUE)
+colv14 <- grep(stringv14, names(gene), value = TRUE)
+colv15 <- grep(stringv15, names(gene), value = TRUE)
+colv16 <- grep(stringv16, names(gene), value = TRUE)
+colv17 <- grep(stringv17, names(gene), value = TRUE)
+colv18 <- grep(stringv18, names(gene), value = TRUE)
+colv19 <- grep(stringv19, names(gene), value = TRUE)
+colv20 <- grep(stringv20, names(gene), value = TRUE)
+
+colv21 <- grep(stringv21, names(gene), value = TRUE)
+colv22 <- grep(stringv22, names(gene), value = TRUE)
+colv23 <- grep(stringv23, names(gene), value = TRUE)
+colv24 <- grep(stringv24, names(gene), value = TRUE)
+colv25 <- grep(stringv25, names(gene), value = TRUE)
+colv26 <- grep(stringv26, names(gene), value = TRUE)
+colv27 <- grep(stringv27, names(gene), value = TRUE)
+colv28 <- grep(stringv28, names(gene), value = TRUE)
+colv29 <- grep(stringv29, names(gene), value = TRUE)
+colv30 <- grep(stringv30, names(gene), value = TRUE)
+
+colv31 <- grep(stringv31, names(gene), value = TRUE)
+colv32 <- grep(stringv32, names(gene), value = TRUE)
+colv33 <- grep(stringv33, names(gene), value = TRUE)
+colv34 <- grep(stringv34, names(gene), value = TRUE)
+colv35 <- grep(stringv35, names(gene), value = TRUE)
+colv36 <- grep(stringv36, names(gene), value = TRUE)
+colv37 <- grep(stringv37, names(gene), value = TRUE)
+colv38 <- grep(stringv38, names(gene), value = TRUE)
+colv39 <- grep(stringv39, names(gene), value = TRUE)
+colv40 <- grep(stringv40, names(gene), value = TRUE)
+
+colv41 <- grep(stringv41, names(gene), value = TRUE)
+colv42 <- grep(stringv42, names(gene), value = TRUE)
+colv43 <- grep(stringv43, names(gene), value = TRUE)
+colv44 <- grep(stringv44, names(gene), value = TRUE)
+colv45 <- grep(stringv45, names(gene), value = TRUE)
+colv46 <- grep(stringv46, names(gene), value = TRUE)
+colv47 <- grep(stringv47, names(gene), value = TRUE)
+colv48 <- grep(stringv48, names(gene), value = TRUE)
+colv49 <- grep(stringv49, names(gene), value = TRUE)
+colv50 <- grep(stringv50, names(gene), value = TRUE)
+
