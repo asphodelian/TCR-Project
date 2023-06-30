@@ -592,3 +592,6 @@ final <- select(final, patient.ID, Sample.ID, "TRBV10-1_TRBJ1-1",
 # However, we run into the problem of the ending numbers if I wanted to do a
 # for loop. There are some that don't have dashes, and I have no clue how to
 # prep it for that. So, 50 mini datasets made. Not as bad as 710 unique combos
+
+matGene <- as.matrix(gene)
+attach(gene)
