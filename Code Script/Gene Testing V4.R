@@ -263,3 +263,6 @@ Y.d <- rep(0, length(Y))
 Y.d[which(Y == "disease")] = 1
 
 gene$Y <- Y
+
+# null model
+obj.s <- SKAT_Null_Model(Y.d ~ 1, out_type = "D")
