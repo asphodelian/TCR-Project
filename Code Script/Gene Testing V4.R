@@ -266,3 +266,19 @@ gene$Y <- Y
 
 # null model
 obj.s <- SKAT_Null_Model(Y.d ~ 1, out_type = "D")
+
+# for loop
+
+# v gene
+pvalue.vec <- rep(0,50)
+
+for (i in 1:50) {
+  sub <- get(paste0("subv", i))  # Get the matrix using the variable name
+  out <- SKATBinary(sub, obj.s, kernel = "linear.weighted")
+  p <- out$p.value
+  pvalue.vec[i] <- p
+  cat("P-value of subv", i, "is:", p, "\n")
+}
+result <- data.frame(cbind(c(1:50),pvalue.vec))
+colnames(result) <- c("vgene.idx","pvalue")
+View(result)
