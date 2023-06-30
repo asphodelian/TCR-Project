@@ -282,3 +282,17 @@ for (i in 1:50) {
 result <- data.frame(cbind(c(1:50),pvalue.vec))
 colnames(result) <- c("vgene.idx","pvalue")
 View(result)
+
+# j gene
+pval <- rep(0,13)
+
+for (i in 1:13) {
+  sub <- get(paste0("subj", i))  # Get the matrix using the variable name
+  out <- SKATBinary(sub, obj.s, kernel = "linear.weighted")
+  p <- out$p.value
+  pval[i] <- p
+  cat("P-value of subj", i, "is:", p, "\n")
+}
+jres <- data.frame(cbind(c(1:13),pval))
+colnames(jres) <- c("jgene.idx","p-value")
+View(jres)
