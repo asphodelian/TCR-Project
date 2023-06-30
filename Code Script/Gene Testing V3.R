@@ -764,3 +764,24 @@ sub47 <- as.matrix(gene[, col47])
 sub48 <- as.matrix(gene[, col48])
 sub49 <- as.matrix(gene[, col49])
 sub50 <- as.matrix(gene[, col50])
+
+### SKAT ###
+
+# Use SKATBinary() for this entire thing
+# ask what the x was
+# in need of help to write out model
+# also the dataset needed to be a matrix, so I'm running into errors
+
+# Note 6/22/2023: For the NAs in dataset,fill them in
+# try making the SKATBin in a for loop
+
+#outv10.1 <- SKAT(final[,1:13],objv10.1)
+#set.na <- c(22,94:109)
+#Y <- gene$Y
+#Y[set.na] <- "healthy"
+#one.vec <- rep(1,length(Y))
+#Y.d=rep(0,length(Y))
+#Y.d[which(Y=="disease")]=1
+#obj.s <- SKAT_Null_Model(Y.d ~ 1, out_type = "D")
+#out <- SKATBinary(as.matrix(sub1), obj.s, kernel = "linear.weighted")
+#out$p.value
