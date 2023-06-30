@@ -25,3 +25,5 @@ gene <- read_excel("fullgenes.xlsx")
 # pca plots, color dots with Y, do with all 710 genes & significant v genes 
 # p.adjust(p, method = p.adjust.methods, n = length(p)) for all p-values
 # Try the SKATBin with the j gene, vjgene
+
+attach(gene)
