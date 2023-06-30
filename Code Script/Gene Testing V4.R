@@ -470,3 +470,16 @@ pcav27 <- prcomp(dfv27, scale. = TRUE)
 pcaj7 <- prcomp(dfj7, scale. = TRUE)
 pcaj9 <- prcomp(dfj9, scale. = TRUE)
 pcaj10 <- prcomp(dfj10, scale. = TRUE)
+
+# plot
+autoplot(pcav16, data = gene, colour = 'Y')
+autoplot(pcav26, data = gene, colour = 'Y')
+autoplot(pcav27, data = gene, colour = 'Y')
+autoplot(pcaj7, data = gene, colour = 'Y')
+autoplot(pcaj9, data = gene, colour = 'Y')
+autoplot(pcaj10, data = gene, colour = 'Y')
+
+# trying the whole dataset
+dfull <- gene[3:630]
+pcaFull <- prcomp(dfull, scale. = TRUE)
+autoplot(pcaFull, data = gene, colour = 'Y')
