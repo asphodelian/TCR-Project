@@ -433,3 +433,16 @@ outj12 <- SKATBinary(subj12, obj.s, kernel = "linear.weighted")
 outj12$p.value
 outj13 <- SKATBinary(subj13, obj.s, kernel = "linear.weighted")
 outj13$p.value
+
+# p-value adjustment
+
+# v gene
+pv <- result$pvalue
+p.adjust(pv, method = p.adjust.methods, n = length(pv))
+
+# j gene
+pj <- jres$`p-value`
+p.adjust(pj, method = p.adjust.methods, n = length(pj))
+
+# No pval adjust, most notable: stringv16/v26/v27, stringj7/j9/j10
+# pval adjust, nothing matters
