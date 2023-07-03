@@ -95,3 +95,28 @@ SKAT(Z, obj1, r.corr = 1)$p.value
 SKAT(Z, obj1, method = "SKATO")$p.value
 # PDF sol = 0.1008976
 # R sol = 0.003849451
+
+###########################################
+# Combined Test of Common & Rare Variants #
+###########################################
+
+# Combined sum test (SKAT-C & Burden-C)
+
+SKAT_CommonRare(Z, obj1)$p.value
+# PDF sol = 0.2238025
+# R sol = 0.003849451
+
+SKAT_CommonRare(Z, obj1, r.corr.rare = 1, r.corr.common = 1)$p.value
+# PDF sol = 0.1546374
+# R sol = 0.02408793
+
+# Adaptive test (SKAT-A & Burden-A)
+
+SKAT_CommonRare(Z, obj1, method = "A")$p.value
+# PDF sol = 0.4372293
+# R sol = 0.3583173
+
+SKAT_CommonRare(Z, obj1, r.corr.rare = 1,
+                r.corr.common = 1, method = "A")$p.value
+# PDF sol = 0.1548059
+# R sol = 0.01395644
