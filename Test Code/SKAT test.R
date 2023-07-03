@@ -68,3 +68,30 @@ weights <- Get_Logistic_Weights(Z, par1 = 0.07, par2 = 150)
 SKAT(Z, obj1, kernel = "linear.weighted", weights = weights)$p.value 
 #PDF output = 0.3293643
 #R output = 0.07264769
+
+###############################################
+# SKAT-O: Combined Test of burden test & SKAT #
+###############################################
+
+# test stat: Q_p = (1-p)Q_S + p(Q_B)
+# Q_S = test stat of SKAT
+# Q_B = score test stat of burden test
+# rho value speced by using r.corr parameter
+
+SKAT(Z, obj1, r.corr = 0)$p.value
+# PDF sol = 0.1401991
+# R sol = 0.002877041
+
+SKAT(Z, obj1, r.corr = 0.9)$p.value
+# PDF sol = 0.06031026
+# R sol = 0.01421652
+
+# Burden test
+SKAT(Z, obj1, r.corr = 1)$p.value
+# PDF sol = 0.06095529
+# R sol = 0.01507979
+
+# Optimal test
+SKAT(Z, obj1, method = "SKATO")$p.value
+# PDF sol = 0.1008976
+# R sol = 0.003849451
