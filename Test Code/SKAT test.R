@@ -19,3 +19,7 @@ outv10.1 <- SKAT(genes[,1:13],objv10.1)
 obj2 <- SKAT_Null_Model(y.b ~ X, out_type = "C")
 out2.b <- SKAT(Z, obj2)
 out2.b$p.value
+
+# other
+out1.c$param
+out1.c$test.snp.mac
