@@ -37,3 +37,13 @@ SKAT(Z[IDX,], obj.s, kernel = "linear.weighted")$p.value
 # no adjust
 obj.s <- SKAT_Null_Model(y.b[IDX] ~ X[IDX,], out_type = "D", Adjustment = FALSE)
 SKAT(Z[IDX,], obj.s, kernel = "linear.weighted")$p.value
+
+# USE SKAT binary ONLY for fullgenes
+
+# default hybrid approach
+out <- SKATBinary(Z[IDX,], obj.s, kernel = "linear.weighted")
+out$p.value
+
+# robust approach
+rob <- SKATBinary_Robust(Z[IDX,], obj.s, kernel = "linear.weighted")
+rob$p.value
