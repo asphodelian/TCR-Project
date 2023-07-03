@@ -14,3 +14,8 @@ out1.c$p.value
 
 objv10.1 <- SKAT_Null_Model(genes$Y ~ 1, out_type = "D")
 outv10.1 <- SKAT(genes[,1:13],objv10.1)
+
+# dicho trait
+obj2 <- SKAT_Null_Model(y.b ~ X, out_type = "C")
+out2.b <- SKAT(Z, obj2)
+out2.b$p.value
