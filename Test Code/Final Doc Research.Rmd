@@ -27,8 +27,37 @@ C19vj <- read_csv("D:/Coding/R Storage/Summer TCR Project/TCR Datasets/dt.COVID_
 vj <- read_csv("D:/Coding/R Storage/Summer TCR Project/TCR Datasets/dt.HD_TCR.vjGene.p.csv",
                show_col_types = FALSE)
 patients <- read_excel("D:/Coding/R Storage/Summer TCR Project/TCR Datasets/dt.info_edited.xlsx")
-gene <- read_excel("fullgenes.xlsx")
 ```
+
+### Summary of each dataset
+
+Summary of C19vj:
+
+```{r}
+C19vj <- C19vj %>% 
+  mutate_at(c('vjGene'), as.factor)
+summary(C19vj)
+```
+
+Summary of vj:
+
+```{r}
+vj <- vj %>% 
+  mutate_at(c('vjGene'), as.factor)
+summary(vj)
+```
+
+Summary of patients as factor:
+
+```{r}
+patients <- patients %>% 
+  mutate_at(c('Sample.ID', 'diseae.stage', 'days.from.first.symptoms', 
+              'patient.ID', 'time', 'choose', '...7', 'comment'), 
+            as.factor)
+summary(patients)
+```
+
+
 
 ```{r, ref.label=knitr::all_labels(), echo = TRUE, eval = FALSE}
 ```
