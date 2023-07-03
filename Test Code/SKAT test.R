@@ -23,3 +23,17 @@ out2.b$p.value
 # other
 out1.c$param
 out1.c$test.snp.mac
+
+#########################
+# binary & small sample #
+#########################
+
+IDX <- -c(1:100, 1001:1100)
+
+# with adjustment
+obj.s <- SKAT_Null_Model(y.b[IDX] ~ X[IDX,], out_type = "D")
+SKAT(Z[IDX,], obj.s, kernel = "linear.weighted")$p.value
+
+# no adjust
+obj.s <- SKAT_Null_Model(y.b[IDX] ~ X[IDX,], out_type = "D", Adjustment = FALSE)
+SKAT(Z[IDX,], obj.s, kernel = "linear.weighted")$p.value
