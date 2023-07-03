@@ -29,6 +29,8 @@ fullgenes
 4. Reading
 - contains all the reading I needed to do
 ```
+Annotated Intro to Stat Learning Ch12
+- my annotated Ch12
 Annotated Latex R-V Association
 - my annotated latex write-up
 Intro to Stat Learning Ch12
@@ -51,5 +53,3 @@ Tao He Research
 6. LICENSE
 7. README
 - What you're reading now!
-
-## Links
