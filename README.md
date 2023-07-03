@@ -51,5 +51,3 @@ Tao He Research
 6. LICENSE
 7. README
 - What you're reading now!
-
-## Links
