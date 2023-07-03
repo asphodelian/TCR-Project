@@ -74,5 +74,25 @@ C19vj and vj were first merged by the column vjGene, the dataset being named com
 
 There are NAs in terms of patients. For example, the healthy patients doesn't extend all the way to 39, it ended at 23. But they were kept in instead of removed, with the idea that it'll be done later down the line.
 
+```{r}
+genes <- genes %>% 
+  mutate_at(c('patient.ID', 'Sample.ID', 'Y', 'Y1'), as.factor)
+cat("Summary of genes: \n\n")
+summary(genes)
+```
+
+Dimension check
+
+```{r}
+cat("Dimensions of C19vj: \n")
+dim(C19vj)
+cat("\nDimensions of vj: \n")
+dim(vj)
+cat("\nDimensions of patients: \n")
+dim(patients)
+cat("\nDimensions of genes: \n")
+dim(genes)
+```
+
 ```{r, ref.label=knitr::all_labels(), echo = TRUE, eval = FALSE}
 ```
