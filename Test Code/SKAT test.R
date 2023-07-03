@@ -47,3 +47,24 @@ out$p.value
 # robust approach
 rob <- SKATBinary_Robust(Z[IDX,], obj.s, kernel = "linear.weighted")
 rob$p.value
+
+#####################
+# Weight Assignment #
+#####################
+
+SKAT(Z, obj1, kernel = "linear.weighted", weights.beta = c(0.5, 0.5))$p.value
+
+# shape of log weight
+
+MAF <- 1:1000/1000
+W <- Get_Logistic_Weights_MAF(MAF, par1 = 0.07, par2 = 150)
+par(mfrow = c(1,2))
+plot(MAF, W, xlab = "MAF", ylab = "Weights", type = "l")
+plot(MAF[1:100], W[1:100], xlab = "MAF", ylab = "Weights", type = "l")
+
+# Use log weight
+
+weights <- Get_Logistic_Weights(Z, par1 = 0.07, par2 = 150)
+SKAT(Z, obj1, kernel = "linear.weighted", weights = weights)$p.value 
+#PDF output = 0.3293643
+#R output = 0.07264769
