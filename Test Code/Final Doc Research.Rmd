@@ -57,7 +57,22 @@ patients <- patients %>%
 summary(patients)
 ```
 
+### New dataset
 
+Combined all three into one dataset called genes
+
+```{r}
+genes <- read_excel("D:/Coding/R Storage/Summer TCR Project/TCR Datasets/fullgenes.xlsx")
+```
+
+C19vj and vj were first merged by the column vjGene, the dataset being named combine. Because of the multiple NAs in the value column, we replaced them with $1e^{-7}$. Then, we needed to rename to columns to match the Sample.ID column in patients. Next, we can use pivot_longer to log transform and standardize them. Finally, we can pivot_wider to make the dataset look like this:
+
+| Patient | VJ1 | VJ2 |    Y    |   Y1   |
+|:-------:|:---:|:---:|:-------:|:------:|
+|  Pat 1  | ... | ... |    HD   |   HD   |
+|  Pat 2  | ... | ... | Disease | Active |
+
+There are NAs in terms of patients. For example, the healthy patients doesn't extend all the way to 39, it ended at 23. But they were kept in instead of removed, with the idea that it'll be done later down the line.
 
 ```{r, ref.label=knitr::all_labels(), echo = TRUE, eval = FALSE}
 ```
