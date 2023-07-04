@@ -511,4 +511,6 @@ Y.rh <- rep(0, length(recHea$Y1))
 Y.rh[which(recHea$Y1 == "recovered")] = 1
 
 # null models
-obj.ar <- SKAT_Null_Model(Y.d ~ 1, out_type = "D")
+obj.ar <- SKAT_Null_Model(Y.ar ~ 1, out_type = "D")
+obj.ah <- SKAT_Null_Model(Y.ah ~ 1, out_type = "D")
+obj.rh <- SKAT_Null_Model(Y.rh ~ 1, out_type = "D")
