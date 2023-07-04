@@ -490,3 +490,10 @@ autoplot(pcaFull, data = gene, colour = 'Y')
 # do three pairs: active/recovered, active/disease, recovered/disease
 # try running the signif v and j genes together for pca
 # Write up a google doc/github repo about the work I've done
+
+Y1 <- gene$Y1
+Y1[set.na1] <- "active"
+Y1[set.na2] <- "healthy"
+vec <- rep(1,length(Y1))
+Y.vj <- rep(0, length(Y1))
+Y.vj[which(Y1 == "active" | Y1 == "recovered")] = 1
