@@ -487,7 +487,7 @@ autoplot(pcaFull, data = gene, colour = 'Y')
 # Note 6/29:try doing the pca plots with Y1
 # fill up the NAs first
 # Will need to rerun SKAT test
-# do three pairs: active/recovered, active/disease, recovered/disease
+# do three pairs: active/recovered, active/healthy, recovered/healthy
 # try running the signif v and j genes together for pca
 # Write up a google doc/github repo about the work I've done
 
@@ -497,3 +497,11 @@ Y1[set.na2] <- "healthy"
 vec <- rep(1,length(Y1))
 Y.vj <- rep(0, length(Y1))
 Y.vj[which(Y1 == "active" | Y1 == "recovered")] = 1
+
+# subset
+actRec <- as.matrix(subset(gene, Y1 == "active" | Y1 == "recovered"))
+actHea <- as.matrix(subset(gene, Y1 == "active" | Y1 == "healthy"))
+recHea <- as.matrix(subset(gene, Y1 == "recovered" | Y1 == "healthy"))
+
+# null model
+obj.s <- SKAT_Null_Model(Y.d ~ 1, out_type = "D")
