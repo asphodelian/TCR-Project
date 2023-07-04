@@ -494,14 +494,21 @@ autoplot(pcaFull, data = gene, colour = 'Y')
 Y1 <- gene$Y1
 Y1[set.na1] <- "active"
 Y1[set.na2] <- "healthy"
-vec <- rep(1,length(Y1))
-Y.vj <- rep(0, length(Y1))
-Y.vj[which(Y1 == "active" | Y1 == "recovered")] = 1
+#Y.vj <- rep(0, length(Y1))
+#Y.vj[which(Y1 == "active" | Y1 == "recovered")] = 1
 
-# subset
-actRec <- as.matrix(subset(gene, Y1 == "active" | Y1 == "recovered"))
-actHea <- as.matrix(subset(gene, Y1 == "active" | Y1 == "healthy"))
-recHea <- as.matrix(subset(gene, Y1 == "recovered" | Y1 == "healthy"))
+# subsets
+actRec <- subset(gene, Y1 == "active" | Y1 == "recovered")
+Y.ar <- rep(0, length(actRec$Y1))
+Y.ar[which(actRec$Y1 == "active")] = 1
 
-# null model
-obj.s <- SKAT_Null_Model(Y.d ~ 1, out_type = "D")
+actHea <- subset(gene, Y1 == "active" | Y1 == "healthy")
+Y.ah <- rep(0, length(actHea$Y1))
+Y.ah[which(actHea$Y1 == "active")] = 1
+
+recHea <- subset(gene, Y1 == "recovered" | Y1 == "healthy")
+Y.rh <- rep(0, length(recHea$Y1))
+Y.rh[which(recHea$Y1 == "recovered")] = 1
+
+# null models
+obj.ar <- SKAT_Null_Model(Y.d ~ 1, out_type = "D")
