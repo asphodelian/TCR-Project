@@ -322,7 +322,7 @@ jg.vec <- rep(0,13)
 # v gene
 outv1 <- SKATBinary(subv1, obj.ar, kernel = "linear.weighted")
 outv1$p.value
-outv2 <- SKATBinary(subv2, obj.ar, kernel = "linear.weighted")
+outv2 <- SKATBinary(subv2, obj.ar, kernel = "linear.weighted") # problem
 outv2$p.value
 outv3 <- SKATBinary(subv3, obj.ar, kernel = "linear.weighted")
 outv3$p.value
@@ -334,7 +334,7 @@ outv6 <- SKATBinary(subv6, obj.ar, kernel = "linear.weighted")
 outv6$p.value
 outv7 <- SKATBinary(subv7, obj.ar, kernel = "linear.weighted")
 outv7$p.value
-outv8 <- SKATBinary(subv8, obj.ar, kernel = "linear.weighted")
+outv8 <- SKATBinary(subv8, obj.ar, kernel = "linear.weighted") # dimension problem
 outv8$p.value
 outv9 <- SKATBinary(subv9, obj.ar, kernel = "linear.weighted")
 outv9$p.value
@@ -349,11 +349,11 @@ outv13 <- SKATBinary(subv13, obj.ar, kernel = "linear.weighted")
 outv13$p.value
 outv14 <- SKATBinary(subv14, obj.ar, kernel = "linear.weighted")
 outv14$p.value
-outv15 <- SKATBinary(subv15, obj.ar, kernel = "linear.weighted")
+outv15 <- SKATBinary(subv15, obj.ar, kernel = "linear.weighted") # dimension problem
 outv15$p.value
-outv16 <- SKATBinary(subv16, obj.ar, kernel = "linear.weighted")
+outv16 <- SKATBinary(subv16, obj.ar, kernel = "linear.weighted") # dimension problem
 outv16$p.value
-outv17 <- SKATBinary(subv17, obj.ar, kernel = "linear.weighted")
+outv17 <- SKATBinary(subv17, obj.ar, kernel = "linear.weighted") # dimension problem
 outv17$p.value
 outv18 <- SKATBinary(subv18, obj.ar, kernel = "linear.weighted")
 outv18$p.value
@@ -364,11 +364,11 @@ outv20$p.value
 
 outv21 <- SKATBinary(subv21, obj.ar, kernel = "linear.weighted")
 outv21$p.value
-outv22 <- SKATBinary(subv22, obj.ar, kernel = "linear.weighted")
+outv22 <- SKATBinary(subv22, obj.ar, kernel = "linear.weighted") # dimension problem
 outv22$p.value
 outv23 <- SKATBinary(subv23, obj.ar, kernel = "linear.weighted")
 outv23$p.value
-outv24 <- SKATBinary(subv24, obj.ar, kernel = "linear.weighted")
+outv24 <- SKATBinary(subv24, obj.ar, kernel = "linear.weighted") # dimension problem
 outv24$p.value
 outv25 <- SKATBinary(subv25, obj.ar, kernel = "linear.weighted")
 outv25$p.value
@@ -389,22 +389,22 @@ outv32 <- SKATBinary(subv32, obj.ar, kernel = "linear.weighted")
 outv32$p.value
 outv33 <- SKATBinary(subv33, obj.ar, kernel = "linear.weighted")
 outv33$p.value
-outv34 <- SKATBinary(subv34, obj.ar, kernel = "linear.weighted")
+outv34 <- SKATBinary(subv34, obj.ar, kernel = "linear.weighted") # dimension problem
 outv34$p.value
 outv35 <- SKATBinary(subv35, obj.ar, kernel = "linear.weighted")
 outv35$p.value
 outv36 <- SKATBinary(subv36, obj.ar, kernel = "linear.weighted")
 outv36$p.value
-outv37 <- SKATBinary(subv37, obj.ar, kernel = "linear.weighted")
+outv37 <- SKATBinary(subv37, obj.ar, kernel = "linear.weighted") # dimension problem
 outv37$p.value
 outv38 <- SKATBinary(subv38, obj.ar, kernel = "linear.weighted")
 outv38$p.value
-outv39 <- SKATBinary(subv39, obj.ar, kernel = "linear.weighted")
+outv39 <- SKATBinary(subv39, obj.ar, kernel = "linear.weighted") # dimension problem
 outv39$p.value
 outv40 <- SKATBinary(subv40, obj.ar, kernel = "linear.weighted")
 outv40$p.value
 
-outv41 <- SKATBinary(subv41, obj.ar, kernel = "linear.weighted")
+outv41 <- SKATBinary(subv41, obj.ar, kernel = "linear.weighted") # dimension problem
 outv41$p.value
 outv42 <- SKATBinary(subv42, obj.ar, kernel = "linear.weighted")
 outv42$p.value
@@ -426,7 +426,7 @@ outv50 <- SKATBinary(subv50, obj.ar, kernel = "linear.weighted")
 outv50$p.value
 
 # j gene
-outj1 <- SKATBinary(subj1, obj.ar, kernel = "linear.weighted")
+outj1 <- SKATBinary(subj1, obj.ar, kernel = "linear.weighted") # dimension problem
 outj1$p.value
 outj2 <- SKATBinary(subj2, obj.ar, kernel = "linear.weighted")
 outj2$p.value
@@ -438,20 +438,20 @@ outj5 <- SKATBinary(subj5, obj.ar, kernel = "linear.weighted")
 outj5$p.value
 outj6 <- SKATBinary(subj6, obj.ar, kernel = "linear.weighted")
 outj6$p.value
-outj7 <- SKATBinary(subj7, obj.ar, kernel = "linear.weighted")
+outj7 <- SKATBinary(subj7, obj.ar, kernel = "linear.weighted") # dimension problem
 outj7$p.value
 outj8 <- SKATBinary(subj8, obj.ar, kernel = "linear.weighted")
 outj8$p.value
-outj9 <- SKATBinary(subj9, obj.ar, kernel = "linear.weighted")
+outj9 <- SKATBinary(subj9, obj.ar, kernel = "linear.weighted") # dimension problem
 outj9$p.value
 outj10 <- SKATBinary(subj10, obj.ar, kernel = "linear.weighted")
 outj10$p.value
 
-outj11 <- SKATBinary(subj11, obj.ar, kernel = "linear.weighted")
+outj11 <- SKATBinary(subj11, obj.ar, kernel = "linear.weighted") # dimension problem
 outj11$p.value
 outj12 <- SKATBinary(subj12, obj.ar, kernel = "linear.weighted")
 outj12$p.value
-outj13 <- SKATBinary(subj13, obj.ar, kernel = "linear.weighted")
+outj13 <- SKATBinary(subj13, obj.ar, kernel = "linear.weighted") # dimension problem
 outj13$p.value
 
 # p-value adjustment
