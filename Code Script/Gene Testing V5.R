@@ -291,10 +291,10 @@ for (i in 1:50) {
   sub <- get(paste0("subv", i))  # Get the matrix using the variable name
   out <- SKATBinary(sub, obj.ar, kernel = "linear.weighted")
   p <- out$p.value
-  pvalue.vec[i] <- p
+  pvec[i] <- p
   cat("P-value of subv", i, "is:", p, "\n")
 }
-vres <- data.frame(cbind(c(1:50),pvalue.vec))
+vres <- data.frame(cbind(c(1:50), pvec))
 colnames(vres) <- c("vgene.idx","pvalue")
 View(vres)
 

@@ -279,8 +279,8 @@ for (i in 1:50) {
   pvalue.vec[i] <- p
   cat("P-value of subv", i, "is:", p, "\n")
 }
-result <- data.frame(cbind(c(1:50),pvalue.vec))
-colnames(result) <- c("vgene.idx","pvalue")
+result <- data.frame(cbind(c(1:50), pvalue.vec))
+colnames(result) <- c("vgene.idx", "pvalue")
 View(result)
 
 # j gene
@@ -294,7 +294,7 @@ for (i in 1:13) {
   cat("P-value of subj", i, "is:", p, "\n")
 }
 jres <- data.frame(cbind(c(1:13),pval))
-colnames(jres) <- c("jgene.idx","p-value")
+colnames(jres) <- c("jgene.idx", "p-value")
 View(jres)
 
 # Double checking
