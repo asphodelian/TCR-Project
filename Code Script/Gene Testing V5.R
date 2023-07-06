@@ -288,7 +288,7 @@ cat("Active/Recovered Pair \n")
 
 # loops
 for (i in 1:50) {
-  sub <- get(paste0("subv", i))  # Get the matrix using the variable name
+  sub <- get(paste0("subv", i))  
   out <- SKATBinary(sub, obj.ar, kernel = "linear.weighted")
   p <- out$p.value
   pvec[i] <- p
@@ -299,7 +299,7 @@ colnames(vres) <- c("vgene.idx","pvalue")
 View(vres)
 
 for (i in 1:13) {
-  sub <- get(paste0("subj", i))  # Get the matrix using the variable name
+  sub <- get(paste0("subj", i)) 
   out <- SKATBinary(sub, obj.ar, kernel = "linear.weighted")
   p <- out$p.value
   pval[i] <- p
@@ -315,7 +315,7 @@ pval <- rep(0,13)
 
 # loops
 for (i in 1:50) {
-  sub <- get(paste0("subv", i))  # Get the matrix using the variable name
+  sub <- get(paste0("subv", i)) 
   out <- SKATBinary(sub, obj.s, kernel = "linear.weighted")
   p <- out$p.value
   pvalue.vec[i] <- p
@@ -326,7 +326,7 @@ colnames(result) <- c("vgene.idx","pvalue")
 View(result)
 
 for (i in 1:13) {
-  sub <- get(paste0("subj", i))  # Get the matrix using the variable name
+  sub <- get(paste0("subj", i))  
   out <- SKATBinary(sub, obj.s, kernel = "linear.weighted")
   p <- out$p.value
   pval[i] <- p
@@ -342,7 +342,7 @@ pval <- rep(0,13)
 
 # loops
 for (i in 1:50) {
-  sub <- get(paste0("subv", i))  # Get the matrix using the variable name
+  sub <- get(paste0("subv", i))  
   out <- SKATBinary(sub, obj.s, kernel = "linear.weighted")
   p <- out$p.value
   pvalue.vec[i] <- p
@@ -353,7 +353,7 @@ colnames(result) <- c("vgene.idx","pvalue")
 View(result)
 
 for (i in 1:13) {
-  sub <- get(paste0("subj", i))  # Get the matrix using the variable name
+  sub <- get(paste0("subj", i)) 
   out <- SKATBinary(sub, obj.s, kernel = "linear.weighted")
   p <- out$p.value
   pval[i] <- p
@@ -366,9 +366,9 @@ View(jres)
 # Double checking
 
 # v gene
-outv1 <- SKATBinary(subv1, obj.s, kernel = "linear.weighted")
+outv1 <- SKATBinary(subv1, obj.ar, kernel = "linear.weighted")
 outv1$p.value
-outv2 <- SKATBinary(subv2, obj.s, kernel = "linear.weighted")
+outv2 <- SKATBinary(subv2, obj.ar, kernel = "linear.weighted")
 outv2$p.value
 outv3 <- SKATBinary(subv3, obj.s, kernel = "linear.weighted")
 outv3$p.value
