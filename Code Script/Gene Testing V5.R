@@ -310,58 +310,12 @@ colnames(jres) <- c("jgene.idx","p-value")
 View(jres)
 
 # actHea
-pvalue.vec <- rep(0,50)
-pval <- rep(0,13)
-
-# loops
-for (i in 1:50) {
-  sub <- get(paste0("subv", i)) 
-  out <- SKATBinary(sub, obj.s, kernel = "linear.weighted")
-  p <- out$p.value
-  pvalue.vec[i] <- p
-  cat("P-value of subv", i, "is:", p, "\n")
-}
-result <- data.frame(cbind(c(1:50),pvalue.vec))
-colnames(result) <- c("vgene.idx","pvalue")
-View(result)
-
-for (i in 1:13) {
-  sub <- get(paste0("subj", i))  
-  out <- SKATBinary(sub, obj.s, kernel = "linear.weighted")
-  p <- out$p.value
-  pval[i] <- p
-  cat("P-value of subj", i, "is:", p, "\n")
-}
-jres <- data.frame(cbind(c(1:13),pval))
-colnames(jres) <- c("jgene.idx","p-value")
-View(jres)
+v.vec <- rep(0,50)
+j.vec <- rep(0,13)
 
 # recHea
-pvalue.vec <- rep(0,50)
-pval <- rep(0,13)
-
-# loops
-for (i in 1:50) {
-  sub <- get(paste0("subv", i))  
-  out <- SKATBinary(sub, obj.s, kernel = "linear.weighted")
-  p <- out$p.value
-  pvalue.vec[i] <- p
-  cat("P-value of subv", i, "is:", p, "\n")
-}
-result <- data.frame(cbind(c(1:50),pvalue.vec))
-colnames(result) <- c("vgene.idx","pvalue")
-View(result)
-
-for (i in 1:13) {
-  sub <- get(paste0("subj", i)) 
-  out <- SKATBinary(sub, obj.s, kernel = "linear.weighted")
-  p <- out$p.value
-  pval[i] <- p
-  cat("P-value of subj", i, "is:", p, "\n")
-}
-jres <- data.frame(cbind(c(1:13),pval))
-colnames(jres) <- c("jgene.idx","p-value")
-View(jres)
+vg.vec <- rep(0,50)
+jg.vec <- rep(0,13)
 
 # Double checking
 
