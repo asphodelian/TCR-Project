@@ -281,9 +281,39 @@ obj.rh <- SKAT_Null_Model(Y.rh ~ 1, out_type = "D")
 # for loops EDIT #
 ##################
 
-# v gene
-pvalue.vec <- rep(0,50)
+# actRec
+pvec <- rep(0,50)
+pval <- rep(0,13)
+cat("Active/Recovered Pair \n")
 
+# loops
+for (i in 1:50) {
+  sub <- get(paste0("subv", i))  # Get the matrix using the variable name
+  out <- SKATBinary(sub, obj.ar, kernel = "linear.weighted")
+  p <- out$p.value
+  pvalue.vec[i] <- p
+  cat("P-value of subv", i, "is:", p, "\n")
+}
+vres <- data.frame(cbind(c(1:50),pvalue.vec))
+colnames(vres) <- c("vgene.idx","pvalue")
+View(vres)
+
+for (i in 1:13) {
+  sub <- get(paste0("subj", i))  # Get the matrix using the variable name
+  out <- SKATBinary(sub, obj.ar, kernel = "linear.weighted")
+  p <- out$p.value
+  pval[i] <- p
+  cat("P-value of subj", i, "is:", p, "\n")
+}
+jres <- data.frame(cbind(c(1:13),pval))
+colnames(jres) <- c("jgene.idx","p-value")
+View(jres)
+
+# actHea
+pvalue.vec <- rep(0,50)
+pval <- rep(0,13)
+
+# loops
 for (i in 1:50) {
   sub <- get(paste0("subv", i))  # Get the matrix using the variable name
   out <- SKATBinary(sub, obj.s, kernel = "linear.weighted")
@@ -295,8 +325,32 @@ result <- data.frame(cbind(c(1:50),pvalue.vec))
 colnames(result) <- c("vgene.idx","pvalue")
 View(result)
 
-# j gene
+for (i in 1:13) {
+  sub <- get(paste0("subj", i))  # Get the matrix using the variable name
+  out <- SKATBinary(sub, obj.s, kernel = "linear.weighted")
+  p <- out$p.value
+  pval[i] <- p
+  cat("P-value of subj", i, "is:", p, "\n")
+}
+jres <- data.frame(cbind(c(1:13),pval))
+colnames(jres) <- c("jgene.idx","p-value")
+View(jres)
+
+# recHea
+pvalue.vec <- rep(0,50)
 pval <- rep(0,13)
+
+# loops
+for (i in 1:50) {
+  sub <- get(paste0("subv", i))  # Get the matrix using the variable name
+  out <- SKATBinary(sub, obj.s, kernel = "linear.weighted")
+  p <- out$p.value
+  pvalue.vec[i] <- p
+  cat("P-value of subv", i, "is:", p, "\n")
+}
+result <- data.frame(cbind(c(1:50),pvalue.vec))
+colnames(result) <- c("vgene.idx","pvalue")
+View(result)
 
 for (i in 1:13) {
   sub <- get(paste0("subj", i))  # Get the matrix using the variable name
