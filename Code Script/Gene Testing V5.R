@@ -322,7 +322,7 @@ jg.vec <- rep(0,13)
 # v gene
 outv1 <- SKATBinary(subv1, obj.ar, kernel = "linear.weighted")
 outv1$p.value
-outv2 <- SKATBinary(subv2, obj.ar, kernel = "linear.weighted") # problem
+outv2 <- SKATBinary(subv2, obj.ar, kernel = "linear.weighted") # missing value where TRUE/FALSE needed
 outv2$p.value
 outv3 <- SKATBinary(subv3, obj.ar, kernel = "linear.weighted")
 outv3$p.value
