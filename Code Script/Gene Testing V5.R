@@ -724,4 +724,49 @@ outj12$p.value
 outj13 <- SKATBinary(subj13, obj.rh, kernel = "linear.weighted") # dimension problem
 outj13$p.value
 
+############# 
+# PCA Plots #
+#############
 
+# dataframe
+
+# v gene
+dfv16 <- gene[, colv16]
+dfv26 <- gene[, colv26]
+dfv27 <- gene[, colv27]
+dfv <- gene[, c(colv16, colv26, colv27)] 
+
+# j gene
+dfj7 <- gene[, colj7]
+dfj9 <- gene[, colj9]
+dfj10 <- gene[, colj10]
+dfj <- gene[, c(colj7, colj9, colj10)]
+
+# pca res
+
+# v gene
+pcav16 <- prcomp(dfv16, scale. = TRUE)
+pcav26 <- prcomp(dfv26, scale. = TRUE)
+pcav27 <- prcomp(dfv27, scale. = TRUE) 
+pcav <- prcomp(dfv, scale. = TRUE)
+
+# j gene
+pcaj7 <- prcomp(dfj7, scale. = TRUE)
+pcaj9 <- prcomp(dfj9, scale. = TRUE)
+pcaj10 <- prcomp(dfj10, scale. = TRUE)
+pcaj <- prcomp(dfj, scale. = TRUE)
+
+# plot
+autoplot(pcav16, data = gene, colour = 'Y1')
+autoplot(pcav26, data = gene, colour = 'Y1')
+autoplot(pcav27, data = gene, colour = 'Y1')
+autoplot(pcav, data = gene, colour = 'Y1')
+autoplot(pcaj7, data = gene, colour = 'Y1')
+autoplot(pcaj9, data = gene, colour = 'Y1')
+autoplot(pcaj10, data = gene, colour = 'Y1')
+autoplot(pcaj, data = gene, colour = 'Y1')
+
+# trying the whole dataset
+dfull <- gene[3:630]
+pcaFull <- prcomp(dfull, scale. = TRUE)
+autoplot(pcaFull, data = gene, colour = 'Y1')
