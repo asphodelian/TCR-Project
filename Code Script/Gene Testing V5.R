@@ -733,6 +733,7 @@ outj13$p.value
 #############
 
 # dataframe
+gene$Y1 <- Y1
 
 # v gene
 dfv16 <- gene[, colv16]
