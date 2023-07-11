@@ -1,5 +1,5 @@
 # Overview
-Welcome to the repository containing a snippet of a research project done during summer 2023 by Gabrielle Salamanca. Lead by Professor Tao He, research was conducted on T-Cell Receptor (TCR)Reportoire Data. This research looks particularly at the vj genes of the TCRs, which was taken amino acids that was translated from nucleotides.  
+Welcome to the repository containing a snippet of a research project done during summer 2023 by Gabrielle Salamanca. Lead by Professor Tao He, research was conducted on T-Cell Receptor (TCR) Reportoire Data. This research looks particularly at the vj genes of the TCRs, which was taken amino acids that was translated from nucleotides.  
 
 ![TCR](https://github.com/asphodelian/TCR-Project/assets/125179245/a2740f4d-489a-4fd8-8634-e3a3a7ec136c)
 
