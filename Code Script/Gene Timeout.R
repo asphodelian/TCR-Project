@@ -1,3 +1,61 @@
+# actHea
+
+pvec <- rep(0,50)
+pval <- rep(0,13)
+cat("Active/Healthy Pair \n")
+
+# loops
+for (i in 1:50) {
+  sub <- get(paste0("subv", i))  
+  out <- SKATBinary(sub, obj.ar, kernel = "linear.weighted")
+  p <- out$p.value
+  pvec[i] <- p
+  cat("P-value of subv", i, "is:", p, "\n")
+}
+vres <- data.frame(cbind(c(1:50), pvec))
+colnames(vres) <- c("vgene.idx","pvalue")
+View(vres)
+
+for (i in 1:13) {
+  sub <- get(paste0("subj", i)) 
+  out <- SKATBinary(sub, obj.ar, kernel = "linear.weighted")
+  p <- out$p.value
+  pval[i] <- p
+  cat("P-value of subj", i, "is:", p, "\n")
+}
+jres <- data.frame(cbind(c(1:13),pval))
+colnames(jres) <- c("jgene.idx","p-value")
+View(jres)
+
+# recHea
+
+v.vec <- rep(0,50)
+j.vec <- rep(0,13)
+cat("Recovered/Healthy Pair \n")
+
+# loops
+for (i in 1:50) {
+  sub <- get(paste0("subv", i))  
+  out <- SKATBinary(sub, obj.rh, kernel = "linear.weighted")
+  p <- out$p.value
+  v.vec[i] <- p
+  cat("P-value of subv", i, "is:", p, "\n")
+}
+v.res <- data.frame(cbind(c(1:50), v.vec))
+colnames(v.res) <- c("vgene.idx","pvalue")
+View(v.res)
+
+for (i in 1:13) {
+  sub <- get(paste0("subj", i)) 
+  out <- SKATBinary(sub, obj.rh, kernel = "linear.weighted")
+  p <- out$p.value
+  j.vec[i] <- p
+  cat("P-value of subj", i, "is:", p, "\n")
+}
+j.res <- data.frame(cbind(c(1:13),pval))
+colnames(j.res) <- c("jgene.idx","p-value")
+View(j.res)
+
 # p-value adjustment
 
 # v gene
