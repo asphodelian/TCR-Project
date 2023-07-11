@@ -287,6 +287,10 @@ pval <- rep(0,13)
 cat("Active/Recovered Pair \n")
 
 # loops
+
+# loop doesn't run, only does one p-value before an error pops up
+# problems are revealed in double checking section
+
 for (i in 1:50) {
   sub <- get(paste0("subv", i))  
   out <- SKATBinary(sub, obj.ar, kernel = "linear.weighted")
