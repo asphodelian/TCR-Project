@@ -9,7 +9,7 @@ output: word_document
 knitr::opts_chunk$set(echo = FALSE)
 ```
 
-This document is Part 1 of the final doc research. This will explain the prep work 
+This document is Part 1 of the final doc research. This will explain the prep work and jump into the SKAT and plot work with only Y. Part 2 will jump into work with Y1.
 
 ### Libraries 
 
