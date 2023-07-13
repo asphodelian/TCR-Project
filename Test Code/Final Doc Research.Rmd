@@ -391,9 +391,31 @@ for (i in 1:13) {
 The p-value vector for it:
 
 ```{r}
-jres <- data.frame(cbind(c(1:13),pval))
+jres <- data.frame(cbind(c(1:13), pval))
 colnames(jres) <- c("jgene.idx", "p-value")
 jres
+```
+
+Now with these, we can see that the notable v strings are 16, 26, and 27; while the notable j strings are 7, 9, and 10. Let's do a p-value adjustment to see if they still stand, especially because these are small samples,
+
+Here's for the v genes:
+
+```{r}
+# v gene
+pv <- result$pvalue
+p.pv <- p.adjust(pv, method = p.adjust.methods, n = length(pv))
+pv.res <- data.frame(cbind(c(1:50), p.pv))
+pv.res
+```
+
+And here's for the j genes:
+
+```{r}
+# j gene
+pj <- jres$`p-value`
+p.pj <- p.adjust(pj, method = p.adjust.methods, n = length(pj))
+pj.res <- data.frame(cbind(c(1:13), p.pj))
+pj.res
 ```
 
 
