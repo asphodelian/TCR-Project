@@ -1,0 +1,23 @@
+---
+title: "Final Doc Research P2"
+author: "Gabrielle Salamanca"
+date: "July 13, 2023"
+output: word_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+This document is Part 2 of the final doc research. This will explain the work with the full dataset but with Y1.
+
+### Libraries 
+
+```{r library}
+library(dplyr)
+library(psych)
+library(readr)
+library(readxl)
+library(SKAT)
+library(tidyr)
+```
