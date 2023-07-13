@@ -256,6 +256,74 @@ jres
 
 Here, all the j genes were notable.
 
+Here's the v gene for actRec:
+
+```{r}
+for (i in 1:50) {
+  col.idx <- get(paste0("colv", i,sep=""))
+  sub <- as.matrix(actRec[,col.idx])
+  out <- SKATBinary(sub, obj.ar, kernel = "linear.weighted")
+  p <- out$p.value
+  pvec[i] <- p
+}
+vres <- data.frame(cbind(c(1:50), pvec))
+colnames(vres) <- c("vgene.idx","pvalue")
+vres
+```
+
+The p-values are far better when we do these kinds of pairs. The notable p-values are: colv1, colv2, colv3, colv4, colv5, colv8, colv9, colv11, colv12, colv13, colv14, colv15, colv16, colv17, colv18, colv20, colv22, colv23, colv24, colv26, colv27, colv28, colv29, colv30, colv31, colv32, colv33, colv34, colv35, colv37, colv39, colv40, colv41, colv42, colv45, colv46, colv47, colv49, and colv50.
+
+Here's the j gene for actRec:
+
+```{r}
+for (i in 1:13) {
+  col.idx <- get(paste0("colj", i,sep=""))
+  sub <- as.matrix(actRec[,col.idx])
+  out <- SKATBinary(sub, obj.ar, kernel = "linear.weighted")
+  p <- out$p.value
+  pval[i] <- p
+}
+jres <- data.frame(cbind(c(1:13),pval))
+colnames(jres) <- c("jgene.idx","p-value")
+jres
+```
+
+Here, all the j genes were notable.
+
 ## Active/Healthy
+
+Here's the v gene for actHea:
+
+```{r}
+for (i in 1:50) {
+  col.idx <- get(paste0("colv", i,sep=""))
+  sub <- as.matrix(actHea[,col.idx])
+  out <- SKATBinary(sub, obj.ah, kernel = "linear.weighted")
+  p <- out$p.value
+  pvec[i] <- p
+}
+v.res <- data.frame(cbind(c(1:50), pvec))
+colnames(v.res) <- c("vgene.idx","pvalue")
+v.res
+```
+
+The p-values are far better when we do these kinds of pairs. The notable p-values are: colv1, colv3, colv4, colv5, colv8, colv9, colv11, colv12, colv13, colv14, colv15, colv16, colv17, colv18, colv20, colv22, colv23, colv24, colv26, colv27, colv28, colv29, colv30, colv31, colv32, colv33, colv34, colv35, colv37, colv39, colv40, colv41, colv42, colv45, colv46, colv47, colv49, and colv50.
+
+Here's the j gene for actHea:
+
+```{r}
+for (i in 1:13) {
+  col.idx <- get(paste0("colj", i,sep=""))
+  sub <- as.matrix(actHea[,col.idx])
+  out <- SKATBinary(sub, obj.ah, kernel = "linear.weighted")
+  p <- out$p.value
+  pval[i] <- p
+}
+j.res <- data.frame(cbind(c(1:13),pval))
+colnames(j.res) <- c("jgene.idx","p-value")
+j.res
+```
+
+Here, the notable j genes are: colj2, colj5, colj7, colj8, colj11, and colj13.
 
 ## Recovered/Healthy
