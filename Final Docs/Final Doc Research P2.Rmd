@@ -21,3 +21,11 @@ library(readxl)
 library(SKAT)
 library(tidyr)
 ```
+
+### Dataset
+
+```{r}
+gene <- read_excel("~/TCR-Project/Datasets/fullgenes.xlsx")
+attach(gene)
+```
+
