@@ -332,6 +332,19 @@ subj12 <- as.matrix(gene[, colj12])
 subj13 <- as.matrix(gene[, colj13])
 ```
 
+Now, we need to fix up the NAs in Y. As mentioned before, the patients dataset does not hold every single possible patient, but we can easily insert the Y's due to knowing what dataset they originate from.
+
+```{r}
+set.na1 <- c(22)
+set.na2 <- c(94:109)
+Y <- gene$Y
+Y[set.na1] <- "disease"
+Y[set.na2] <- "healthy"
+one.vec <- rep(1,length(Y))
+Y.d <- rep(0, length(Y))
+Y.d[which(Y == "disease")] = 1
+```
+
 
 ```{r, ref.label=knitr::all_labels(), echo = TRUE, eval = FALSE}
 ```
