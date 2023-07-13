@@ -216,4 +216,37 @@ obj.ah <- SKAT_Null_Model(Y.ah ~ 1, out_type = "D")
 obj.rh <- SKAT_Null_Model(Y.rh ~ 1, out_type = "D")
 ```
 
+Finally, we can run the for loops. Now, as I mentioned, there were problems I ran into when trying to run them initially. So, I did each one individually to see what were the warnings that were popping up. The first one was this: **missing value where TRUE/FALSE needed**. I'm not sure what this meant, but the rest of the warnings had to do with dimension problems.
+
+The dimension problem possibly occurred, because the original subsets had only the gene dataset in mind, so that had the for loop stopping at one p-value. So, after some fiddling from the professor, she figured out that I needed add in a column index for the subset to finally run smoothly and fix the dimension problem.
+
+Here's the v gene for actRec:
+
+```{r}
+for (i in 1:50) {
+  col.idx <- get(paste0("colv", i,sep=""))
+  sub <- as.matrix(actRec[,col.idx])
+  out <- SKATBinary(sub, obj.ar, kernel = "linear.weighted")
+  p <- out$p.value
+  pvec[i] <- p
+}
+vres <- data.frame(cbind(c(1:50), pvec))
+colnames(vres) <- c("vgene.idx","pvalue")
+vres
+```
+
+Here's the j gene for actRec:
+
+```{r}
+for (i in 1:13) {
+  col.idx <- get(paste0("colj", i,sep=""))
+  sub <- as.matrix(actRec[,col.idx])
+  out <- SKATBinary(sub, obj.ar, kernel = "linear.weighted")
+  p <- out$p.value
+  pval[i] <- p
+}
+jres <- data.frame(cbind(c(1:13),pval))
+colnames(jres) <- c("jgene.idx","p-value")
+jres
+```
 
