@@ -256,7 +256,82 @@ colj12 <- grep(stringj12, names(gene), value = TRUE)
 colj13 <- grep(stringj13, names(gene), value = TRUE)
 ```
 
-We use these columns to make sub-datasets 
+We will then use these columns to make subsets of gene, and do note that we are using as.matrix(). The reason is because SKAT only uses matrices for the object so we have to turn dataframes into them.
+
+```{r subset}
+# v gene
+subv1 <- as.matrix(gene[, colv1]) 
+subv2 <- as.matrix(gene[, colv2]) 
+subv3 <- as.matrix(gene[, colv3]) 
+subv4 <- as.matrix(gene[, colv4]) 
+subv5 <- as.matrix(gene[, colv5]) 
+subv6 <- as.matrix(gene[, colv6])  
+subv7 <- as.matrix(gene[, colv7]) 
+subv8 <- as.matrix(gene[, colv8]) 
+subv9 <- as.matrix(gene[, colv9]) 
+subv10 <- as.matrix(gene[, colv10]) 
+
+subv11 <- as.matrix(gene[, colv11]) 
+subv12 <- as.matrix(gene[, colv12]) 
+subv13 <- as.matrix(gene[, colv13]) 
+subv14 <- as.matrix(gene[, colv14]) 
+subv15 <- as.matrix(gene[, colv15]) 
+subv16 <- as.matrix(gene[, colv16]) 
+subv17 <- as.matrix(gene[, colv17]) 
+subv18 <- as.matrix(gene[, colv18])  
+subv19 <- as.matrix(gene[, colv19]) 
+subv20 <- as.matrix(gene[, colv20]) 
+
+subv21 <- as.matrix(gene[, colv21])  
+subv22 <- as.matrix(gene[, colv22]) 
+subv23 <- as.matrix(gene[, colv23])  
+subv24 <- as.matrix(gene[, colv24]) 
+subv25 <- as.matrix(gene[, colv25])  
+subv26 <- as.matrix(gene[, colv26]) 
+subv27 <- as.matrix(gene[, colv27])  
+subv28 <- as.matrix(gene[, colv28])  
+subv29 <- as.matrix(gene[, colv29]) 
+subv30 <- as.matrix(gene[, colv30]) 
+
+subv31 <- as.matrix(gene[, colv31])  
+subv32 <- as.matrix(gene[, colv32])  
+subv33 <- as.matrix(gene[, colv33])  
+subv34 <- as.matrix(gene[, colv34])  
+subv35 <- as.matrix(gene[, colv35])  
+subv36 <- as.matrix(gene[, colv36]) 
+subv37 <- as.matrix(gene[, colv37])  
+subv38 <- as.matrix(gene[, colv38]) 
+subv39 <- as.matrix(gene[, colv39]) 
+subv40 <- as.matrix(gene[, colv40])  
+
+subv41 <- as.matrix(gene[, colv41]) 
+subv42 <- as.matrix(gene[, colv42]) 
+subv43 <- as.matrix(gene[, colv43]) 
+subv44 <- as.matrix(gene[, colv44]) 
+subv45 <- as.matrix(gene[, colv45])  
+subv46 <- as.matrix(gene[, colv46]) 
+subv47 <- as.matrix(gene[, colv47])  
+subv48 <- as.matrix(gene[, colv48])  
+subv49 <- as.matrix(gene[, colv49])  
+subv50 <- as.matrix(gene[, colv50])  
+
+# j gene
+subj1 <- as.matrix(gene[, colj1]) 
+subj2 <- as.matrix(gene[, colj2]) 
+subj3 <- as.matrix(gene[, colj3]) 
+subj4 <- as.matrix(gene[, colj4]) 
+subj5 <- as.matrix(gene[, colj5]) 
+subj6 <- as.matrix(gene[, colj6])  
+subj7 <- as.matrix(gene[, colj7]) 
+subj8 <- as.matrix(gene[, colj8]) 
+subj9 <- as.matrix(gene[, colj9]) 
+subj10 <- as.matrix(gene[, colj10]) 
+
+subj11 <- as.matrix(gene[, colj11])  
+subj12 <- as.matrix(gene[, colj12])  
+subj13 <- as.matrix(gene[, colj13])
+```
+
 
 ```{r, ref.label=knitr::all_labels(), echo = TRUE, eval = FALSE}
 ```
