@@ -21,6 +21,12 @@ library(tidyr)
 
 ### Dataset Reading
 
+C19vj is the dataset holding all the vj genes and its values of covid patients, both recovered and active.
+
+vj is the dataset holding all the vj genes and its values of healthy patients.
+
+patients is the dataset that documents certain patients, both covid and healthy; symptom timing, both in days and weeks; and extra commentary.
+
 ```{r dataset}
 C19vj <- read_csv("D:/Coding/R Storage/Summer TCR Project/TCR Datasets/dt.COVID_TCR.vjGene.p.csv",
                   show_col_types = FALSE)
