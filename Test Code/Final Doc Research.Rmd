@@ -355,21 +355,45 @@ pvalue.vec <- rep(0,50)
 pval <- rep(0,13)
 ```
 
-We'll start for the v gene.
+We'll start for the v gene:
 
 ```{r}
 # v gene
 for (i in 1:50) {
-  sub <- get(paste0("subv", i))  # Get the matrix using the variable name
+  sub <- get(paste0("subv", i)) 
   out <- SKATBinary(sub, obj.s, kernel = "linear.weighted")
   p <- out$p.value
   pvalue.vec[i] <- p
-  print(dim(sub))
-  cat("P-value of subv", i, "is:", p, "\n")
+  cat("P-value of subv", i, "is:", p, "\n \n")
 }
+```
+
+Here's the p-value vector for the v gene:
+
+```{r}
 result <- data.frame(cbind(c(1:50), pvalue.vec))
 colnames(result) <- c("vgene.idx", "pvalue")
-View(result)
+result
+```
+
+Next is the j gene:
+
+```{r}
+for (i in 1:13) {
+  sub <- get(paste0("subj", i)) 
+  out <- SKATBinary(sub, obj.s, kernel = "linear.weighted")
+  p <- out$p.value
+  pval[i] <- p
+  cat("P-value of subj", i, "is:", p, "\n \n")
+}
+```
+
+The p-value vector for it:
+
+```{r}
+jres <- data.frame(cbind(c(1:13),pval))
+colnames(jres) <- c("jgene.idx", "p-value")
+jres
 ```
 
 
