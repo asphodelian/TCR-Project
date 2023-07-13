@@ -277,6 +277,7 @@ for (i in 1:50) {
   out <- SKATBinary(sub, obj.s, kernel = "linear.weighted")
   p <- out$p.value
   pvalue.vec[i] <- p
+  print(dim(sub))
   cat("P-value of subv", i, "is:", p, "\n")
 }
 result <- data.frame(cbind(c(1:50), pvalue.vec))
