@@ -292,7 +292,7 @@ cat("Active/Recovered Pair \n")
 # problems are revealed in double checking section
 
 for (i in 1:50) {
-  sub <- get(paste0("subv", i))  
+  sub <- get(paste0("subv", i,sep=""))  
   out <- SKATBinary(sub, obj.ar, kernel = "linear.weighted")
   p <- out$p.value
   pvec[i] <- p
