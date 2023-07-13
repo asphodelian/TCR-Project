@@ -305,7 +305,8 @@ colnames(vres) <- c("vgene.idx","pvalue")
 View(vres)
 
 for (i in 1:13) {
-  sub <- get(paste0("subj", i)) 
+  col.idx <- get(paste0("colj", i,sep=""))
+  sub <- as.matrix(actRec[,col.idx])
   out <- SKATBinary(sub, obj.ar, kernel = "linear.weighted")
   p <- out$p.value
   pval[i] <- p
