@@ -268,6 +268,7 @@ actHea <- subset(gene, Y1 == "active" | Y1 == "healthy")
 Y.ah <- rep(0, length(actHea$Y1))
 Y.ah[which(actHea$Y1 == "active")] = 1
 
+
 recHea <- subset(gene, Y1 == "recovered" | Y1 == "healthy")
 Y.rh <- rep(0, length(recHea$Y1))
 Y.rh[which(recHea$Y1 == "recovered")] = 1
@@ -292,7 +293,8 @@ cat("Active/Recovered Pair \n")
 # problems are revealed in double checking section
 
 for (i in 1:50) {
-  sub <- get(paste0("subv", i,sep=""))  
+  col.idx <- get(paste0("colv", i,sep=""))
+  sub <- as.matrix(actRec[,col.idx])
   out <- SKATBinary(sub, obj.ar, kernel = "linear.weighted")
   p <- out$p.value
   pvec[i] <- p
@@ -775,3 +777,9 @@ autoplot(pcaj, data = gene, colour = 'Y1')
 dfull <- gene[3:630]
 pcaFull <- prcomp(dfull, scale. = TRUE)
 autoplot(pcaFull, data = gene, colour = 'Y1')
+
+# 7/13/2023 meeting
+# Make rmd file
+# For each Y1 pair
+# p-values for each genes
+# pca plots, only with Y not Y1
