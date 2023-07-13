@@ -9,6 +9,8 @@ output: word_document
 knitr::opts_chunk$set(echo = FALSE)
 ```
 
+This document is Part 1 of the final doc research. This will explain the prep work 
+
 ### Libraries 
 
 ```{r library}
@@ -416,6 +418,52 @@ pj <- jres$`p-value`
 p.pj <- p.adjust(pj, method = p.adjust.methods, n = length(pj))
 pj.res <- data.frame(cbind(c(1:13), p.pj))
 pj.res
+```
+
+None of them now seem significant, all too large to pass an $\alpha = 0.05$. 
+
+### PCA Plots
+
+Now, let's try running some Principal Component Analysis plots. These are used to visualize and explore the variability in high-dimensional data through dimensionality reduction. They show the distribution of data points in a lower-dimensional space defined by the principal components.
+
+First, we need to do some prep such as make dataframes and doing the actual pca on them. We'll do it on the three notable strings for each gene and the entire dataset.
+
+```{r}
+gene$Y <- Y
+# dataframe
+dfull <- gene[3:630]
+# v gene
+dfv16 <- gene[, colv16]
+dfv26 <- gene[, colv26]
+dfv27 <- gene[, colv27] 
+# j gene
+dfj7 <- gene[, colj7]
+dfj9 <- gene[, colj9]
+dfj10 <- gene[, colj10]
+
+# pca res
+pcaFull <- prcomp(dfull, scale. = TRUE)
+# v gene
+pcav16 <- prcomp(dfv16, scale. = TRUE)
+pcav26 <- prcomp(dfv26, scale. = TRUE)
+pcav27 <- prcomp(dfv27, scale. = TRUE) 
+# j gene
+pcaj7 <- prcomp(dfj7, scale. = TRUE)
+pcaj9 <- prcomp(dfj9, scale. = TRUE)
+pcaj10 <- prcomp(dfj10, scale. = TRUE)
+```
+
+Finally, we can do the plots:
+
+```{r plot}
+# plot
+autoplot(pcav16, data = gene, colour = 'Y')
+autoplot(pcav26, data = gene, colour = 'Y')
+autoplot(pcav27, data = gene, colour = 'Y')
+autoplot(pcaj7, data = gene, colour = 'Y')
+autoplot(pcaj9, data = gene, colour = 'Y')
+autoplot(pcaj10, data = gene, colour = 'Y')
+autoplot(pcaFull, data = gene, colour = 'Y')
 ```
 
 
