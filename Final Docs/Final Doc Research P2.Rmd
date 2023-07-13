@@ -193,7 +193,7 @@ Y1[set.na1] <- "active"
 Y1[set.na2] <- "healthy"
 ```
 
-Now, we will make three subsets based on Y1's values: active, recovered, and healthy. The reason why we're doing three pairs is because SKATBinary only takes 1's and 0's. So the pairs are: active/recovered (actRec), active/healthy (actHea), and recovered/healthy (recHea). The 1 is active for actRec, active for actHea, and recovered for recHea. 
+Now, we will make three subsets and null models based on Y1's values: active, recovered, and healthy. The reason why we're doing three pairs is because SKATBinary only takes 1's and 0's. So the pairs are: active/recovered (actRec), active/healthy (actHea), and recovered/healthy (recHea). The 1 is active for actRec, active for actHea, and recovered for recHea. 
 
 ```{r}
 # subsets
@@ -209,5 +209,11 @@ Y.ah[which(actHea$Y1 == "active")] = 1
 recHea <- subset(gene, Y1 == "recovered" | Y1 == "healthy")
 Y.rh <- rep(0, length(recHea$Y1))
 Y.rh[which(recHea$Y1 == "recovered")] = 1
+
+# null models
+obj.ar <- SKAT_Null_Model(Y.ar ~ 1, out_type = "D")
+obj.ah <- SKAT_Null_Model(Y.ah ~ 1, out_type = "D")
+obj.rh <- SKAT_Null_Model(Y.rh ~ 1, out_type = "D")
 ```
+
 
