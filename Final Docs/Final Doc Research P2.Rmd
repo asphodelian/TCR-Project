@@ -307,7 +307,7 @@ colnames(v.res) <- c("vgene.idx","pvalue")
 v.res
 ```
 
-The p-values are far better when we do these kinds of pairs. The notable p-values are: colv1, colv3, colv4, colv5, colv8, colv9, colv11, colv12, colv13, colv14, colv15, colv16, colv17, colv18, colv20, colv22, colv23, colv24, colv26, colv27, colv28, colv29, colv30, colv31, colv32, colv33, colv34, colv35, colv37, colv39, colv40, colv41, colv42, colv45, colv46, colv47, colv49, and colv50.
+The notable p-values are: colv1, colv3, colv4, colv5, colv8, colv9, colv11, colv12, colv13, colv14, colv15, colv16, colv17, colv18, colv20, colv22, colv23, colv24, colv26, colv27, colv28, colv29, colv30, colv31, colv32, colv33, colv34, colv35, colv37, colv39, colv40, colv41, colv42, colv45, colv46, colv47, colv49, and colv50.
 
 Here's the j gene for actHea:
 
@@ -327,3 +327,37 @@ j.res
 Here, the notable j genes are: colj2, colj5, colj7, colj8, colj11, and colj13.
 
 ## Recovered/Healthy
+
+Here's the v gene for recHea:
+
+```{r}
+for (i in 1:50) {
+  col.idx <- get(paste0("colv", i,sep=""))
+  sub <- as.matrix(recHea[,col.idx])
+  out <- SKATBinary(sub, obj.rh, kernel = "linear.weighted")
+  p <- out$p.value
+  pvec[i] <- p
+}
+v.res <- data.frame(cbind(c(1:50), pvec))
+colnames(v.res) <- c("vgene.idx","pvalue")
+v.res
+```
+
+The notable p-values are: colv1, colv2, colv3, colv4, colv5, colv8, colv9, colv11, colv12, colv13, colv14, colv15, colov16, colv17, colv18, colv20, colv22, colv23, colv24, colv26, colv27, colv28, colv29, colv30, colv31, colv32, colv33, colv34, colv35, colv37, colv39, colv40, colv41, colv42, colv45, colv46, colv47, colv48, colv49, and colv50.
+
+Here's the j gene for recHea:
+
+```{r}
+for (i in 1:13) {
+  col.idx <- get(paste0("colj", i,sep=""))
+  sub <- as.matrix(recHea[,col.idx])
+  out <- SKATBinary(sub, obj.rh, kernel = "linear.weighted")
+  p <- out$p.value
+  pval[i] <- p
+}
+j.res <- data.frame(cbind(c(1:13),pval))
+colnames(j.res) <- c("jgene.idx","p-value")
+j.res
+```
+
+Here, all the j genes are notable.
