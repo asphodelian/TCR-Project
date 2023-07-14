@@ -426,41 +426,36 @@ Now, we will make PCA plots for each subset and the entire dataset to compare. W
 gene$Y1 <- Y1
 
 # v gene
-ar.v <- actRec[, c(colv1, colv2, colv3, colv4, colv5, colv8, colv9, colv11, 
-                 colv12, colv13, colv14, colv15, colv16, colv17, colv18, 
-                 colv20, colv22, colv23, colv24, colv26, colv27, colv28, 
-                 colv29, colv30, colv31, colv32, colv33, colv34, colv35, 
-                 colv37, colv39, colv40, colv41, colv42, colv45, colv46, 
-                 colv47, colv49, colv50)] 
+ar.v <- actRec[, c(colv1, colv2, colv3, colv4, colv5, colv8, colv9, colv12, 
+                   colv13, colv14, colv15, colv16, colv17, colv20, colv22, 
+                   colv23, colv24, colv26, colv27, colv30, colv31, colv32, 
+                   colv33, colv34, colv35, colv37, colv39, colv40, colv41, 
+                   colv42, colv45, colv46, colv47, colv49, colv50)] 
 
-ah.v <- actHea[, c(colv1, colv2, colv3, colv4, colv5, colv8, colv9, colv11, 
-                 colv12, colv13, colv14, colv15, colov16, colv17, colv18, 
-                 colv20, colv22, colv23, colv24, colv26, colv27, colv28, 
-                 colv29, colv30, colv31, colv32, colv33, colv34, colv35, 
-                 colv37, colv39, colv40, colv41, colv42, colv45, colv46, 
-                 colv47, colv48, colv49, colv50)] 
+ah.v <- actHea[, c(colv9, colv26, colv45)] 
 
-rh.v <- recHea[, c()]
+rh.v <- recHea[, c(colv4, colv8, colv15, colv17, colv22, colv27, colv30, 
+                   colv47, colv48, colv49)]
 
 # j gene
-dfj7 <- gene[, colj7]
-dfj9 <- gene[, colj9]
-dfj10 <- gene[, colj10]
-dfj <- gene[, c(colj7, colj9, colj10)]
+ar.j <- actRec[, c(colj4, colj5, colj6, colj7, colj9, colj10, colj11, colj12, 
+                   colj13)] 
+
+ah.j <- actHea[, c(colj7, colj8)] 
+
+rh.j <- recHea[, c(colj3, colj5, colj7, colj10, colj13)]
 
 # pca res
 
 # v gene
-pcav16 <- prcomp(dfv16, scale. = TRUE)
-pcav26 <- prcomp(dfv26, scale. = TRUE)
-pcav27 <- prcomp(dfv27, scale. = TRUE) 
-pcav <- prcomp(dfv, scale. = TRUE)
+pca.arV <- prcomp(ar.v, scale. = TRUE)
+pca.ahV <- prcomp(ah.v, scale. = TRUE)
+pca.rhV <- prcomp(rh.v, scale. = TRUE) 
 
 # j gene
-pcaj7 <- prcomp(dfj7, scale. = TRUE)
-pcaj9 <- prcomp(dfj9, scale. = TRUE)
-pcaj10 <- prcomp(dfj10, scale. = TRUE)
-pcaj <- prcomp(dfj, scale. = TRUE)
+pca.arJ <- prcomp(ar.j, scale. = TRUE)
+pca.ahJ <- prcomp(ah.j, scale. = TRUE)
+pca.rhJ <- prcomp(rh.j, scale. = TRUE)
 ```
 
 ```{r}
