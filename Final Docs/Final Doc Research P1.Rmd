@@ -414,7 +414,7 @@ None of them now seem significant, all too large to pass an $\alpha = 0.05$.
 
 Now, let's try running some Principal Component Analysis plots. These are used to visualize and explore the variability in high-dimensional data through dimensionality reduction. They show the distribution of data points in a lower-dimensional space defined by the principal components.
 
-First, we need to do some prep such as make dataframes and doing the actual pca on them. We'll do it on the three notable strings for each gene and the entire dataset.
+First, we need to do some prep such as make dataframes and doing the actual pca on them. We'll do it on the three notable strings for each gene (before p-value adjustment) and the entire dataset.
 
 ```{r}
 gene$Y <- Y
