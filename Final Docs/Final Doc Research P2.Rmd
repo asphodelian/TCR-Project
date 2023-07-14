@@ -332,6 +332,34 @@ Here, all the j genes are notable.
 
 Now, let's do the p-value adjustments on each one
 
+## actRec
+
+Here's for the actRec's v genes:
+
+```{r}
+# v gene
+ar.pv <- ar.v$pvalue
+ar.paV <- p.adjust(ar.pv, method = p.adjust.methods, n = length(ar.pv))
+ar.vRes <- data.frame(cbind(c(1:50), ar.paV))
+colnames(ar.vRes) <- c("vgene.idx","p-value")
+ar.vRes
+```
+
+The notable v gene columns are: 1, 2, 3, 4, 5, 8, 9, 12, 13, 14, 15, 16, 17, 20, 22, 23, 24, 26, 27, 30, 31, 32, 33, 34, 35, 37, 39, 40, 41, 42, 45, 46, 47, 49, and 50.
+
+And here's for the j genes:
+
+```{r}
+# j gene
+ar.pj <- ar.j$`p-value`
+ar.paJ <- p.adjust(ar.pj, method = p.adjust.methods, n = length(ar.pj))
+ar.jRes <- data.frame(cbind(c(1:13), ar.paJ))
+colnames(ar.jRes) <- c("jgene.idx","p-value")
+ar.jRes
+```
+
+The notable j gene columns are: 4, 5, 6, 7, 9, 10, 11, 12, and 13.
+
 ## actHea
 
 Here's for the actHea's v genes:
@@ -360,3 +388,30 @@ ah.jRes
 
 The notable j gene columns are: 7 and 8.
 
+## recHea
+
+Here's for the recHea's v genes:
+
+```{r}
+# v gene
+rh.pv <- rh.v$pvalue
+rh.paV <- p.adjust(rh.pv, method = p.adjust.methods, n = length(rh.pv))
+rh.vRes <- data.frame(cbind(c(1:50), rh.paV))
+colnames(rh.vRes) <- c("vgene.idx","p-value")
+rh.vRes
+```
+
+The notable v gene columns are: 4, 8, 15, 17 (debatable), 22, 27, 30, 47, 48, and 49.
+
+And here's for the j genes:
+
+```{r}
+# j gene
+rh.pj <- rh.j$`p-value`
+rh.paJ <- p.adjust(rh.pj, method = p.adjust.methods, n = length(rh.pj))
+rh.jRes <- data.frame(cbind(c(1:13), rh.paJ))
+colnames(rh.jRes) <- c("jgene.idx","p-value")
+rh.jRes
+```
+
+The notable j gene columns are: 3, 5, 7, 10, and 13.
