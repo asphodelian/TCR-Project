@@ -218,7 +218,9 @@ obj.rh <- SKAT_Null_Model(Y.rh ~ 1, out_type = "D")
 
 Finally, we can run the for loops. Now, as I mentioned, there were problems I ran into when trying to run them initially. So, I did each one individually to see what were the warnings that were popping up. The first one was this: **missing value where TRUE/FALSE needed**. I'm not sure what this meant, but the rest of the warnings had to do with dimension problems.
 
-The dimension problem possibly occurred, because the original subsets had only the gene dataset in mind, so that had the for loop stopping at one p-value. So, after some fiddling from the professor, she figured out that I needed add in a column index for the subset to finally run smoothly and fix the dimension problem.
+The dimension problem possibly occurred, because the original subsets had only the gene dataset in mind, so that had the for loop stopping at one p-value. So, after some fiddling from the professor, she figured out that I needed add in a column index for the subset to finally run smoothly and fix the dimension problem. 
+
+To note, the p-values must be less than $\alpha = 0.05$.
 
 ## Active/Recovered
 
@@ -232,9 +234,9 @@ for (i in 1:50) {
   p <- out$p.value
   pvec[i] <- p
 }
-vres <- data.frame(cbind(c(1:50), pvec))
-colnames(vres) <- c("vgene.idx","pvalue")
-vres
+ar.v <- data.frame(cbind(c(1:50), pvec))
+colnames(ar.v) <- c("vgene.idx","pvalue")
+ar.v
 ```
 
 The p-values are far better when we do these kinds of pairs. The notable p-values are: colv1, colv2, colv3, colv4, colv5, colv8, colv9, colv11, colv12, colv13, colv14, colv15, colv16, colv17, colv18, colv20, colv22, colv23, colv24, colv26, colv27, colv28, colv29, colv30, colv31, colv32, colv33, colv34, colv35, colv37, colv39, colv40, colv41, colv42, colv45, colv46, colv47, colv49, and colv50.
@@ -249,43 +251,9 @@ for (i in 1:13) {
   p <- out$p.value
   pval[i] <- p
 }
-jres <- data.frame(cbind(c(1:13),pval))
-colnames(jres) <- c("jgene.idx","p-value")
-jres
-```
-
-Here, all the j genes were notable.
-
-Here's the v gene for actRec:
-
-```{r}
-for (i in 1:50) {
-  col.idx <- get(paste0("colv", i,sep=""))
-  sub <- as.matrix(actRec[,col.idx])
-  out <- SKATBinary(sub, obj.ar, kernel = "linear.weighted")
-  p <- out$p.value
-  pvec[i] <- p
-}
-vres <- data.frame(cbind(c(1:50), pvec))
-colnames(vres) <- c("vgene.idx","pvalue")
-vres
-```
-
-The p-values are far better when we do these kinds of pairs. The notable p-values are: colv1, colv2, colv3, colv4, colv5, colv8, colv9, colv11, colv12, colv13, colv14, colv15, colv16, colv17, colv18, colv20, colv22, colv23, colv24, colv26, colv27, colv28, colv29, colv30, colv31, colv32, colv33, colv34, colv35, colv37, colv39, colv40, colv41, colv42, colv45, colv46, colv47, colv49, and colv50.
-
-Here's the j gene for actRec:
-
-```{r}
-for (i in 1:13) {
-  col.idx <- get(paste0("colj", i,sep=""))
-  sub <- as.matrix(actRec[,col.idx])
-  out <- SKATBinary(sub, obj.ar, kernel = "linear.weighted")
-  p <- out$p.value
-  pval[i] <- p
-}
-jres <- data.frame(cbind(c(1:13),pval))
-colnames(jres) <- c("jgene.idx","p-value")
-jres
+ar.j <- data.frame(cbind(c(1:13),pval))
+colnames(ar.j) <- c("jgene.idx","p-value")
+ar.j
 ```
 
 Here, all the j genes were notable.
@@ -302,9 +270,9 @@ for (i in 1:50) {
   p <- out$p.value
   pvec[i] <- p
 }
-v.res <- data.frame(cbind(c(1:50), pvec))
-colnames(v.res) <- c("vgene.idx","pvalue")
-v.res
+ah.v <- data.frame(cbind(c(1:50), pvec))
+colnames(ah.v) <- c("vgene.idx","pvalue")
+ah.v
 ```
 
 The notable p-values are: colv1, colv3, colv4, colv5, colv8, colv9, colv11, colv12, colv13, colv14, colv15, colv16, colv17, colv18, colv20, colv22, colv23, colv24, colv26, colv27, colv28, colv29, colv30, colv31, colv32, colv33, colv34, colv35, colv37, colv39, colv40, colv41, colv42, colv45, colv46, colv47, colv49, and colv50.
@@ -319,9 +287,9 @@ for (i in 1:13) {
   p <- out$p.value
   pval[i] <- p
 }
-j.res <- data.frame(cbind(c(1:13),pval))
-colnames(j.res) <- c("jgene.idx","p-value")
-j.res
+ah.j <- data.frame(cbind(c(1:13),pval))
+colnames(ah.j) <- c("jgene.idx","p-value")
+ah.j
 ```
 
 Here, the notable j genes are: colj2, colj5, colj7, colj8, colj11, and colj13.
@@ -338,9 +306,9 @@ for (i in 1:50) {
   p <- out$p.value
   pvec[i] <- p
 }
-v.res <- data.frame(cbind(c(1:50), pvec))
-colnames(v.res) <- c("vgene.idx","pvalue")
-v.res
+rh.v <- data.frame(cbind(c(1:50), pvec))
+colnames(rh.v) <- c("vgene.idx","pvalue")
+rh.v
 ```
 
 The notable p-values are: colv1, colv2, colv3, colv4, colv5, colv8, colv9, colv11, colv12, colv13, colv14, colv15, colov16, colv17, colv18, colv20, colv22, colv23, colv24, colv26, colv27, colv28, colv29, colv30, colv31, colv32, colv33, colv34, colv35, colv37, colv39, colv40, colv41, colv42, colv45, colv46, colv47, colv48, colv49, and colv50.
@@ -355,9 +323,40 @@ for (i in 1:13) {
   p <- out$p.value
   pval[i] <- p
 }
-j.res <- data.frame(cbind(c(1:13),pval))
-colnames(j.res) <- c("jgene.idx","p-value")
-j.res
+rh.j <- data.frame(cbind(c(1:13),pval))
+colnames(rh.j) <- c("jgene.idx","p-value")
+rh.j
 ```
 
 Here, all the j genes are notable.
+
+Now, let's do the p-value adjustments on each one
+
+## actHea
+
+Here's for the actHea's v genes:
+
+```{r}
+# v gene
+ah.pv <- ah.v$pvalue
+ah.paV <- p.adjust(ah.pv, method = p.adjust.methods, n = length(ah.pv))
+ah.vRes <- data.frame(cbind(c(1:50), ah.paV))
+colnames(ah.vRes) <- c("vgene.idx","p-value")
+ah.vRes
+```
+
+The notable v gene columns are: 9, 26, and 45.
+
+And here's for the j genes:
+
+```{r}
+# j gene
+ah.pj <- ah.j$`p-value`
+ah.paJ <- p.adjust(ah.pj, method = p.adjust.methods, n = length(ah.pj))
+ah.jRes <- data.frame(cbind(c(1:13), ah.paJ))
+colnames(ah.jRes) <- c("jgene.idx","p-value")
+ah.jRes
+```
+
+The notable j gene columns are: 7 and 8.
+
