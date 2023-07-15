@@ -451,11 +451,13 @@ rh.v <- recHea[, c(colv4, colv8, colv15, colv17, colv22, colv27, colv30,
 
 # j gene
 ar.j <- actRec[, c(colj4, colj5, colj6, colj7, colj9, colj10, colj11, colj12, 
-                   colj13)] 
+                   colj13)]
+ar.j <- ar.j[, which(apply(ar.j, 2, var) != 0)]
 
 ah.j <- actHea[, c(colj7, colj8)] 
 
 rh.j <- recHea[, c(colj3, colj5, colj7, colj10, colj13)]
+rh.j <- rh.j[, which(apply(rh.j, 2, var) != 0)]
 
 # pca res
 
