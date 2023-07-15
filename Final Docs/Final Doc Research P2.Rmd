@@ -227,6 +227,10 @@ To note, the p-values must be less than $\alpha = 0.05$.
 Here's the v gene for actRec:
 
 ```{r}
+pvec <- rep(0,50)
+pval <- rep(0,13)
+
+# loop
 for (i in 1:50) {
   col.idx <- get(paste0("colv", i,sep=""))
   sub <- as.matrix(actRec[,col.idx])
