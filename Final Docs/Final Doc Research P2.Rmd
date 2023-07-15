@@ -432,6 +432,7 @@ The notable j gene columns are: 3, 5, 7, 10, and 13.
 
 Now, we will make PCA plots for each subset and the entire dataset to compare. We will use the p-adjusted values for this one. 
 
+First, we need to do some prep for the plots.
 
 ```{r}
 # dataframe
