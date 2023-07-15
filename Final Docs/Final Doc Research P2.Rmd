@@ -227,8 +227,8 @@ To note, the p-values must be less than $\alpha = 0.05$.
 Here's the v gene for actRec:
 
 ```{r}
-pvec <- rep(0,50)
-pval <- rep(0,13)
+p.ar <- rep(0,50)
+ar.val <- rep(0,13)
 
 # loop
 for (i in 1:50) {
@@ -236,9 +236,9 @@ for (i in 1:50) {
   sub <- as.matrix(actRec[,col.idx])
   out <- SKATBinary(sub, obj.ar, kernel = "linear.weighted")
   p <- out$p.value
-  pvec[i] <- p
+  p.ar[i] <- p
 }
-ar.v <- data.frame(cbind(c(1:50), pvec))
+ar.v <- data.frame(cbind(c(1:50), p.ar))
 colnames(ar.v) <- c("vgene.idx","pvalue")
 ar.v
 ```
@@ -253,9 +253,9 @@ for (i in 1:13) {
   sub <- as.matrix(actRec[,col.idx])
   out <- SKATBinary(sub, obj.ar, kernel = "linear.weighted")
   p <- out$p.value
-  pval[i] <- p
+  ar.val[i] <- p
 }
-ar.j <- data.frame(cbind(c(1:13),pval))
+ar.j <- data.frame(cbind(c(1:13),ar.val))
 colnames(ar.j) <- c("jgene.idx","p-value")
 ar.j
 ```
@@ -267,14 +267,18 @@ Here, all the j genes were notable.
 Here's the v gene for actHea:
 
 ```{r}
+p.ah <- rep(0,50)
+ah.val <- rep(0,13)
+
+# loop
 for (i in 1:50) {
   col.idx <- get(paste0("colv", i,sep=""))
   sub <- as.matrix(actHea[,col.idx])
   out <- SKATBinary(sub, obj.ah, kernel = "linear.weighted")
   p <- out$p.value
-  pvec[i] <- p
+  p.ah[i] <- p
 }
-ah.v <- data.frame(cbind(c(1:50), pvec))
+ah.v <- data.frame(cbind(c(1:50), p.ah))
 colnames(ah.v) <- c("vgene.idx","pvalue")
 ah.v
 ```
@@ -289,9 +293,9 @@ for (i in 1:13) {
   sub <- as.matrix(actHea[,col.idx])
   out <- SKATBinary(sub, obj.ah, kernel = "linear.weighted")
   p <- out$p.value
-  pval[i] <- p
+  ah.val[i] <- p
 }
-ah.j <- data.frame(cbind(c(1:13),pval))
+ah.j <- data.frame(cbind(c(1:13),ah.val))
 colnames(ah.j) <- c("jgene.idx","p-value")
 ah.j
 ```
@@ -303,14 +307,18 @@ Here, the notable j genes are: colj2, colj5, colj7, colj8, colj11, and colj13.
 Here's the v gene for recHea:
 
 ```{r}
+p.rh <- rep(0,50)
+rh.val <- rep(0,13)
+
+# loop
 for (i in 1:50) {
   col.idx <- get(paste0("colv", i,sep=""))
   sub <- as.matrix(recHea[,col.idx])
   out <- SKATBinary(sub, obj.rh, kernel = "linear.weighted")
   p <- out$p.value
-  pvec[i] <- p
+  p.rh[i] <- p
 }
-rh.v <- data.frame(cbind(c(1:50), pvec))
+rh.v <- data.frame(cbind(c(1:50), p.rh))
 colnames(rh.v) <- c("vgene.idx","pvalue")
 rh.v
 ```
@@ -325,9 +333,9 @@ for (i in 1:13) {
   sub <- as.matrix(recHea[,col.idx])
   out <- SKATBinary(sub, obj.rh, kernel = "linear.weighted")
   p <- out$p.value
-  pval[i] <- p
+  rh.val[i] <- p
 }
-rh.j <- data.frame(cbind(c(1:13),pval))
+rh.j <- data.frame(cbind(c(1:13),rh.val))
 colnames(rh.j) <- c("jgene.idx","p-value")
 rh.j
 ```
