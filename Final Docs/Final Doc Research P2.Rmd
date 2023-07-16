@@ -474,16 +474,16 @@ pca.ahJ <- prcomp(ah.j, scale. = TRUE)
 pca.rhJ <- prcomp(rh.j, scale. = TRUE)
 ```
 
+Finally, we can do the v and j gene plots for each pair.
+
 ```{r}
 # plot
-autoplot(pcav16, data = gene, colour = 'Y1')
-autoplot(pcav26, data = gene, colour = 'Y1')
-autoplot(pcav27, data = gene, colour = 'Y1')
-autoplot(pcav, data = gene, colour = 'Y1')
-autoplot(pcaj7, data = gene, colour = 'Y1')
-autoplot(pcaj9, data = gene, colour = 'Y1')
-autoplot(pcaj10, data = gene, colour = 'Y1')
-autoplot(pcaj, data = gene, colour = 'Y1')
+autoplot(pca.arV, data = gene, colour = 'Y1')
+autoplot(pca.ahV, data = gene, colour = 'Y1')
+autoplot(pca.rhV, data = gene, colour = 'Y1')
+autoplot(pca.arJ, data = gene, colour = 'Y1')
+autoplot(pca.ahJ, data = gene, colour = 'Y1')
+autoplot(pca.rhJ, data = gene, colour = 'Y1')
 
 # trying the whole dataset
 dfull <- gene[3:630]
