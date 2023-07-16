@@ -15,6 +15,7 @@ This document is Part 2 of the final doc research. This will explain the work wi
 
 ```{r library}
 library(dplyr)
+library(factoextra)
 library(ggplot2)
 library(psych)
 library(readr)
