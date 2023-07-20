@@ -246,3 +246,30 @@ grid.arrange(RHplotV, RHplotJ, ncol = 2)
 # kernel = "linear", "linear.weighted", "IBS" (genetic) 
 # kernel = "IBS.weighted", "quadratic" and "2wayIX" (genetic)
 
+p.ar <- rep(0,50)
+ar.val <- rep(0,13)
+
+# loop
+for (i in 1:50) {
+  col.idx <- get(paste0("colv", i,sep=""))
+  sub <- as.matrix(actRec[,col.idx])
+  out <- SKATBinary(sub, obj.ar, kernel = "quadratic")
+  p <- out$p.value
+  p.ar[i] <- p
+}
+ar.v <- data.frame(cbind(c(1:50), p.ar))
+colnames(ar.v) <- c("vgene.idx","pvalue")
+ar.v
+
+# do pvalue adj before doing the pca
+
+ar.pv <- ar.v$pvalue
+p.adjust(ar.pv, method = p.adjust.methods, n = length(ar.pv)) < 0.05
+
+ar.v <- actRec[, c(colv1, colv2, colv3, colv4, colv5, colv8, colv9, colv13, 
+                   colv14, colv15, colv16, colv17, colv20, colv22, colv23, 
+                   colv24, colv26, colv29, colv30, colv31, colv32, colv33, 
+                   colv34, colv35, colv37, colv39, colv40, colv41, colv42, 
+                   colv45, colv46, colv47, colv50)] 
+pca.arV <- prcomp(ar.v, scale. = TRUE)
+autoplot(pca.arV, data = actRec, colour = 'Y1')
