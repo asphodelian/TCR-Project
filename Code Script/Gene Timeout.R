@@ -273,3 +273,8 @@ ar.v <- actRec[, c(colv1, colv2, colv3, colv4, colv5, colv8, colv9, colv13,
                    colv45, colv46, colv47, colv50)] 
 pca.arV <- prcomp(ar.v, scale. = TRUE)
 autoplot(pca.arV, data = actRec, colour = 'Y1')
+
+# Properly format the final docs
+# Can get rid of summaries
+# legends and titles, add to plots
+# upload these and the R markdowns into the dropbox

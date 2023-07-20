@@ -88,7 +88,7 @@ C19vj and vj were first merged by the column vjGene, the dataset being named com
 There are NAs in terms of patients. For example, the healthy patients doesn't extend all the way to 39, it ended at 23. But they were kept in instead of removed, with the idea that it'll be done later down the line or the NAs will be replaced accordingly.
 
 ```{r}
-genes <- genes %>% 
+genes <- gene %>% 
   mutate_at(c('patient.ID', 'Sample.ID', 'Y', 'Y1'), as.factor)
 cat("Summary of genes: \n\n")
 summary(genes)
