@@ -278,3 +278,4 @@ autoplot(pca.arV, data = actRec, colour = 'Y1')
 # Can get rid of summaries
 # legends and titles, add to plots
 # upload these and the R markdowns into the dropbox
+# note the original gene names
