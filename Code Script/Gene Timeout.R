@@ -242,3 +242,7 @@ grid.arrange(ARplotV, ARplotJ, ncol = 2)
 grid.arrange(AHplotV, AHplotJ, ncol = 2)
 grid.arrange(RHplotV, RHplotJ, ncol = 2)
 
+# 7/20/2023 Meeting Note:
+# kernel = "linear", "linear.weighted", "IBS" (genetic) 
+# kernel = "IBS.weighted", "quadratic" and "2wayIX" (genetic)
+
