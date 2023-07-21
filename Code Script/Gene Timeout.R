@@ -229,12 +229,12 @@ pca.rhJ <- prcomp(rh.j, scale. = TRUE)
 ############################
 
 # plot
-ARplotV <- autoplot(pca.arV, data = actRec, colour = 'Y1')
-AHplotV <- autoplot(pca.ahV, data = actHea, colour = 'Y1')
-RHplotV <- autoplot(pca.rhV, data = recHea, colour = 'Y1')
-ARplotJ <- autoplot(pca.arJ, data = actRec, colour = 'Y1')
-AHplotJ <- autoplot(pca.ahJ, data = actHea, colour = 'Y1')
-RHplotJ <- autoplot(pca.rhJ, data = recHea, colour = 'Y1')
+autoplot(pca.arV, data = actRec, colour = 'Y1')
+autoplot(pca.ahV, data = actHea, colour = 'Y1')
+autoplot(pca.rhV, data = recHea, colour = 'Y1')
+autoplot(pca.arJ, data = actRec, colour = 'Y1')
+autoplot(pca.ahJ, data = actHea, colour = 'Y1')
+autoplot(pca.rhJ, data = recHea, colour = 'Y1')
 autoplot(pcaFull, data = gene, colour = 'Y1')
 
 # arrange
@@ -278,4 +278,4 @@ autoplot(pca.arV, data = actRec, colour = 'Y1')
 # Can get rid of summaries
 # legends and titles, add to plots
 # upload these and the R markdowns into the dropbox
-# note the original gene names
+# note the original gene name
