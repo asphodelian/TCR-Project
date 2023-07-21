@@ -30,6 +30,7 @@ fullgenes
 ```
 3. Final Docs
 - contains the final "official" documentation of this project
+- word doc versions included
 ```
 Final Doc Research P1
 - Prep work explanation & jumping into what was done on the full dataset, particularly with Y
