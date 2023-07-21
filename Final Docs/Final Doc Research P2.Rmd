@@ -482,18 +482,24 @@ Finally, we can do the v and j gene plots for each pair.
 
 ```{r}
 # plot
-ARplotV <- autoplot(pca.arV, data = actRec, colour = 'Y1')
-AHplotV <- autoplot(pca.ahV, data = actHea, colour = 'Y1')
-RHplotV <- autoplot(pca.rhV, data = recHea, colour = 'Y1')
-ARplotJ <- autoplot(pca.arJ, data = actRec, colour = 'Y1')
-AHplotJ <- autoplot(pca.ahJ, data = actHea, colour = 'Y1')
-RHplotJ <- autoplot(pca.rhJ, data = recHea, colour = 'Y1')
+#ARplotV <- autoplot(pca.arV, data = actRec, colour = 'Y1')
+#AHplotV <- autoplot(pca.ahV, data = actHea, colour = 'Y1')
+#RHplotV <- autoplot(pca.rhV, data = recHea, colour = 'Y1')
+#ARplotJ <- autoplot(pca.arJ, data = actRec, colour = 'Y1')
+#AHplotJ <- autoplot(pca.ahJ, data = actHea, colour = 'Y1')
+#RHplotJ <- autoplot(pca.rhJ, data = recHea, colour = 'Y1')
+autoplot(pca.arV, data = actRec, colour = 'Y1')
+autoplot(pca.ahV, data = actHea, colour = 'Y1')
+autoplot(pca.rhV, data = recHea, colour = 'Y1')
+autoplot(pca.arJ, data = actRec, colour = 'Y1')
+autoplot(pca.ahJ, data = actHea, colour = 'Y1')
+autoplot(pca.rhJ, data = recHea, colour = 'Y1')
 autoplot(pcaFull, data = gene, colour = 'Y1')
 
 # arrange
-grid.arrange(ARplotV, ARplotJ, ncol = 2)
-grid.arrange(AHplotV, AHplotJ, ncol = 2)
-grid.arrange(RHplotV, RHplotJ, ncol = 2)
+#grid.arrange(ARplotV, ARplotJ, ncol = 2)
+#grid.arrange(AHplotV, AHplotJ, ncol = 2)
+#grid.arrange(RHplotV, RHplotJ, ncol = 2)
 ```
 
 ```{r, ref.label=knitr::all_labels(), echo = TRUE, eval = FALSE}
