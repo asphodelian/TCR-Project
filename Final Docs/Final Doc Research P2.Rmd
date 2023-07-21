@@ -496,3 +496,5 @@ grid.arrange(AHplotV, AHplotJ, ncol = 2)
 grid.arrange(RHplotV, RHplotJ, ncol = 2)
 ```
 
+```{r, ref.label=knitr::all_labels(), echo = TRUE, eval = FALSE}
+```
