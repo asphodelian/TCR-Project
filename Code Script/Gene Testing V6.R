@@ -365,13 +365,13 @@ rh.v <- recHea[, c(colv3, colv8, colv16, colv17, colv18, colv20, colv23,
 # j gene
 ar.j <- actRec[, c(colv1, colv2, colv3, colv4, colv5, colv6, colv7, colv8, 
                    colv9, colv11, colv12, colv13)]
-#ar.j <- ar.j[, which(apply(ar.j, 2, var) != 0)]
+ar.j <- ar.j[, which(apply(ar.j, 2, var) != 0)]
 
 ah.j <- actHea[, c(colj7, colj13)] 
 
 rh.j <- recHea[, c(colv1, colv2, colv3, colv4, colv5, colv6, colv7, colv8, 
                    colv9, colv19, colv11, colv12, colv13)]
-#rh.j <- rh.j[, which(apply(rh.j, 2, var) != 0)]
+rh.j <- rh.j[, which(apply(rh.j, 2, var) != 0)]
 
 # pca res
 pcaFull <- prcomp(dfull, scale. = TRUE)
