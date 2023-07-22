@@ -224,6 +224,13 @@ ar.v <- data.frame(cbind(c(1:50), p.ar))
 colnames(ar.v) <- c("vgene.idx","pvalue")
 ar.v
 
+# v gene: pval adjust
+ar.pv <- ar.v$pvalue
+ar.paV <- p.adjust(ar.pv, method = p.adjust.methods, n = length(ar.pv))
+ar.vRes <- data.frame(cbind(c(1:50), ar.paV))
+colnames(ar.vRes) <- c("vgene.idx","p-value")
+ar.vRes
+
 # j loop
 for (i in 1:13) {
   col.idx <- get(paste0("colj", i,sep=""))
@@ -235,6 +242,13 @@ for (i in 1:13) {
 ar.j <- data.frame(cbind(c(1:13),ar.val))
 colnames(ar.j) <- c("jgene.idx","p-value")
 ar.j
+
+# j gene: pval adjust
+ar.pj <- ar.j$`p-value`
+ar.paJ <- p.adjust(ar.pj, method = p.adjust.methods, n = length(ar.pj))
+ar.jRes <- data.frame(cbind(c(1:13), ar.paJ))
+colnames(ar.jRes) <- c("jgene.idx","p-value")
+ar.jRes
 
 ##################
 # Active-Healthy #
