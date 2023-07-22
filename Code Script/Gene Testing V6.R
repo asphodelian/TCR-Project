@@ -20,9 +20,9 @@ library(tidyr)
 gene <- read_excel("fullgenes.xlsx")
 attach(gene)
 
-################
-# SKAT Attempt #
-################
+#############
+# SKAT Prep #
+#############
 
 # Partial string to match in column names
 
@@ -182,5 +182,26 @@ Y1 <- gene$Y1
 Y1[set.na1] <- "active"
 Y1[set.na2] <- "healthy"
 
+#################
+# Sets & Models #
+#################
 
+# subsets
+actRec <- subset(gene, Y1 == "active" | Y1 == "recovered")
+Y.ar <- rep(0, length(actRec$Y1))
+Y.ar[which(actRec$Y1 == "active")] = 1
+
+actHea <- subset(gene, Y1 == "active" | Y1 == "healthy")
+Y.ah <- rep(0, length(actHea$Y1))
+Y.ah[which(actHea$Y1 == "active")] = 1
+
+
+recHea <- subset(gene, Y1 == "recovered" | Y1 == "healthy")
+Y.rh <- rep(0, length(recHea$Y1))
+Y.rh[which(recHea$Y1 == "recovered")] = 1
+
+# null models
+obj.ar <- SKAT_Null_Model(Y.ar ~ 1, out_type = "D")
+obj.ah <- SKAT_Null_Model(Y.ah ~ 1, out_type = "D")
+obj.rh <- SKAT_Null_Model(Y.rh ~ 1, out_type = "D")
 
