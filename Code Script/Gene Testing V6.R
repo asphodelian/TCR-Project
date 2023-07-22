@@ -340,7 +340,55 @@ rh.jRes <- data.frame(cbind(c(1:13), rh.paJ))
 colnames(rh.jRes) <- c("jgene.idx","p-value")
 rh.jRes
 
+#############
+# PCA Plots #
+#############
 
+# dataframe
+gene$Y1 <- Y1
+dfull <- gene[3:630]
+
+# v gene
+ar.v <- actRec[, c(colv1, colv2, colv3, colv4, colv5, colv8, colv9, colv12, 
+                   colv13, colv14, colv15, colv16, colv17, colv20, colv22, 
+                   colv23, colv24, colv26, colv27, colv30, colv31, colv32, 
+                   colv33, colv34, colv35, colv37, colv39, colv40, colv41, 
+                   colv42, colv45, colv46, colv47, colv49, colv50)] 
+
+ah.v <- actHea[, c(colv9, colv26, colv45)] 
+
+rh.v <- recHea[, c(colv4, colv8, colv15, colv17, colv22, colv27, colv30, 
+                   colv47, colv48, colv49)]
+
+# j gene
+ar.j <- actRec[, c(colj4, colj5, colj6, colj7, colj9, colj10, colj11, colj12, 
+                   colj13)]
+ar.j <- ar.j[, which(apply(ar.j, 2, var) != 0)]
+
+ah.j <- actHea[, c(colj7, colj8)] 
+
+rh.j <- recHea[, c(colj3, colj5, colj7, colj10, colj13)]
+rh.j <- rh.j[, which(apply(rh.j, 2, var) != 0)]
+
+# pca res
+pcaFull <- prcomp(dfull, scale. = TRUE)
+# v gene
+pca.arV <- prcomp(ar.v, scale. = TRUE)
+pca.ahV <- prcomp(ah.v, scale. = TRUE)
+pca.rhV <- prcomp(rh.v, scale. = TRUE) 
+
+# j gene
+pca.arJ <- prcomp(ar.j, scale. = TRUE)
+pca.ahJ <- prcomp(ah.j, scale. = TRUE)
+pca.rhJ <- prcomp(rh.j, scale. = TRUE)
+
+autoplot(pca.arV, data = actRec, colour = 'Y1')
+autoplot(pca.ahV, data = actHea, colour = 'Y1')
+autoplot(pca.rhV, data = recHea, colour = 'Y1')
+autoplot(pca.arJ, data = actRec, colour = 'Y1')
+autoplot(pca.ahJ, data = actHea, colour = 'Y1')
+autoplot(pca.rhJ, data = recHea, colour = 'Y1')
+autoplot(pcaFull, data = gene, colour = 'Y1')
 
 
 
