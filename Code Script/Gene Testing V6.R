@@ -349,26 +349,29 @@ gene$Y1 <- Y1
 dfull <- gene[3:630]
 
 # v gene
-ar.v <- actRec[, c(colv1, colv2, colv3, colv4, colv5, colv8, colv9, colv12, 
-                   colv13, colv14, colv15, colv16, colv17, colv20, colv22, 
-                   colv23, colv24, colv26, colv27, colv30, colv31, colv32, 
-                   colv33, colv34, colv35, colv37, colv39, colv40, colv41, 
-                   colv42, colv45, colv46, colv47, colv49, colv50)] 
+ar.v <- actRec[, c(colv1, colv2, colv3, colv4, colv5, colv8, colv9, colv11,
+                   colv12, colv13, colv14, colv15, colv16, colv17, colv18,
+                   colv20, colv22, colv23, colv24, colv26, colv27, colv28,
+                   colv29, colv30, colv31, colv32, colv33, colv34, colv35, 
+                   colv37, colv39, colv40, colv41, colv42, colv45, colv46, 
+                   colv47, colv49, colv50)] 
 
-ah.v <- actHea[, c(colv9, colv26, colv45)] 
+ah.v <- actHea[, c(colv9, colv24, colv37, colv40, colv45)] 
 
-rh.v <- recHea[, c(colv4, colv8, colv15, colv17, colv22, colv27, colv30, 
+rh.v <- recHea[, c(colv3, colv8, colv16, colv17, colv18, colv20, colv23, 
+                   colv27, colv30, colv31, colv32, colv40, colv42, colv46,
                    colv47, colv48, colv49)]
 
 # j gene
-ar.j <- actRec[, c(colj4, colj5, colj6, colj7, colj9, colj10, colj11, colj12, 
-                   colj13)]
-ar.j <- ar.j[, which(apply(ar.j, 2, var) != 0)]
+ar.j <- actRec[, c(colv1, colv2, colv3, colv4, colv5, colv6, colv7, colv8, 
+                   colv9, colv11, colv12, colv13)]
+#ar.j <- ar.j[, which(apply(ar.j, 2, var) != 0)]
 
-ah.j <- actHea[, c(colj7, colj8)] 
+ah.j <- actHea[, c(colj7, colj13)] 
 
-rh.j <- recHea[, c(colj3, colj5, colj7, colj10, colj13)]
-rh.j <- rh.j[, which(apply(rh.j, 2, var) != 0)]
+rh.j <- recHea[, c(colv1, colv2, colv3, colv4, colv5, colv6, colv7, colv8, 
+                   colv9, colv19, colv11, colv12, colv13)]
+#rh.j <- rh.j[, which(apply(rh.j, 2, var) != 0)]
 
 # pca res
 pcaFull <- prcomp(dfull, scale. = TRUE)
