@@ -269,6 +269,13 @@ ah.v <- data.frame(cbind(c(1:50), p.ah))
 colnames(ah.v) <- c("vgene.idx","pvalue")
 ah.v
 
+# v gene: pval adjust
+ah.pv <- ah.v$pvalue
+ah.paV <- p.adjust(ah.pv, method = p.adjust.methods, n = length(ah.pv))
+ah.vRes <- data.frame(cbind(c(1:50), ah.paV))
+colnames(ah.vRes) <- c("vgene.idx","p-value")
+ah.vRes
+
 # j loop
 for (i in 1:13) {
   col.idx <- get(paste0("colj", i,sep=""))
@@ -280,6 +287,13 @@ for (i in 1:13) {
 ah.j <- data.frame(cbind(c(1:13),ah.val))
 colnames(ah.j) <- c("jgene.idx","p-value")
 ah.j
+
+# j gene: pval adjust
+ah.pj <- ah.j$`p-value`
+ah.paJ <- p.adjust(ah.pj, method = p.adjust.methods, n = length(ah.pj))
+ah.jRes <- data.frame(cbind(c(1:13), ah.paJ))
+colnames(ah.jRes) <- c("jgene.idx","p-value")
+ah.jRes
 
 #####################
 # Recovered-Healthy #
