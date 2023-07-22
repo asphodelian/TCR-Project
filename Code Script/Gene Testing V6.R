@@ -171,3 +171,16 @@ colj10 <- grep(stringj10, names(gene), value = TRUE)
 colj11 <- grep(stringj11, names(gene), value = TRUE)
 colj12 <- grep(stringj12, names(gene), value = TRUE)
 colj13 <- grep(stringj13, names(gene), value = TRUE)
+
+###########
+# NA fill #
+###########
+
+set.na1 <- c(22)
+set.na2 <- c(94:109)
+Y1 <- gene$Y1
+Y1[set.na1] <- "active"
+Y1[set.na2] <- "healthy"
+
+
+
