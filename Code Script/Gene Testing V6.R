@@ -247,7 +247,7 @@ ah.val <- rep(0,13)
 for (i in 1:50) {
   col.idx <- get(paste0("colv", i,sep=""))
   sub <- as.matrix(actHea[,col.idx])
-  out <- SKATBinary(sub, obj.ah, kernel = "linear.weighted")
+  out <- SKATBinary(sub, obj.ah, kernel = "quadratic")
   p <- out$p.value
   p.ah[i] <- p
 }
@@ -259,13 +259,44 @@ ah.v
 for (i in 1:13) {
   col.idx <- get(paste0("colj", i,sep=""))
   sub <- as.matrix(actHea[,col.idx])
-  out <- SKATBinary(sub, obj.ah, kernel = "linear.weighted")
+  out <- SKATBinary(sub, obj.ah, kernel = "quadratic")
   p <- out$p.value
   ah.val[i] <- p
 }
 ah.j <- data.frame(cbind(c(1:13),ah.val))
 colnames(ah.j) <- c("jgene.idx","p-value")
 ah.j
+
+#####################
+# Recovered-Healthy #
+#####################
+
+p.rh <- rep(0,50)
+rh.val <- rep(0,13)
+
+# v loop
+for (i in 1:50) {
+  col.idx <- get(paste0("colv", i,sep=""))
+  sub <- as.matrix(recHea[,col.idx])
+  out <- SKATBinary(sub, obj.rh, kernel = "quadratic")
+  p <- out$p.value
+  p.rh[i] <- p
+}
+rh.v <- data.frame(cbind(c(1:50), p.rh))
+colnames(rh.v) <- c("vgene.idx","pvalue")
+rh.v
+
+# j loop
+for (i in 1:13) {
+  col.idx <- get(paste0("colj", i,sep=""))
+  sub <- as.matrix(recHea[,col.idx])
+  out <- SKATBinary(sub, obj.rh, kernel = "quadratic")
+  p <- out$p.value
+  rh.val[i] <- p
+}
+rh.j <- data.frame(cbind(c(1:13),rh.val))
+colnames(rh.j) <- c("jgene.idx","p-value")
+rh.j 
 
 
 
