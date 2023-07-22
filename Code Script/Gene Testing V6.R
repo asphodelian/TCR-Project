@@ -205,3 +205,33 @@ obj.ar <- SKAT_Null_Model(Y.ar ~ 1, out_type = "D")
 obj.ah <- SKAT_Null_Model(Y.ah ~ 1, out_type = "D")
 obj.rh <- SKAT_Null_Model(Y.rh ~ 1, out_type = "D")
 
+####################
+# Active-Recovered #
+####################
+
+p.ar <- rep(0,50)
+ar.val <- rep(0,13)
+
+# v loop
+for (i in 1:50) {
+  col.idx <- get(paste0("colv", i,sep=""))
+  sub <- as.matrix(actRec[,col.idx])
+  out <- SKATBinary(sub, obj.ar, kernel = "quadratic")
+  p <- out$p.value
+  p.ar[i] <- p
+}
+ar.v <- data.frame(cbind(c(1:50), p.ar))
+colnames(ar.v) <- c("vgene.idx","pvalue")
+ar.v
+
+# j loop
+for (i in 1:13) {
+  col.idx <- get(paste0("colj", i,sep=""))
+  sub <- as.matrix(actRec[,col.idx])
+  out <- SKATBinary(sub, obj.ar, kernel = "quadratic")
+  p <- out$p.value
+  ar.val[i] <- p
+}
+ar.j <- data.frame(cbind(c(1:13),ar.val))
+colnames(ar.j) <- c("jgene.idx","p-value")
+ar.j
