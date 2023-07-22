@@ -314,6 +314,13 @@ rh.v <- data.frame(cbind(c(1:50), p.rh))
 colnames(rh.v) <- c("vgene.idx","pvalue")
 rh.v
 
+# v gene: pval adjust
+rh.pv <- rh.v$pvalue
+rh.paV <- p.adjust(rh.pv, method = p.adjust.methods, n = length(rh.pv))
+rh.vRes <- data.frame(cbind(c(1:50), rh.paV))
+colnames(rh.vRes) <- c("vgene.idx","p-value")
+rh.vRes
+
 # j loop
 for (i in 1:13) {
   col.idx <- get(paste0("colj", i,sep=""))
@@ -326,7 +333,12 @@ rh.j <- data.frame(cbind(c(1:13),rh.val))
 colnames(rh.j) <- c("jgene.idx","p-value")
 rh.j 
 
-
+# j gene: pval adjust
+rh.pj <- rh.j$`p-value`
+rh.paJ <- p.adjust(rh.pj, method = p.adjust.methods, n = length(rh.pj))
+rh.jRes <- data.frame(cbind(c(1:13), rh.paJ))
+colnames(rh.jRes) <- c("jgene.idx","p-value")
+rh.jRes
 
 
 
