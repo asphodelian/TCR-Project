@@ -235,3 +235,42 @@ for (i in 1:13) {
 ar.j <- data.frame(cbind(c(1:13),ar.val))
 colnames(ar.j) <- c("jgene.idx","p-value")
 ar.j
+
+##################
+# Active-Healthy #
+##################
+
+p.ah <- rep(0,50)
+ah.val <- rep(0,13)
+
+# v loop
+for (i in 1:50) {
+  col.idx <- get(paste0("colv", i,sep=""))
+  sub <- as.matrix(actHea[,col.idx])
+  out <- SKATBinary(sub, obj.ah, kernel = "linear.weighted")
+  p <- out$p.value
+  p.ah[i] <- p
+}
+ah.v <- data.frame(cbind(c(1:50), p.ah))
+colnames(ah.v) <- c("vgene.idx","pvalue")
+ah.v
+
+# j loop
+for (i in 1:13) {
+  col.idx <- get(paste0("colj", i,sep=""))
+  sub <- as.matrix(actHea[,col.idx])
+  out <- SKATBinary(sub, obj.ah, kernel = "linear.weighted")
+  p <- out$p.value
+  ah.val[i] <- p
+}
+ah.j <- data.frame(cbind(c(1:13),ah.val))
+colnames(ah.j) <- c("jgene.idx","p-value")
+ah.j
+
+
+
+
+
+
+
+
