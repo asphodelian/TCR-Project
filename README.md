@@ -9,25 +9,19 @@ The main motivation of this research was to see if we can use the TCR/BCR (B-Cel
 1. Code Script
 - contains all the code I've done for this project
 ```
-Gene Testing V1
-Gene Testing V2
-Gene Testing V3
-Gene Testing V4
-Gene Testing V5
-Gene Testing V6
+Disease Testing
+- holds all the scripts for the covid/healthy datasets
+Lung Testing
+- holds all the scripts for the lung datasets
 Gene Timeout
 ```
 2. Datasets
 - contains all the datasets used for this project
 ```
-dt.COVID_TCR.vjGene.p
-- contains covid patients' genes
-dt.HD_TCR.vjGene.p
-- contains healthy patients' genes
-dt.info_edited
-- contains covid/healthy patients' indo
-fullgenes
-- combined all three datasets
+Disease Data
+- holds datasets related to covid/healthy patients
+Lung Data
+- holds datasets related to lungs
 ```
 3. Final Docs
 - contains the final "official" documentation of this project
