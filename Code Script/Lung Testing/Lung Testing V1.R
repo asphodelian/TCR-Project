@@ -42,5 +42,13 @@ lungenes <- lungenes %>%
 cat("Summary of lungenes as factors: \n\n")
 summary(lungenes)
 
+#############
+# Dimscribe #
+#############
+
+describe(lung)
+dim(lung)
+describe(lungenes)
+dim(lungenes)
 
 
