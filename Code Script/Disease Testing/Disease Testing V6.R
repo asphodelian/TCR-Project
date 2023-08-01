@@ -17,7 +17,7 @@ library(tidyr)
 # Dataset #
 ###########
 
-gene <- read_excel("fullgenes.xlsx")
+gene <- read_excel("C:/Users/knigh/OneDrive/Desktop/Github/TCR-Project/Datasets/Disease Data/fullgenes.xlsx")
 attach(gene)
 
 #############
