@@ -51,4 +51,10 @@ dim(lung)
 describe(lungenes)
 dim(lungenes)
 
+################
+# Dataset Prep #
+################
+
+lungene <- lungenes[, -c(2:70)]
+
 
