@@ -55,6 +55,13 @@ dim(lungenes)
 # Dataset Prep #
 ################
 
+# no need for screening
 lungene <- lungenes[, -c(2:70)]
 
+# three tables
+# pre, dose, & logs of both
+
+pre <-  lungene[, c(1:62)]
+
+second <- lungene[, c(1, 63:123)]
 
