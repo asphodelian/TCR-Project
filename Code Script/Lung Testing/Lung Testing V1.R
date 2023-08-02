@@ -78,6 +78,12 @@ colnames(pre) <- c("vjGene", "1056201652", "1056201734", "1056201763",
                    "20004391114", "20007341206", "X20007341222", "20007341336", 
                    "20007341420", "20011092291")
 
+preLong <- pivot_longer(pre, 
+                         cols = c(),
+                         names_to = "Sample.ID", values_to = "Value")
+
+wideComb <- pivot_wider(longComb, names_from = "vjGene", values_from = "Value")
+
 
 # 2nd dose
 second <- lungene[, c(1, 63:123)]
