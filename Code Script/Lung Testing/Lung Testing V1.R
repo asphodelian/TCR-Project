@@ -82,7 +82,12 @@ preLong <- pivot_longer(pre,
                          cols = c(),
                          names_to = "Sample.ID", values_to = "Value")
 
-wideComb <- pivot_wider(longComb, names_from = "vjGene", values_from = "Value")
+# log transform 
+preLong$Value <- log(preLong$Value)
+# standardize
+preLong$Value <- scale(preLong$Value)
+
+wideComb <- pivot_wider(preLong, names_from = "vjGene", values_from = "Value")
 
 
 # 2nd dose
