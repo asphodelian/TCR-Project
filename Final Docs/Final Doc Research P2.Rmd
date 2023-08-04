@@ -29,7 +29,7 @@ library(tidyr)
 ### Dataset
 
 ```{r}
-gene <- read_excel("~/TCR-Project/Datasets/fullgenes.xlsx")
+gene <- read_excel("~/TCR-Project/Datasets/Disease Data/fullgenes.xlsx")
 attach(gene)
 ```
 
