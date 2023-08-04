@@ -220,9 +220,10 @@ pre$'20007341420' <- scale(pre$'20007341420')
 
 pre$'20011092291' <- scale(pre$'20011092291')
 
+# transform
+preTrans <- as.data.frame(t(pre))
 
-
-
+colnames(preTrans) <- c()
 
 
 
