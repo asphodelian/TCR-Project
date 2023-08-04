@@ -1384,7 +1384,7 @@ final <- select(final, patient.ID, Sample.ID, "TRBV10-1_TRBJ1-1",
 
 # saving as excel file
 #write.xlsx(final, 
-#           "D:/Coding/R Storage/Summer TCR Project/TCR Datasets/fullgenes.xlsx", 
+#           "C:/Users/knigh/OneDrive/Desktop/Github/TCR-Project/Datasets/Disease Data/fullgenes.xlsx", 
 #           row.names = FALSE)
 #write.csv(final, 
 #          "D:/Coding/R Storage/Summer TCR Project/TCR Datasets/fullgenes.csv", 
