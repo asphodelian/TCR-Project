@@ -780,6 +780,11 @@ rownum <- c(1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
 
 rownames(preTrans) <- rownum
 
+# saving as excel file
+#write.xlsx(preTrans, 
+#           "C:/Users/knigh/OneDrive/Desktop/Github/TCR-Project/Datasets/Lung Data/predose.xlsx", 
+#           row.names = FALSE)
+
 ############
 # 2nd dose #
 ############
