@@ -57,13 +57,13 @@ dim(lungenes)
 
 # no need for screening
 lungene <- lungenes[, -c(2:70)]
+lungene[is.na(lungene)] <- 1e-7 
+lungene[lungene == 0] <- 1e-7
 
 # pre-infusion
 pre <-  lungene[, c(1:62)]
 
-# for NAs and 0s
-pre[is.na(pre)] <- 1e-7
-pre[pre == 0] <- 1e-7
+# column names
 
 colnames(pre) <- c("vjGene", "1056201652", "1056201734", "1056201763",
                    "1056201766", "1093501642", "1093501649",  "1093501690",
@@ -779,9 +779,6 @@ rownames(preTrans) <- rownum
 
 # 2nd dose
 second <- lungene[, c(1, 63:123)]
-
-second[is.na(second)] <- 1e-7 
-second[second == 0] <- 1e-7
 
 colnames(second) <- c("vjGene", "1056201630", "1056201652", "1056201723", 
                       "1056201734", "1056201763", "1056201766", "1093501642",
