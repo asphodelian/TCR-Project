@@ -947,3 +947,8 @@ second$'20007341336' <- scale(second$'20007341336')
 second$'20007341420' <- scale(second$'20007341420')
 
 second$'20011092291' <- scale(second$'20011092291')
+
+# transposing time
+trans2 <- as.data.frame(t(second))
+
+colnames(trans2) <- c()
