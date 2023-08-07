@@ -781,6 +781,7 @@ rownames(preTrans) <- rownum
 second <- lungene[, c(1, 63:123)]
 
 second[is.na(second)] <- 1e-7 
+second[second == 0] <- 1e-7
 
 colnames(second) <- c("vjGene", "1056201630", "1056201652", "1056201723", 
                       "1056201734", "1056201763", "1056201766", "1093501642",
