@@ -60,7 +60,10 @@ lungene <- lungenes[, -c(2:70)]
 lungene[is.na(lungene)] <- 1e-7 
 lungene[lungene == 0] <- 1e-7
 
-# pre-infusion
+################
+# Pre-Infusion #
+################
+
 pre <-  lungene[, c(1:62)]
 
 # column names
@@ -777,7 +780,10 @@ rownum <- c(1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
 
 rownames(preTrans) <- rownum
 
-# 2nd dose
+############
+# 2nd dose #
+############
+
 second <- lungene[, c(1, 63:123)]
 
 colnames(second) <- c("vjGene", "1056201630", "1056201652", "1056201723", 
@@ -799,3 +805,140 @@ colnames(second) <- c("vjGene", "1056201630", "1056201652", "1056201723",
                       "20007341206", "20007341222", "20007341336", 
                       "20007341420", "20011092291")
 
+# log transform
+second$'1056201630' <- log(second$'1056201630')
+second$'1056201652' <- log(second$'1056201652')
+second$'1056201723' <- log(second$'1056201723')
+second$'1056201734' <- log(second$'1056201734')
+second$'1056201763' <- log(second$'1056201763')
+second$'1056201766' <- log(second$'1056201766')
+second$'1093501642' <- log(second$'1093501642')
+second$'1093501649' <- log(second$'1093501649')
+second$'1093501690' <- log(second$'1093501690')
+second$'1322701679' <- log(second$'1322701679')
+
+second$'1351901585' <- log(second$'1351901585')
+second$'1351901590' <- log(second$'1351901590')
+second$'1351901743' <- log(second$'1351901743')
+second$'1351901799' <- log(second$'1351901799')
+second$'1371101668' <- log(second$'1371101668')
+second$'1371101712' <- log(second$'1371101712')
+second$'2000044446' <- log(second$'2000044446')
+second$'2000044739' <- log(second$'2000044739')
+second$'2000044755' <- log(second$'2000044755')
+second$'2000044784' <- log(second$'2000044784')
+
+second$'2000134826' <- log(second$'2000134826')
+second$'2000199725' <- log(second$'2000199725')
+second$'2000206731' <- log(second$'2000206731')
+second$'2000206742' <- log(second$'2000206742')
+second$'2000206980' <- log(second$'2000206980')
+second$'2000210806' <- log(second$'2000210806')
+second$'2000210942' <- log(second$'2000210942')
+second$'2000211830' <- log(second$'2000211830')
+second$'10025011361' <- log(second$'10025011361')
+second$'10562011366' <- log(second$'10562011366')
+
+second$'10562011565' <- log(second$'10562011565')
+second$'12455011536' <- log(second$'12455011536')
+second$'13227011150' <- log(second$'13227011150')
+second$'13519011344' <- log(second$'13519011344')
+second$'13519011345' <- log(second$'13519011345')
+second$'13519011353' <- log(second$'13519011353')
+second$'13711011381' <- log(second$'13711011381')
+second$'20000891275' <- log(second$'20000891275')
+second$'20001081074' <- log(second$'20001081074')
+second$'20001331759' <- log(second$'20001331759')
+
+second$'20001351017' <- log(second$'20001351017')
+second$'20001352321' <- log(second$'20001352321')
+second$'20001971574' <- log(second$'20001971574')
+second$'20001991312' <- log(second$'20001991312')
+second$'20002061360' <- log(second$'20002061360')
+second$'20002062054' <- log(second$'20002062054')
+second$'20002081760' <- log(second$'20002081760')
+second$'20002081893' <- log(second$'20002081893')
+second$'20002091874' <- log(second$'20002091874')
+second$'20002091885' <- log(second$'20002091885')
+
+second$'20002101827' <- log(second$'20002101827')
+second$'2000211132' <- log(second$'2000211132')
+second$'20002132350' <- log(second$'20002132350')
+second$'20002181234' <- log(second$'20002181234')
+second$'20004391109' <- log(second$'20004391109')
+second$'20004391114' <- log(second$'20004391114')
+second$'20007341206' <- log(second$'20007341206')
+second$'20007341222' <- log(second$'20007341222')
+second$'20007341336' <- log(second$'20007341336')
+second$'20007341420' <- log(second$'20007341420')
+
+second$'20011092291' <- log(second$'20011092291')
+
+# standardize
+second$'1056201630' <- scale(second$'1056201630')
+second$'1056201652' <- scale(second$'1056201652')
+second$'1056201723' <- scale(second$'1056201723')
+second$'1056201734' <- scale(second$'1056201734')
+second$'1056201763' <- scale(second$'1056201763')
+second$'1056201766' <- scale(second$'1056201766')
+second$'1093501642' <- scale(second$'1093501642')
+second$'1093501649' <- scale(second$'1093501649')
+second$'1093501690' <- scale(second$'1093501690')
+second$'1322701679' <- scale(second$'1322701679')
+
+second$'1351901585' <- scale(second$'1351901585')
+second$'1351901590' <- scale(second$'1351901590')
+second$'1351901743' <- scale(second$'1351901743')
+second$'1351901799' <- scale(second$'1351901799')
+second$'1371101668' <- scale(second$'1371101668')
+second$'1371101712' <- scale(second$'1371101712')
+second$'2000044446' <- scale(second$'2000044446')
+second$'2000044739' <- scale(second$'2000044739')
+second$'2000044755' <- scale(second$'2000044755')
+second$'2000044784' <- scale(second$'2000044784')
+
+second$'2000134826' <- scale(second$'2000134826')
+second$'2000199725' <- scale(second$'2000199725')
+second$'2000206731' <- scale(second$'2000206731')
+second$'2000206742' <- scale(second$'2000206742')
+second$'2000206980' <- scale(second$'2000206980')
+second$'2000210806' <- scale(second$'2000210806')
+second$'2000210942' <- scale(second$'2000210942')
+second$'2000211830' <- scale(second$'2000211830')
+second$'10025011361' <- scale(second$'10025011361')
+second$'10562011366' <- scale(second$'10562011366')
+
+second$'10562011565' <- scale(second$'10562011565')
+second$'12455011536' <- scale(second$'12455011536')
+second$'13227011150' <- scale(second$'13227011150')
+second$'13519011344' <- scale(second$'13519011344')
+second$'13519011345' <- scale(second$'13519011345')
+second$'13519011353' <- scale(second$'13519011353')
+second$'13711011381' <- scale(second$'13711011381')
+second$'20000891275' <- scale(second$'20000891275')
+second$'20001081074' <- scale(second$'20001081074')
+second$'20001331759' <- scale(second$'20001331759')
+
+second$'20001351017' <- scale(second$'20001351017')
+second$'20001352321' <- scale(second$'20001352321')
+second$'20001971574' <- scale(second$'20001971574')
+second$'20001991312' <- scale(second$'20001991312')
+second$'20002061360' <- scale(second$'20002061360')
+second$'20002062054' <- scale(second$'20002062054')
+second$'20002081760' <- scale(second$'20002081760')
+second$'20002081893' <- scale(second$'20002081893')
+second$'20002091874' <- scale(second$'20002091874')
+second$'20002091885' <- scale(second$'20002091885')
+
+second$'20002101827' <- scale(second$'20002101827')
+second$'2000211132' <- scale(second$'2000211132')
+second$'20002132350' <- scale(second$'20002132350')
+second$'20002181234' <- scale(second$'20002181234')
+second$'20004391109' <- scale(second$'20004391109')
+second$'20004391114' <- scale(second$'20004391114')
+second$'20007341206' <- scale(second$'20007341206')
+second$'20007341222' <- scale(second$'20007341222')
+second$'20007341336' <- scale(second$'20007341336')
+second$'20007341420' <- scale(second$'20007341420')
+
+second$'20011092291' <- scale(second$'20011092291')
