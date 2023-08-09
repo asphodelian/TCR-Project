@@ -61,7 +61,6 @@ TRBV9
 
 -- J Genes --
 
-
 TRBJ1-1
 TRBJ1-2
 TRBJ1-3
