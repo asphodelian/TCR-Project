@@ -55,9 +55,8 @@ SKAT test
 - testing the SKAT package
 Tao He Research
 - initial EDA
-Text docs
-- Gene Names
-- vj gene
+vj Names
+- text doc containing v and j gene names
 ```
 7. LICENSE
 8. README
