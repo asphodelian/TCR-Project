@@ -14,3 +14,11 @@ library(readxl)
 library(SKAT)
 library(tidyr)
 library(xlsx)
+
+############
+# Datasets #
+############
+
+pre <- read_excel("C:/Users/knigh/OneDrive/Desktop/Github/TCR-Project/Datasets/Lung Data/predose.xlsx")
+
+second <- read_excel("C:/Users/knigh/OneDrive/Desktop/Github/TCR-Project/Datasets/Lung Data/2ndose.xlsx")
