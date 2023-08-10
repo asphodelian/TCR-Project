@@ -38,27 +38,26 @@ row.names(combine) <- combine[,1]
 combine$vjGene <- NULL
 
 # log
-combine <- log(combine) 
+logComb <- log(combine)
 
 # transpose
-transComb <- t(combine)
+transComb <- t(logComb)
 
 # standardize
-transComb.std <- scale(transComb)
+combStand <- scale(transComb)
 
-# colnames
+# row names
 
 pt.names <- colnames(combine)
 pt.length <- numeric(70)
-newName <- character(pt.length)
+newName <- character(length(pt.length))
 
 for(i in 1:70) {
   a <- strsplit(pt.names[i], split = "-")[[1]]
   newName[i] <- paste(a[3], a[4], sep = "_")
 }
 
-rownames(transComb.std)[1:70] <- newName
+rownames(combStand)[1:70] <- newName
 
-healthy.pt <- c(paste("HD", 1:9, sep = "0"), paste("HD", 10:39, sep = ""))
 
-rownames(transComb.std)[71:109] <- healthy.pt
+
