@@ -61,6 +61,21 @@ combine <- merge(C19vj, vj, by = "vjGene")
 # replace NAs w/ extremely small number (10e-8)
 combine[is.na(combine)] <- 1e-7
 
+row.names(combine) <- combine[,1]
+
+combine$vjGene <- NULL
+
+combine <- log(combine) #2*combine, combine+1
+
+tcombine <- t(combine)
+
+tcombine.std <- scale(tcombine)
+
+#mean.vec <- apply(tcombine.std,2,mean)
+#sum(mean.vec^2)
+
+#sd.vec <- apply(tcombine.std,2,sd)
+
 # combine prep
 colnames(combine) <- c("vjGene", "1_1", "1_2", "1_3", "1_4", "1_5", "1_6",
                        "1_7", "1_8", "1_9", "10_1", "10_2", "10_3", "10_4", 
@@ -200,6 +215,8 @@ combine$HD37 <- log(combine$HD37)
 combine$HD38 <- log(combine$HD38)
 combine$HD39 <- log(combine$HD39)
 
+tcombine <- t(combine)
+colnames(tcombine) <- combine[1,]
 # standardize
 combine$'1_1' <- scale(combine$'1_1')
 combine$'1_2' <- scale(combine$'1_2')
