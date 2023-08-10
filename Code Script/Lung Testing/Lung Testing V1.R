@@ -1496,6 +1496,6 @@ trans2 <- select(trans2, Patient.ID, "TRBV1_TRBJ1-1", "TRBV1_TRBJ1-2",
 rownames(trans2) <- rownum
 
 # saving as excel file
-#write.xlsx(preTrans, 
-#           "C:/Users/knigh/OneDrive/Desktop/Github/TCR-Project/Datasets/Lung Data/predose.xlsx", 
+#write.xlsx(trans2, 
+#           "C:/Users/knigh/OneDrive/Desktop/Github/TCR-Project/Datasets/Lung Data/2ndose.xlsx", 
 #           row.names = FALSE)
