@@ -20,5 +20,7 @@ library(xlsx)
 ############
 
 pre <- read_excel("C:/Users/knigh/OneDrive/Desktop/Github/TCR-Project/Datasets/Lung Data/predose.xlsx")
+dim(pre)
 
 second <- read_excel("C:/Users/knigh/OneDrive/Desktop/Github/TCR-Project/Datasets/Lung Data/2ndose.xlsx")
+dim(second)
