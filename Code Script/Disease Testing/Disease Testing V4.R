@@ -454,34 +454,34 @@ p.adjust(pj, method = p.adjust.methods, n = length(pj))
 
 # dataframe
 # v gene
-dfv16 <- gene[, colv16]
-dfv26 <- gene[, colv26]
+dfv16 <- gene[, colv18]
 dfv27 <- gene[, colv27] 
+dfv47 <- gene[, colv47] 
 # j gene
 dfj7 <- gene[, colj7]
-dfj9 <- gene[, colj9]
 dfj10 <- gene[, colj10]
+dfj13 <- gene[, colj13]
 
 # pca res
 # v gene
 pcav16 <- prcomp(dfv16, scale. = TRUE)
-pcav26 <- prcomp(dfv26, scale. = TRUE)
-pcav27 <- prcomp(dfv27, scale. = TRUE) 
+pcav27 <- prcomp(dfv27, scale. = TRUE)
+pcav47 <- prcomp(dfv47, scale. = TRUE) 
 # j gene
 pcaj7 <- prcomp(dfj7, scale. = TRUE)
-pcaj9 <- prcomp(dfj9, scale. = TRUE)
 pcaj10 <- prcomp(dfj10, scale. = TRUE)
+pcaj13 <- prcomp(dfj13, scale. = TRUE)
 
 # plot
 autoplot(pcav16, data = gene, colour = 'Y')
-autoplot(pcav26, data = gene, colour = 'Y')
 autoplot(pcav27, data = gene, colour = 'Y')
+autoplot(pcav47, data = gene, colour = 'Y')
 autoplot(pcaj7, data = gene, colour = 'Y')
-autoplot(pcaj9, data = gene, colour = 'Y')
 autoplot(pcaj10, data = gene, colour = 'Y')
+autoplot(pcaj13, data = gene, colour = 'Y')
 
 # trying the whole dataset
-dfull <- gene[3:630]
+dfull <- gene[2:677]
 pcaFull <- prcomp(dfull, scale. = TRUE)
 autoplot(pcaFull, data = gene, colour = 'Y')
 
