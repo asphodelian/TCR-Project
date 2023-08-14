@@ -179,7 +179,7 @@ colj13 <- grep(stringj13, names(gene), value = TRUE)
 set.na1 <- c(22)
 set.na2 <- c(94:109)
 Y1 <- gene$Y1
-Y1[set.na1] <- "active"
+Y1[set.na1] <- "recovered"
 Y1[set.na2] <- "healthy"
 
 #################
@@ -346,31 +346,39 @@ rh.jRes
 
 # dataframe
 gene$Y1 <- Y1
-dfull <- gene[3:630]
+dfull <- gene[2:677]
 
 # v gene
-ar.v <- actRec[, c(colv1, colv2, colv3, colv4, colv5, colv8, colv9, colv11,
-                   colv12, colv13, colv14, colv15, colv16, colv17, colv18,
-                   colv20, colv22, colv23, colv24, colv26, colv27, colv28,
-                   colv29, colv30, colv31, colv32, colv33, colv34, colv35, 
-                   colv37, colv39, colv40, colv41, colv42, colv45, colv46, 
-                   colv47, colv49, colv50)] 
+ar.v <- actRec[, c(colv1, colv2, colv3, colv4, colv5, colv6, colv7, colv8, 
+                   colv10, colv11, colv12, colv13, colv14, colv15, colv16,
+                   colv17, colv18, colv19, colv20, colv21, colv22, colv23,
+                   colv24, colv25, colv27, colv28, colv29, colv30, colv31, 
+                   colv32, colv33, colv34, colv35, colv36, colv37, colv38,
+                   colv39, colv40, colv41, colv42, colv43, colv44, colv45,
+                   colv46, colv47, colv48, colv49, colv50)] 
+ar.v <- ar.v[, which(apply(ar.v, 2, var) != 0)]
 
-ah.v <- actHea[, c(colv9, colv24, colv37, colv40, colv45)] 
+ah.v <- actHea[, c(colv13, colv37)] 
 
-rh.v <- recHea[, c(colv3, colv8, colv16, colv17, colv18, colv20, colv23, 
-                   colv27, colv30, colv31, colv32, colv40, colv42, colv46,
-                   colv47, colv48, colv49)]
+rh.v <- recHea[, c(colv1, colv2, colv4, colv5, colv7, colv8, colv9, colv10, 
+                   colv11, colv12, colv14, colv15, colv16, colv17, colv18, 
+                   colv19, colv20, colv21, colv22, colv23, colv24, colv25,
+                   colv26, colv27, colv29, colv30, colv31, colv32, colv33,
+                   colv34, colv35, colv36, colv39, colv40, colv41, colv42,
+                   colv44, colv46, colv47, colv48, colv49, colv50)]
+rh.v <- rh.v[, which(apply(rh.v, 2, var) != 0)]
 
 # j gene
 ar.j <- actRec[, c(colv1, colv2, colv3, colv4, colv5, colv6, colv7, colv8, 
-                   colv9, colv11, colv12, colv13)]
+                   colv9, colv10, colv11, colv12, colv13)]
 ar.j <- ar.j[, which(apply(ar.j, 2, var) != 0)]
 
-ah.j <- actHea[, c(colj7, colj13)] 
+ah.j <- actHea[, c(colj2, colj4, colj6, colj8, colj9, colj10, colj11, colj12,
+                   colj13)] 
+ah.j <- ah.j[, which(apply(ah.j, 2, var) != 0)]
 
 rh.j <- recHea[, c(colv1, colv2, colv3, colv4, colv5, colv6, colv7, colv8, 
-                   colv9, colv19, colv11, colv12, colv13)]
+                   colv9, colv10, colv11, colv12, colv13)]
 rh.j <- rh.j[, which(apply(rh.j, 2, var) != 0)]
 
 # pca res
