@@ -298,7 +298,7 @@ for (i in 1:50) {
   out <- SKATBinary(sub, obj.ar, kernel = "linear.weighted")
   p <- out$p.value
   pvec[i] <- p
-  cat("P-value of subv", i, "is:", p, "\n")
+#  cat("P-value of subv", i, "is:", p, "\n")
 }
 vres <- data.frame(cbind(c(1:50), pvec))
 colnames(vres) <- c("vgene.idx","pvalue")
@@ -310,7 +310,7 @@ for (i in 1:13) {
   out <- SKATBinary(sub, obj.ar, kernel = "linear.weighted")
   p <- out$p.value
   pval[i] <- p
-  cat("P-value of subj", i, "is:", p, "\n")
+#  cat("P-value of subj", i, "is:", p, "\n")
 }
 jres <- data.frame(cbind(c(1:13),pval))
 colnames(jres) <- c("jgene.idx","p-value")
