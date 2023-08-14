@@ -565,3 +565,171 @@ rownames(final) <- final$Sample.ID
 gene <- read_excel("C:/Users/knigh/OneDrive/Desktop/Github/TCR-Project/Datasets/Disease Data/fullgenes.xlsx")
 attach(gene)
 
+# Partial string to match in column names
+# Only with the v part of the gene
+string1 <- "TRBV10-1"
+string2 <- "TRBV10-2"
+string3 <- "TRBV10-3"
+string4 <- "TRBV11-1"
+string5 <- "TRBV11-2"
+string6 <- "TRBV11-3"
+string7 <- "TRBV12-1"
+string8 <- "TRBV12-3"
+string9 <- "TRBV12-4"
+string10 <- "TRBV12-5"
+
+string11 <- "TRBV13"
+string12 <- "TRBV14"
+string13 <- "TRBV15"
+string14 <- "TRBV18"
+string15 <- "TRBV19"
+string16 <- "TRBV2"
+string17 <- "TRBV20-1"
+string18 <- "TRBV21-1"
+string19 <- "TRBV23-1"
+string20 <- "TRBV24-1"
+
+string21 <- "TRBV25-1"
+string22 <- "TRBV27"
+string23 <- "TRBV28"
+string24 <- "TRBV29-1"
+string25 <- "TRBV3-2"
+string26 <- "TRBV30"
+string27 <- "TRBV4-1"
+string28 <- "TRBV4-2"
+string29 <- "TRBV4-3"
+string30 <- "TRBV5-1"
+
+string31 <- "TRBV5-3"
+string32 <- "TRBV5-4"
+string33 <- "TRBV5-5"
+string34 <- "TRBV5-6"
+string35 <- "TRBV5-7"
+string36 <- "TRBV5-8"
+string37 <- "TRBV6-1"
+string38 <- "TRBV6-2"
+string39 <- "TRBV6-3"
+string40 <- "TRBV6-4"
+
+string41 <- "TRBV6-5"
+string42 <- "TRBV6-6"
+string43 <- "TRBV6-7"
+string44 <- "TRBV6-8"
+string45 <- "TRBV6-9"
+string46 <- "TRBV7-2"
+string47 <- "TRBV7-3"
+string48 <- "TRBV7-4"
+string49 <- "TRBV7-5"
+string50 <- "TRBV7-6"
+
+# Find columns that match the partial string
+col1 <- grep(string1, names(gene), value = TRUE)
+col2 <- grep(string2, names(gene), value = TRUE)
+col3 <- grep(string3, names(gene), value = TRUE)
+col4 <- grep(string4, names(gene), value = TRUE)
+col5 <- grep(string5, names(gene), value = TRUE)
+col6 <- grep(string6, names(gene), value = TRUE)
+col7 <- grep(string7, names(gene), value = TRUE)
+col8 <- grep(string8, names(gene), value = TRUE)
+col9 <- grep(string9, names(gene), value = TRUE)
+col10 <- grep(string10, names(gene), value = TRUE)
+
+col11 <- grep(string11, names(gene), value = TRUE)
+col12 <- grep(string12, names(gene), value = TRUE)
+col13 <- grep(string13, names(gene), value = TRUE)
+col14 <- grep(string14, names(gene), value = TRUE)
+col15 <- grep(string15, names(gene), value = TRUE)
+col16 <- grep(string16, names(gene), value = TRUE)
+col17 <- grep(string17, names(gene), value = TRUE)
+col18 <- grep(string18, names(gene), value = TRUE)
+col19 <- grep(string19, names(gene), value = TRUE)
+col20 <- grep(string20, names(gene), value = TRUE)
+
+col21 <- grep(string21, names(gene), value = TRUE)
+col22 <- grep(string22, names(gene), value = TRUE)
+col23 <- grep(string23, names(gene), value = TRUE)
+col24 <- grep(string24, names(gene), value = TRUE)
+col25 <- grep(string25, names(gene), value = TRUE)
+col26 <- grep(string26, names(gene), value = TRUE)
+col27 <- grep(string27, names(gene), value = TRUE)
+col28 <- grep(string28, names(gene), value = TRUE)
+col29 <- grep(string29, names(gene), value = TRUE)
+col30 <- grep(string30, names(gene), value = TRUE)
+
+col31 <- grep(string31, names(gene), value = TRUE)
+col32 <- grep(string32, names(gene), value = TRUE)
+col33 <- grep(string33, names(gene), value = TRUE)
+col34 <- grep(string34, names(gene), value = TRUE)
+col35 <- grep(string35, names(gene), value = TRUE)
+col36 <- grep(string36, names(gene), value = TRUE)
+col37 <- grep(string37, names(gene), value = TRUE)
+col38 <- grep(string38, names(gene), value = TRUE)
+col39 <- grep(string39, names(gene), value = TRUE)
+col40 <- grep(string40, names(gene), value = TRUE)
+
+col41 <- grep(string41, names(gene), value = TRUE)
+col42 <- grep(string42, names(gene), value = TRUE)
+col43 <- grep(string43, names(gene), value = TRUE)
+col44 <- grep(string44, names(gene), value = TRUE)
+col45 <- grep(string45, names(gene), value = TRUE)
+col46 <- grep(string46, names(gene), value = TRUE)
+col47 <- grep(string47, names(gene), value = TRUE)
+col48 <- grep(string48, names(gene), value = TRUE)
+col49 <- grep(string49, names(gene), value = TRUE)
+col50 <- grep(string50, names(gene), value = TRUE)
+
+# Subset the dataset with the matching columns
+sub1 <- as.matrix(gene[, col1])
+sub2 <- as.matrix(gene[, col2])
+sub3 <- as.matrix(gene[, col3])
+sub4 <- as.matrix(gene[, col4])
+sub5 <- as.matrix(gene[, col5])
+sub6 <- as.matrix(gene[, col6])
+sub7 <- as.matrix(gene[, col7])
+sub8 <- as.matrix(gene[, col8])
+sub9 <- as.matrix(gene[, col9])
+sub10 <- as.matrix(gene[, col10])
+
+sub11 <- as.matrix(gene[, col11])
+sub12 <- as.matrix(gene[, col12])
+sub13 <- as.matrix(gene[, col13])
+sub14 <- as.matrix(gene[, col14])
+sub15 <- as.matrix(gene[, col15])
+sub16 <- as.matrix(gene[, col16])
+sub17 <- as.matrix(gene[, col17])
+sub18 <- as.matrix(gene[, col18])
+sub19 <- as.matrix(gene[, col19])
+sub20 <- as.matrix(gene[, col20])
+
+sub21 <- as.matrix(gene[, col21])
+sub22 <- as.matrix(gene[, col22])
+sub23 <- as.matrix(gene[, col23])
+sub24 <- as.matrix(gene[, col24])
+sub25 <- as.matrix(gene[, col25])
+sub26 <- as.matrix(gene[, col26])
+sub27 <- as.matrix(gene[, col27])
+sub28 <- as.matrix(gene[, col28])
+sub29 <- as.matrix(gene[, col29])
+sub30 <- as.matrix(gene[, col30])
+
+sub31 <- as.matrix(gene[, col31])
+sub32 <- as.matrix(gene[, col32])
+sub33 <- as.matrix(gene[, col33])
+sub34 <- as.matrix(gene[, col34])
+sub35 <- as.matrix(gene[, col35])
+sub36 <- as.matrix(gene[, col36])
+sub37 <- as.matrix(gene[, col37])
+sub38 <- as.matrix(gene[, col38])
+sub39 <- as.matrix(gene[, col39])
+sub40 <- as.matrix(gene[, col40])
+
+sub41 <- as.matrix(gene[, col41])
+sub42 <- as.matrix(gene[, col42])
+sub43 <- as.matrix(gene[, col43])
+sub44 <- as.matrix(gene[, col44])
+sub45 <- as.matrix(gene[, col45])
+sub46 <- as.matrix(gene[, col46])
+sub47 <- as.matrix(gene[, col47])
+sub48 <- as.matrix(gene[, col48])
+sub49 <- as.matrix(gene[, col49])
+sub50 <- as.matrix(gene[, col50])
