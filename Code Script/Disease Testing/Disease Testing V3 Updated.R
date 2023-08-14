@@ -556,3 +556,12 @@ rownames(final) <- final$Sample.ID
 #write.xlsx(final, 
 #           "C:/Users/knigh/OneDrive/Desktop/Github/TCR-Project/Datasets/Disease Data/fullgenes.xlsx", 
 #           row.names = FALSE)
+
+################
+# SKAT Attempt #
+################
+
+# read in dataset
+gene <- read_excel("C:/Users/knigh/OneDrive/Desktop/Github/TCR-Project/Datasets/Disease Data/fullgenes.xlsx")
+attach(gene)
+
