@@ -549,3 +549,10 @@ final <- select(final, Sample.ID, "TRBV10-1_TRBJ1-1", "TRBV10-1_TRBJ1-2",
                "TRBV9_TRBJ1-6", "TRBV9_TRBJ2-1", "TRBV9_TRBJ2-2", 
                "TRBV9_TRBJ2-3", "TRBV9_TRBJ2-4", "TRBV9_TRBJ2-5", 
                "TRBV9_TRBJ2-6", "TRBV9_TRBJ2-7", Y, Y1)
+
+rownames(final) <- final$Sample.ID
+
+# saving as excel file
+#write.xlsx(final, 
+#           "C:/Users/knigh/OneDrive/Desktop/Github/TCR-Project/Datasets/Disease Data/fullgenes.xlsx", 
+#           row.names = FALSE)
