@@ -6,7 +6,7 @@ output: word_document
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = FALSE)
 ```
 
 This document is Part 1 of the final doc research. This will explain the prep work and jump into the SKAT and plot work with only Y. Part 2 will jump into work with Y1.
@@ -75,7 +75,7 @@ dim(vj)
 cat("\nDimensions of patients: \n")
 dim(patients)
 cat("\nDimensions of genes: \n")
-dim(genes)
+dim(gene)
 ```
 
 ### SKAT

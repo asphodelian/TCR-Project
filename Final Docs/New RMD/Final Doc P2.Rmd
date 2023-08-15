@@ -6,7 +6,7 @@ output: word_document
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = FALSE)
 ```
 
 This document is Part 2 of the final doc research. This will explain the work with the full dataset but with Y1. Everything is the same up until the columns part.
