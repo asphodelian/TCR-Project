@@ -193,7 +193,7 @@ Now after the columns, we will make three subsets based on Y1. This had caused a
 set.na1 <- c(22)
 set.na2 <- c(94:109)
 Y1 <- gene$Y1
-Y1[set.na1] <- "active"
+Y1[set.na1] <- "recovered"
 Y1[set.na2] <- "healthy"
 ```
 
@@ -247,7 +247,7 @@ colnames(ar.v) <- c("vgene.idx","pvalue")
 ar.v
 ```
 
-The p-values are far better when we do these kinds of pairs. The notable p-values are: colv1, colv2, colv3, colv4, colv5, colv8, colv9, colv11, colv12, colv13, colv14, colv15, colv16, colv17, colv18, colv20, colv22, colv23, colv24, colv26, colv27, colv28, colv29, colv30, colv31, colv32, colv33, colv34, colv35, colv37, colv39, colv40, colv41, colv42, colv45, colv46, colv47, colv49, and colv50.
+The p-values are far better when we do these kinds of pairs. The notable p-values are: colv1, colv2, colv3, colv4, colv5, colv6, colv7, colv8, colv10, colv11, colv12, colv13, colv14, colv15, colv16, colv17, colv18, colv20, colv21, colv22, colv23, colv24, colv25, colv27, colv28, colv29, colv30, colv31, colv32, colv33, colv34, colv35, colv36 colv37, colv38, colv39, colv40, colv41, colv42, colv43, colv44, colv45, colv46, colv47, colv48, colv49, and colv50.
 
 Here's the j gene for actRec:
 
@@ -287,7 +287,7 @@ colnames(ah.v) <- c("vgene.idx","pvalue")
 ah.v
 ```
 
-The notable p-values are: colv1, colv3, colv4, colv5, colv8, colv9, colv11, colv12, colv13, colv14, colv15, colv16, colv17, colv18, colv20, colv22, colv23, colv24, colv26, colv27, colv28, colv29, colv30, colv31, colv32, colv33, colv34, colv35, colv37, colv39, colv40, colv41, colv42, colv45, colv46, colv47, colv49, and colv50.
+The notable p-values are: colv13, colv36, colv37, colv39.
 
 Here's the j gene for actHea:
 
@@ -304,7 +304,7 @@ colnames(ah.j) <- c("jgene.idx","p-value")
 ah.j
 ```
 
-Here, the notable j genes are: colj2, colj5, colj7, colj8, colj11, and colj13.
+Here, the notable j genes are: colj3, colj8, and colj10.
 
 ## Recovered/Healthy
 
@@ -327,7 +327,7 @@ colnames(rh.v) <- c("vgene.idx","pvalue")
 rh.v
 ```
 
-The notable p-values are: colv1, colv2, colv3, colv4, colv5, colv8, colv9, colv11, colv12, colv13, colv14, colv15, colov16, colv17, colv18, colv20, colv22, colv23, colv24, colv26, colv27, colv28, colv29, colv30, colv31, colv32, colv33, colv34, colv35, colv37, colv39, colv40, colv41, colv42, colv45, colv46, colv47, colv48, colv49, and colv50.
+The notable p-values are all of them.
 
 Here's the j gene for recHea:
 
@@ -348,7 +348,7 @@ Here, all the j genes are notable.
 
 Now, let's do the p-value adjustments on each one
 
-## actRec
+## actRec: P-value Adjustment
 
 Here's for the actRec's v genes:
 
@@ -361,7 +361,7 @@ colnames(ar.vRes) <- c("vgene.idx","p-value")
 ar.vRes
 ```
 
-The notable v gene columns are: 1, 2, 3, 4, 5, 8, 9, 12, 13, 14, 15, 16, 17, 20, 22, 23, 24, 26, 27, 30, 31, 32, 33, 34, 35, 37, 39, 40, 41, 42, 45, 46, 47, 49, and 50.
+The notable v gene columns are: 1, 2, 3, 4, 5, 6, 8, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 27, 29, 30, 31, 32, 33, 34, 35, 36, 37, 39, 40, 41, 42, 44, 45, 46, 47, 48, 49, and 50.
 
 And here's for the j genes:
 
@@ -374,9 +374,9 @@ colnames(ar.jRes) <- c("jgene.idx","p-value")
 ar.jRes
 ```
 
-The notable j gene columns are: 4, 5, 6, 7, 9, 10, 11, 12, and 13.
+The notable j gene columns are all of them.
 
-## actHea
+## actHea: P-value Adjustment
 
 Here's for the actHea's v genes:
 
@@ -389,7 +389,7 @@ colnames(ah.vRes) <- c("vgene.idx","p-value")
 ah.vRes
 ```
 
-The notable v gene columns are: 9, 26, and 45.
+The notable v gene column is 37.
 
 And here's for the j genes:
 
@@ -402,9 +402,9 @@ colnames(ah.jRes) <- c("jgene.idx","p-value")
 ah.jRes
 ```
 
-The notable j gene columns are: 7 and 8.
+The notable j gene columns are none.
 
-## recHea
+## recHea: P-value Adjustment
 
 Here's for the recHea's v genes:
 
@@ -417,7 +417,7 @@ colnames(rh.vRes) <- c("vgene.idx","p-value")
 rh.vRes
 ```
 
-The notable v gene columns are: 4, 8, 15, 17 (debatable), 22, 27, 30, 47, 48, and 49.
+The notable v gene columns are: 3, 10, 15, 16, 18, 19, 24, 27, 30, 31, 33, 36, 40, 46, 47, and 49.
 
 And here's for the j genes:
 
@@ -430,7 +430,7 @@ colnames(rh.jRes) <- c("jgene.idx","p-value")
 rh.jRes
 ```
 
-The notable j gene columns are: 3, 5, 7, 10, and 13.
+The notable j gene columns are: 1, 2, 3, 4, 6, 7, 9, 10, 12, and 13.
 
 ### PCA Plots
 
@@ -441,28 +441,30 @@ First, we need to do some prep for the plots.
 ```{r}
 # dataframe
 gene$Y1 <- Y1
-dfull <- gene[3:630]
+dfull <- gene[2:677]
 
 # v gene
-ar.v <- actRec[, c(colv1, colv2, colv3, colv4, colv5, colv8, colv9, colv12, 
-                   colv13, colv14, colv15, colv16, colv17, colv20, colv22, 
-                   colv23, colv24, colv26, colv27, colv30, colv31, colv32, 
-                   colv33, colv34, colv35, colv37, colv39, colv40, colv41, 
-                   colv42, colv45, colv46, colv47, colv49, colv50)] 
+ar.v <- actRec[, c(colv1, colv2, colv3, colv4, colv5, colv6, colv8, colv10, 
+                   colv11, colv12, colv13, colv14, colv15, colv16, colv17, 
+                   colv18, colv19, colv20, colv21, colv22, colv23, colv24, 
+                   colv25, colv27, colv29, colv30, colv31, colv32, colv33, 
+                   colv34, colv35, colv36, colv37, colv39, colv40, colv41, 
+                   colv42, colv44, colv45, colv46, colv47, colv48, colv49, 
+                   colv50)] 
 
-ah.v <- actHea[, c(colv9, colv26, colv45)] 
+ah.v <- actHea[, colv37] 
 
-rh.v <- recHea[, c(colv4, colv8, colv15, colv17, colv22, colv27, colv30, 
-                   colv47, colv48, colv49)]
+rh.v <- recHea[, c(colv3, colv10, colv15, colv16, colv18, colv19, colv24, 
+                   colv27, colv30, colv31, colv33, colv36, colv40, colv46, 
+                   colv47, colv49)]
 
 # j gene
-ar.j <- actRec[, c(colj4, colj5, colj6, colj7, colj9, colj10, colj11, colj12, 
-                   colj13)]
+ar.j <- actRec[, c(colj1, colj2, colj3, colj4, colj5, colj6, colj7, colj8, 
+                   colj9, colj10, colj11, colj12, colj13)]
 ar.j <- ar.j[, which(apply(ar.j, 2, var) != 0)]
 
-ah.j <- actHea[, c(colj7, colj8)] 
-
-rh.j <- recHea[, c(colj3, colj5, colj7, colj10, colj13)]
+rh.j <- recHea[, c(colj1, colj2, colj3, colj4, colj6, colj7, colj9, colj10, 
+                   colj12, colj13)]
 rh.j <- rh.j[, which(apply(rh.j, 2, var) != 0)]
 
 # pca res
@@ -492,7 +494,6 @@ autoplot(pca.arV, data = actRec, colour = 'Y1')
 autoplot(pca.ahV, data = actHea, colour = 'Y1')
 autoplot(pca.rhV, data = recHea, colour = 'Y1')
 autoplot(pca.arJ, data = actRec, colour = 'Y1')
-autoplot(pca.ahJ, data = actHea, colour = 'Y1')
 autoplot(pca.rhJ, data = recHea, colour = 'Y1')
 autoplot(pcaFull, data = gene, colour = 'Y1')
 
