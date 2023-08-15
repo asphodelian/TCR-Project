@@ -29,10 +29,12 @@ Lung Data
 - contains the final "official" documentation of this project
 - word doc versions included
 ```
-Final Doc Research P1
-- Prep work explanation & jumping into what was done on the full dataset, particularly with Y
-Final Doc Research P2
-- Work done on the full dataset with Y1
+New RMD
+- The new markdowns of the final docs
+New Word
+- The new word docs of the final docs
+Old Docs
+- The old markdowns and work docs of the final versions
 ```
 4. PCA Plots
 - contains all PCA plots done for this project
