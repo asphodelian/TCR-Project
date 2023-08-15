@@ -277,12 +277,12 @@ for (i in 1:50) {
   out <- SKATBinary(sub, obj.s, kernel = "linear.weighted")
   p <- out$p.value
   pvalue.vec[i] <- p
-  print(dim(sub))
-  cat("P-value of subv", i, "is:", p, "\n")
+#  print(dim(sub))
+#  cat("P-value of subv", i, "is:", p, "\n")
 }
 result <- data.frame(cbind(c(1:50), pvalue.vec))
 colnames(result) <- c("vgene.idx", "pvalue")
-View(result)
+result
 
 # j gene
 pval <- rep(0,13)
@@ -292,11 +292,11 @@ for (i in 1:13) {
   out <- SKATBinary(sub, obj.s, kernel = "linear.weighted")
   p <- out$p.value
   pval[i] <- p
-  cat("P-value of subj", i, "is:", p, "\n")
+#  cat("P-value of subj", i, "is:", p, "\n")
 }
 jres <- data.frame(cbind(c(1:13),pval))
 colnames(jres) <- c("jgene.idx", "p-value")
-View(jres)
+jres
 
 # Double checking
 
@@ -454,9 +454,12 @@ p.adjust(pj, method = p.adjust.methods, n = length(pj))
 
 # dataframe
 # v gene
-dfv16 <- gene[, colv18]
+dfv10 <- gene[, colv10]
+dfv18 <- gene[, colv18] 
+dfv19 <- gene[, colv19] 
 dfv27 <- gene[, colv27] 
-dfv47 <- gene[, colv47] 
+dfv43 <- gene[, colv43]
+dfv47 <- gene[, colv47]
 # j gene
 dfj7 <- gene[, colj7]
 dfj10 <- gene[, colj10]
@@ -464,8 +467,11 @@ dfj13 <- gene[, colj13]
 
 # pca res
 # v gene
-pcav16 <- prcomp(dfv16, scale. = TRUE)
+pcav10 <- prcomp(dfv10, scale. = TRUE)
+pcav18 <- prcomp(dfv18, scale. = TRUE)
+pcav19 <- prcomp(dfv19, scale. = TRUE) 
 pcav27 <- prcomp(dfv27, scale. = TRUE)
+pcav43 <- prcomp(dfv43, scale. = TRUE)
 pcav47 <- prcomp(dfv47, scale. = TRUE) 
 # j gene
 pcaj7 <- prcomp(dfj7, scale. = TRUE)
@@ -473,9 +479,13 @@ pcaj10 <- prcomp(dfj10, scale. = TRUE)
 pcaj13 <- prcomp(dfj13, scale. = TRUE)
 
 # plot
-autoplot(pcav16, data = gene, colour = 'Y')
+autoplot(pcav10, data = gene, colour = 'Y')
+autoplot(pcav18, data = gene, colour = 'Y')
+autoplot(pcav19, data = gene, colour = 'Y')
 autoplot(pcav27, data = gene, colour = 'Y')
+autoplot(pcav43, data = gene, colour = 'Y')
 autoplot(pcav47, data = gene, colour = 'Y')
+
 autoplot(pcaj7, data = gene, colour = 'Y')
 autoplot(pcaj10, data = gene, colour = 'Y')
 autoplot(pcaj13, data = gene, colour = 'Y')
