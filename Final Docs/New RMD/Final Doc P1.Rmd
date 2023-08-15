@@ -41,58 +41,29 @@ vj <- read_csv("D:/Coding/R Storage/Summer TCR Project/TCR Datasets/dt.HD_TCR.vj
 patients <- read_excel("D:/Coding/R Storage/Summer TCR Project/TCR Datasets/dt.info_edited.xlsx")
 ```
 
-### Summary of each dataset
-
-Summary of C19vj:
-
-```{r}
-C19vj <- C19vj %>% 
-  mutate_at(c('vjGene'), as.factor)
-summary(C19vj)
-```
-
-Summary of vj:
-
-```{r}
-vj <- vj %>% 
-  mutate_at(c('vjGene'), as.factor)
-summary(vj)
-```
-
-Summary of patients as factor:
-
-```{r}
-patients <- patients %>% 
-  mutate_at(c('Sample.ID', 'diseae.stage', 'days.from.first.symptoms', 
-              'patient.ID', 'time', 'choose', '...7', 'comment'), 
-            as.factor)
-summary(patients)
-```
-
 ### New dataset
 
-Combined all three into one dataset called gene
+With some transforming, standardization, and cleanup, all three datasets were combined to make a new dataset called gene.
 
 ```{r}
 gene <- read_excel("D:/Coding/R Storage/Summer TCR Project/TCR Datasets/fullgenes.xlsx")
 attach(gene)
 ```
 
-C19vj and vj were first merged by the column vjGene, the dataset being named combine. Because of the multiple NAs in the value column, we replaced them with $1e^{-7}$. Then, we needed to rename to columns to match the Sample.ID column in patients. Next, we can use pivot_longer to log transform and standardize them. Finally, we can pivot_wider to make the dataset look like this:
+C19vj and vj were first merged by the column vjGene, the dataset being named combine. Because of the multiple NAs in the value column, we replaced them with $1e^{-7}$. The rows were then renamed to the entries in the vjGene column, which was then made NULL. After that, we natural logged the entire dataset before transposing it. This allowed the genes to be the columns and the patients as rows. Then, the log dataset was standardized.
+
+We did have to update the rownames, because we want the patient ID to look like this: 1_1, 10_3, and such. Now, we do need to add in a Sample.ID column, because without a common column, we can't merge the last dataset: patients.
+
+It is because, we want the dataset to look like this:
 
 | Patient | VJ1 | VJ2 |    Y    |   Y1   |
 |:-------:|:---:|:---:|:-------:|:------:|
 |  Pat 1  | ... | ... |    HD   |   HD   |
 |  Pat 2  | ... | ... | Disease | Active |
 
-There are NAs in terms of patients. For example, the healthy patients doesn't extend all the way to 39, it ended at 23. But they were kept in instead of removed, with the idea that it'll be done later down the line or the NAs will be replaced accordingly.
+The dataset had to become a dataframe first before the new column could be added. Once added, we can rearrange the columns and delete some that we don't need. Then, we can make a new Y column to have entries "disease" and "healthy" based on the Y1 column.
 
-```{r}
-genes <- gene %>% 
-  mutate_at(c('patient.ID', 'Sample.ID', 'Y', 'Y1'), as.factor)
-cat("Summary of genes: \n\n")
-summary(genes)
-```
+To note, there are NAs in terms of patients. For example, the healthy patients doesn't extend all the way to 39, it ended at 23. But they were kept in instead of removed, with the idea that it'll be done later down the line or the NAs will be replaced accordingly.
 
 Let's do a quick dimension check:
 
