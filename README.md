@@ -5,7 +5,7 @@ Welcome to the repository containing a snippet of a research project done during
 
 The main motivation of this research was to see if we can use the TCR/BCR (B-Cell Receptor) profile to predict the cancer type, if we can find some features of the TCR/BCR profile that can distinguish between different cancer types. However, with this work, we're using a dataset that looks at covid and healthy patients, where our Y is the disease stage (active, recovered, healthy). 
 
-We have also added in two datasets concerning lung patients and will be applying the same techniques used in the covid/healthy datasets.
+We have also added in two datasets concerning lung patients and will be applying the same techniques used in the covid/healthy datasets. Unfortunately, time ran out explore these datasets. Look to this [repo](https://github.com/asphodelian/Lung-Cancer) on its continuation!
 
 ## Inside the Repo
 1. Code Script
