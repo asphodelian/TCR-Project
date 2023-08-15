@@ -360,7 +360,7 @@ colnames(jres) <- c("jgene.idx", "p-value")
 jres
 ```
 
-Now with these, we can see that the notable v strings are 16, 26, and 27; while the notable j strings are 7, 9, and 10. Let's do a p-value adjustment to see if they still stand, especially because these are small samples.
+Now with these, we can see that the notable v strings are TRBV2 (v16), TRBV30 (v26), and TRBV4-1 (v27); while the notable j strings are TRBJ2-1 (j7), TRBJ2-3 (j9), and TRBJ2-4 (j10). Let's do a p-value adjustment to see if they still stand, especially because these are small samples.
 
 Here's for the v genes:
 
