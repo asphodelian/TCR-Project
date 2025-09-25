@@ -37,4 +37,4 @@ summary(gene)
 
 View(gene)
 
-# missing values, need to address
+# missing values in dataset, need to address
