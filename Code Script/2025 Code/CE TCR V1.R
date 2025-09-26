@@ -50,3 +50,11 @@ test <- -train
 train.data <- genedit[train,]
 test.data <- genedit[-train,]
 
+# dependent vars
+y <- train.data$Y # binary
+y[y == "disease"] <- 1 
+y1 <- train.data$Y1 # 3 classes
+
+#glm.fit
+glm.fit <- glm(y~., train.data, family = "binomial")
+summary(glm.fit)
