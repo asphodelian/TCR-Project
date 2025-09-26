@@ -11,6 +11,7 @@ library(factoextra)
 library(ggfortify)
 library(ggplot2)
 library(gridExtra)
+library(openxlsx)
 library(psych)
 library(readr)
 library(readxl)
@@ -27,8 +28,7 @@ library(glmnet) # ridge regress & LASSO
 ###########
 # Dataset #
 ###########
-
-gene <- read_excel("C:/Users/knigh/OneDrive/Desktop/Github/TCR-Project/Datasets/Disease Data/fullgenes.xlsx")
+gene <- openxlsx::read.xlsx("D:/Coding/R Storage/Summer TCR Project/TCR Datasets/2025/fullgenes.xlsx")
 attach(gene)
 
 dim(gene)
@@ -37,4 +37,8 @@ summary(gene)
 
 View(gene)
 
-# missing values in dataset, need to address
+# missing values in dataset
+rows <- c(22,94:110)
+genedit <- gene[-rows,]
+View(genedit)
+
