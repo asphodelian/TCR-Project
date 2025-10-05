@@ -38,3 +38,7 @@ is.na(gene$Y[22])
 is.na(gene$Y1[22])
 genedit <- gene[-22,]
 dim(genedit)
+
+genedit[is.na(genedit)] <- "healthy" 
+table(is.na(genedit$Y))
+table(is.na(genedit$Y1))
