@@ -33,3 +33,8 @@ dim(gene)
 head(names(gene))
 table(is.na(gene$Y))
 table(is.na(gene$Y1))
+
+is.na(gene$Y[22])
+is.na(gene$Y1[22])
+genedit <- gene[-22,]
+dim(genedit)
