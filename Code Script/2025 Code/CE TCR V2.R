@@ -88,7 +88,6 @@ results <- data.frame(
 results <- results[order(results$P_value), ]
 
 head(results)
-underA <- results[c(1:38),]
 
 ##############
 # GLM: Top 5 #
@@ -151,3 +150,42 @@ table(qda.class5, test.data$Y)
 mean(qda.class5 == test.data$Y)
 #0.7727273
 
+################################
+# Linear Discriminant Analysis #
+################################
+
+lda.fit1 = lda(Y ~ `TRBV9_TRBJ2-7`, data = train.data) 
+lda.fit1
+#plot(lda.fit1) # margins too large
+lda.class1 = predict(lda.fit1, test.data)$class
+table(lda.class1, test.data$Y)
+mean(lda.class1 == test.data$Y)
+# 0.7727273
+
+lda.fit2 = lda(Y ~ `TRBV23-1_TRBJ2-2`, data = train.data) 
+lda.fit2
+lda.class2 = predict(lda.fit2, test.data)$class
+table(lda.class2, test.data$Y)
+mean(lda.class2 == test.data$Y)
+# 0.7727273
+
+lda.fit3 = lda(Y ~ `TRBV7-6_TRBJ2-6`, data = train.data) 
+lda.fit3
+lda.class3 = predict(lda.fit3, test.data)$class
+table(lda.class3, test.data$Y)
+mean(lda.class3 == test.data$Y)
+# 0.7727273
+
+lda.fit4 = lda(Y ~ `TRBV4-1_TRBJ2-3`, data = train.data) 
+lda.fit4
+lda.class4 = predict(lda.fit4, test.data)$class
+table(lda.class4, test.data$Y)
+mean(lda.class4 == test.data$Y)
+# 0.6363636
+
+lda.fit5 = lda(Y ~ `TRBV2_TRBJ1-6`, data = train.data) 
+lda.fit5
+lda.class5 = predict(lda.fit5, test.data)$class
+table(lda.class5, test.data$Y)
+mean(lda.class5 == test.data$Y)
+# 0.7727273
