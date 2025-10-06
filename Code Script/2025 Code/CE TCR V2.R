@@ -57,9 +57,9 @@ y[y == "disease"] <- 1
 y[y == "healthy"] <- 0
 train.data$Y <- as.numeric(y)
 
-###########
-# glm.fit #
-###########
+#####################
+# Significant Genes #
+#####################
 
 col <- ncol(train.data)
 ycol <- col-1
@@ -88,8 +88,48 @@ results <- data.frame(
 results <- results[order(results$P_value), ]
 
 head(results)
+underA <- results[c(1:38),]
 
-glm.fit <- glm(Y ~ x, data = d1, family = binomial())
+genedit$`TRBV23-1_TRBJ2-2`
+genedit$`TRBV2_TRBJ1-6`
+genedit$`TRBV21-1_TRBJ2-3`
+genedit$`TRBV12-5_TRBJ2-6`
+genedit$`TRBV7-6_TRBJ2-6`
+genedit$`TRBV10-2_TRBJ2-2`
+genedit$`TRBV9_TRBJ1-6`
+genedit$`TRBV4-1_TRBJ2-3`
+genedit$`TRBV9_TRBJ2-6`
+genedit$`TRBV10-2_TRBJ1-6`
+genedit$`TRBV28_TRBJ2-2`
+genedit$`TRBV12-5_TRBJ1-5`
+genedit$`TRBV21-1_TRBJ2-6`
+genedit$`TRBV9_TRBJ2-2`
+genedit$`TRBV2_TRBJ2-6`
+genedit$`TRBV14_TRBJ2-3`
+genedit$`TRBV7-3_TRBJ1-6`
+genedit$`TRBV9_TRBJ1-3`
+genedit$`TRBV6-4_TRBJ2-5`
+genedit$`TRBV12-5_TRBJ1-6`
+genedit$`TRBV20-1_TRBJ2-3`
+genedit$`TRBV28_TRBJ1-6`
+genedit$`TRBV7-9_TRBJ2-7`
+genedit$`TRBV30_TRBJ1-5`
+genedit$`TRBV7-3_TRBJ2-2`
+genedit$`TRBV4-3_TRBJ2-4`
+genedit$`TRBV4-1_TRBJ1-6`
+genedit$`TRBV25-1_TRBJ2-2`
+genedit$`TRBV30_TRBJ1-3`
+genedit$`TRBV6-1_TRBJ1-1`
+genedit$`TRBV30_TRBJ2-2`
+genedit$`TRBV5-8_TRBJ2-7`
+genedit$`TRBV5-1_TRBJ2-6`
+genedit$`TRBV6-4_TRBJ2-6`
+genedit$`TRBV2_TRBJ2-4`
+genedit$`TRBV9_TRBJ1-2`
+genedit$`TRBV30_TRBJ2-5`
+genedit$`TRBV6-6_TRBJ2-4`
+
+glm.fit <- glm(Y ~ genedit$, data = genedit, family = binomial())
 summary(glm.fit)
 
 
