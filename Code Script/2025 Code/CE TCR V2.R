@@ -63,11 +63,11 @@ train.data$Y <- as.numeric(y)
 
 col <- ncol(train.data)
 ycol <- col-1
-gene_idx <- 2:(n-2)
+gene_idx <- 2:(col-2)
 gene.name <- names(train.data)[2:ncol(train.data)-2]
 pvalue <- rep(0,length(gene.name))
 
-for (i in seq_along(gene.name))
+for (i in seq_along(gene_idx))
 {
   gene_name <- gene.name[i]
   Xi <- train.data[, gene_idx[i], drop = FALSE]
@@ -90,46 +90,23 @@ results <- results[order(results$P_value), ]
 head(results)
 underA <- results[c(1:38),]
 
-genedit$`TRBV23-1_TRBJ2-2`
-genedit$`TRBV2_TRBJ1-6`
-genedit$`TRBV21-1_TRBJ2-3`
-genedit$`TRBV12-5_TRBJ2-6`
-genedit$`TRBV7-6_TRBJ2-6`
-genedit$`TRBV10-2_TRBJ2-2`
-genedit$`TRBV9_TRBJ1-6`
-genedit$`TRBV4-1_TRBJ2-3`
-genedit$`TRBV9_TRBJ2-6`
-genedit$`TRBV10-2_TRBJ1-6`
-genedit$`TRBV28_TRBJ2-2`
-genedit$`TRBV12-5_TRBJ1-5`
-genedit$`TRBV21-1_TRBJ2-6`
-genedit$`TRBV9_TRBJ2-2`
-genedit$`TRBV2_TRBJ2-6`
-genedit$`TRBV14_TRBJ2-3`
-genedit$`TRBV7-3_TRBJ1-6`
-genedit$`TRBV9_TRBJ1-3`
-genedit$`TRBV6-4_TRBJ2-5`
-genedit$`TRBV12-5_TRBJ1-6`
-genedit$`TRBV20-1_TRBJ2-3`
-genedit$`TRBV28_TRBJ1-6`
-genedit$`TRBV7-9_TRBJ2-7`
-genedit$`TRBV30_TRBJ1-5`
-genedit$`TRBV7-3_TRBJ2-2`
-genedit$`TRBV4-3_TRBJ2-4`
-genedit$`TRBV4-1_TRBJ1-6`
-genedit$`TRBV25-1_TRBJ2-2`
-genedit$`TRBV30_TRBJ1-3`
-genedit$`TRBV6-1_TRBJ1-1`
-genedit$`TRBV30_TRBJ2-2`
-genedit$`TRBV5-8_TRBJ2-7`
-genedit$`TRBV5-1_TRBJ2-6`
-genedit$`TRBV6-4_TRBJ2-6`
-genedit$`TRBV2_TRBJ2-4`
-genedit$`TRBV9_TRBJ1-2`
-genedit$`TRBV30_TRBJ2-5`
-genedit$`TRBV6-6_TRBJ2-4`
+##############
+# GLM: Top 5 #
+##############
+glm.fit1 <- glm(Y ~ `TRBV9_TRBJ2-7`, data = train.data, family = binomial())
+summary(glm.fit1) # both signif
 
-glm.fit <- glm(Y ~ genedit$, data = genedit, family = binomial())
-summary(glm.fit)
+glm.fit2 <- glm(Y ~ `TRBV23-1_TRBJ2-2`, data = train.data, family = binomial())
+summary(glm.fit2)
+
+glm.fit3 <- glm(Y ~ `TRBV7-6_TRBJ2-6`, data = train.data, family = binomial())
+summary(glm.fit3)
+
+glm.fit4 <- glm(Y ~ `TRBV4-1_TRBJ2-3`, data = train.data, family = binomial())
+summary(glm.fit4) # both signif
+
+glm.fit5 <- glm(Y ~ `TRBV2_TRBJ1-6`, data = train.data, family = binomial())
+summary(glm.fit5)
+
 
 
