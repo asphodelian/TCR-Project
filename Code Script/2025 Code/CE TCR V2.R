@@ -97,7 +97,7 @@ glm.fit1 <- glm(Y ~ `TRBV9_TRBJ2-7`, data = train.data, family = binomial())
 summary(glm.fit1) # both signif
 
 glm.fit2 <- glm(Y ~ `TRBV23-1_TRBJ2-2`, data = train.data, family = binomial())
-summary(glm.fit2)
+summary(glm.fit2) # both signif
 
 glm.fit3 <- glm(Y ~ `TRBV7-6_TRBJ2-6`, data = train.data, family = binomial())
 summary(glm.fit3)
@@ -108,5 +108,46 @@ summary(glm.fit4) # both signif
 glm.fit5 <- glm(Y ~ `TRBV2_TRBJ1-6`, data = train.data, family = binomial())
 summary(glm.fit5)
 
+###################################
+# Quadratic Discriminant Analysis #
+###################################
 
+test.data$Y[test.data$Y == "disease"] <- 1 
+test.data$Y[test.data$Y == "healthy"] <- 0
+test.data$Y <- as.numeric(test.data$Y)
+
+qda.fit1 <- qda(Y ~ `TRBV9_TRBJ2-7`, data = train.data)
+qda.fit1
+qda.class1 <- predict(qda.fit1, test.data)$class
+table(qda.class1, test.data$Y)
+mean(qda.class1 == test.data$Y)
+#0.7727273
+
+qda.fit2 <- qda(Y ~ `TRBV23-1_TRBJ2-2`, data = train.data)
+qda.fit2
+qda.class2 <- predict(qda.fit2, test.data)$class
+table(qda.class2, test.data$Y)
+mean(qda.class2 == test.data$Y)
+#0.3636364
+
+qda.fit3 <- qda(Y ~ `TRBV7-6_TRBJ2-6`, data = train.data)
+qda.fit3
+qda.class3 <- predict(qda.fit3, test.data)$class
+table(qda.class3, test.data$Y)
+mean(qda.class3 == test.data$Y)
+#0.7727273
+
+qda.fit4 <- qda(Y ~ `TRBV4-1_TRBJ2-3`, data = train.data)
+qda.fit2
+qda.class4 <- predict(qda.fit4, test.data)$class
+table(qda.class4, test.data$Y)
+mean(qda.class4 == test.data$Y)
+# 0.6363636
+
+qda.fit5 <- qda(Y ~ `TRBV2_TRBJ1-6`, data = train.data)
+qda.fit5
+qda.class5 <- predict(qda.fit5, test.data)$class
+table(qda.class5, test.data$Y)
+mean(qda.class5 == test.data$Y)
+#0.7727273
 
