@@ -43,7 +43,53 @@ genedit[is.na(genedit)] <- "healthy"
 table(is.na(genedit$Y))
 table(is.na(genedit$Y1))
 
+##############
+# Train/Test #
+##############
+
 train <- sample(1:nrow(genedit),0.8*nrow(genedit))
 test <- -train
 train.data <- genedit[train,]
 test.data <- genedit[-train,]
+
+y <- train.data$Y # binary
+y[y == "disease"] <- 1 
+y[y == "healthy"] <- 0
+train.data$Y <- as.numeric(y)
+
+###########
+# glm.fit #
+###########
+
+col <- ncol(train.data)
+ycol <- col-1
+gene_idx <- 2:(n-2)
+gene.name <- names(train.data)[2:ncol(train.data)-2]
+pvalue <- rep(0,length(gene.name))
+
+for (i in seq_along(gene.name))
+{
+  gene_name <- gene.name[i]
+  Xi <- train.data[, gene_idx[i], drop = FALSE]
+  names(Xi) <- gene.name  # set column name to the gene
+  
+  dat <- data.frame(Y = train.data[[ycol]], Xi, check.names = FALSE)
+  glm.fit <- glm(Y ~ ., data = dat, family = binomial())
+  pvalue[i] <- coef(summary(glm.fit))[2, 4]
+}
+
+# Combine results into a nice table:
+results <- data.frame(
+  Gene = gene.name,
+  P_value = pvalue
+)
+
+# Sort by significance
+results <- results[order(results$P_value), ]
+
+head(results)
+
+glm.fit <- glm(Y ~ x, data = d1, family = binomial())
+summary(glm.fit)
+
+
