@@ -102,14 +102,14 @@ dim(alpha)
 ###########
 
 # make sure signif genes exist in train.data
-all_gene_names <- names(train.data)
-sig_genes <- intersect(alpha$Gene, all_gene_names)
+allName <- names(train.data)
+signif <- intersect(alpha$Gene, allName)
 
-if (length(sig_genes) == 0L) stop("No significant genes found in train.data.")
+if (length(signif) == 0L) stop("No significant genes found in train.data.")
 
 # split into batches of 5 (last is smaller)
-batch_id <- ceiling(seq_along(sig_genes) / 5)
-batches  <- split(sig_genes, batch_id)       # list: batch -> character vector of genes
+batch_id <- ceiling(seq_along(signif) / 5)
+batches  <- split(signif, batch_id)       # list: batch -> character vector of genes
 
 # fit multivar log regress/batch
 models <- vector("list", length(batches))
@@ -185,26 +185,21 @@ head(batch_results)
 
 train.data$Y <- factor(train.data$Y, levels = c(0, 1))
 test.data$Y  <- factor(test.data$Y,  levels = levels(train.data$Y))
-
-# ensure signif genes exist in BOTH sets
+# 1) Genes to use (e.g., alpha$Gene) and ensure they exist in BOTH sets
 signif <- intersect(signif, intersect(names(train.data), names(test.data)))
 stopifnot(length(signif) > 0)
-
-# storage
+# 2) Split into batches of 5
+batches <- split(signif, ceiling(seq_along(signif) / 5))
+# 3) Storage
 qda_models <- vector("list", length(batches))
 names(qda_models) <- paste0("batch_", seq_along(batches))
-qda_perf <- data.frame(batch = character(), 
-                       Test_Acc = numeric(), 
-                       stringsAsFactors = FALSE)
-
-# QDA Loop
+qda_perf <- data.frame(batch = character(), Test_Acc = numeric(), stringsAsFactors = FALSE)
+# 4) Loop
 for (b in seq_along(batches)) {
   genes_b <- batches[[b]]
   cat("\n===== QDA Batch", b, "=====\n"); print(genes_b)
-  
   Xi_train <- train.data[, genes_b, drop = FALSE]
   Xi_test  <- test.data[,  genes_b, drop = FALSE]
-  
   # optional: drop zero-variance columns (prevents singulars)
   nzv <- vapply(Xi_train, function(x) length(unique(na.omit(x))) > 1, logical(1))
   if (!all(nzv)) {
@@ -235,6 +230,5 @@ for (b in seq_along(batches)) {
   
   qda_perf <- rbind(qda_perf, data.frame(batch = names(qda_models)[b], Test_Acc = acc))
 }
-
 # Summary across batches
 qda_perf
