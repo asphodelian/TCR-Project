@@ -101,17 +101,17 @@ dim(alpha)
 # GLM Fit #
 ###########
 
-## --- pick the genes to batch (p < 0.05) and make sure they exist in train.data
+# make sure signif genes exist in train.data
 all_gene_names <- names(train.data)
 sig_genes <- intersect(alpha$Gene, all_gene_names)
 
 if (length(sig_genes) == 0L) stop("No significant genes found in train.data.")
 
-## --- split into batches of 5 (last batch can be smaller)
+# split into batches of 5 (last is smaller)
 batch_id <- ceiling(seq_along(sig_genes) / 5)
 batches  <- split(sig_genes, batch_id)       # list: batch -> character vector of genes
 
-## --- fit one multivariable logistic regression per batch
+# fit multivar log regress/batch
 models <- vector("list", length(batches))
 names(models) <- paste0("batch_", seq_along(batches))
 
@@ -179,3 +179,62 @@ if (nrow(batch_results)) {
 # inspect
 head(batch_results)
 
+#######
+# QDA #
+#######
+
+train.data$Y <- factor(train.data$Y, levels = c(0, 1))
+test.data$Y  <- factor(test.data$Y,  levels = levels(train.data$Y))
+
+# ensure signif genes exist in BOTH sets
+signif <- intersect(signif, intersect(names(train.data), names(test.data)))
+stopifnot(length(signif) > 0)
+
+# storage
+qda_models <- vector("list", length(batches))
+names(qda_models) <- paste0("batch_", seq_along(batches))
+qda_perf <- data.frame(batch = character(), 
+                       Test_Acc = numeric(), 
+                       stringsAsFactors = FALSE)
+
+# QDA Loop
+for (b in seq_along(batches)) {
+  genes_b <- batches[[b]]
+  cat("\n===== QDA Batch", b, "=====\n"); print(genes_b)
+  
+  Xi_train <- train.data[, genes_b, drop = FALSE]
+  Xi_test  <- test.data[,  genes_b, drop = FALSE]
+  
+  # optional: drop zero-variance columns (prevents singulars)
+  nzv <- vapply(Xi_train, function(x) length(unique(na.omit(x))) > 1, logical(1))
+  if (!all(nzv)) {
+    Xi_train <- Xi_train[, nzv, drop = FALSE]
+    Xi_test  <- Xi_test[,  nzv, drop = FALSE]
+  }
+  if (ncol(Xi_train) == 0L) { warning("Batch ", b, " has no usable predictors; skipping."); next }
+  
+  dat_train <- data.frame(Y = train.data$Y, Xi_train, check.names = FALSE)
+  dat_test  <- data.frame(Y = test.data$Y,  Xi_test,  check.names = FALSE)
+  
+  # Fit + predict (test only)
+  qda.fit <- tryCatch(qda(Y ~ ., data = dat_train),
+                      error = function(e) { warning("Batch ", b, ": ", e$message); NULL })
+  if (is.null(qda.fit)) next
+  qda_models[[b]] <- qda.fit
+  
+  pred <- predict(qda.fit, newdata = dat_test)
+  qda.class <- pred$class
+  
+  # Confusion matrix
+  print(table(Pred = qda.class, Actual = dat_test$Y))
+  
+  # Accuracy (handle any NAs safely)
+  acc <- mean(qda.class == dat_test$Y, na.rm = TRUE)
+  
+  cat("Test Accuracy:", sprintf("%.4f", acc), "\n")
+  
+  qda_perf <- rbind(qda_perf, data.frame(batch = names(qda_models)[b], Test_Acc = acc))
+}
+
+# Summary across batches
+qda_perf
