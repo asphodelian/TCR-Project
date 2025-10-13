@@ -52,10 +52,15 @@ test <- -train
 train.data <- genedit[train,]
 test.data <- genedit[-train,]
 
-y <- train.data$Y # binary
+# turn Y binary
+y <- train.data$Y 
 y[y == "disease"] <- 1 
 y[y == "healthy"] <- 0
 train.data$Y <- as.numeric(y)
+
+test.data$Y[test.data$Y == "disease"] <- 1
+test.data$Y[test.data$Y == "healthy"] <- 0
+test.data$Y <- as.numeric(test.data$Y)
 
 #####################
 # Significant Genes #
