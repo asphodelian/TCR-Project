@@ -185,50 +185,108 @@ head(batch_results)
 
 train.data$Y <- factor(train.data$Y, levels = c(0, 1))
 test.data$Y  <- factor(test.data$Y,  levels = levels(train.data$Y))
-# 1) Genes to use (e.g., alpha$Gene) and ensure they exist in BOTH sets
+
+# ensure signif genes exist in train/test
 signif <- intersect(signif, intersect(names(train.data), names(test.data)))
 stopifnot(length(signif) > 0)
-# 2) Split into batches of 5
+
+# batches of 5
 batches <- split(signif, ceiling(seq_along(signif) / 5))
-# 3) Storage
-qda_models <- vector("list", length(batches))
-names(qda_models) <- paste0("batch_", seq_along(batches))
-qda_perf <- data.frame(batch = character(), Test_Acc = numeric(), stringsAsFactors = FALSE)
+
+# Storage
+qdaMod <- vector("list", length(batches))
+names(qdaMod) <- paste0("batch_", seq_along(batches))
+qdaPerf <- data.frame(batch = character(), Test_Acc = numeric(), stringsAsFactors = FALSE)
+
 # 4) Loop
 for (b in seq_along(batches)) {
   genes_b <- batches[[b]]
   cat("\n===== QDA Batch", b, "=====\n"); print(genes_b)
-  Xi_train <- train.data[, genes_b, drop = FALSE]
-  Xi_test  <- test.data[,  genes_b, drop = FALSE]
+  Xi.train <- train.data[, genes_b, drop = FALSE]
+  Xi.test  <- test.data[,  genes_b, drop = FALSE]
   # optional: drop zero-variance columns (prevents singulars)
   nzv <- vapply(Xi_train, function(x) length(unique(na.omit(x))) > 1, logical(1))
   if (!all(nzv)) {
-    Xi_train <- Xi_train[, nzv, drop = FALSE]
-    Xi_test  <- Xi_test[,  nzv, drop = FALSE]
+    Xi.train <- Xi_train[, nzv, drop = FALSE]
+    Xi.test  <- Xi_test[,  nzv, drop = FALSE]
   }
   if (ncol(Xi_train) == 0L) { warning("Batch ", b, " has no usable predictors; skipping."); next }
   
-  dat_train <- data.frame(Y = train.data$Y, Xi_train, check.names = FALSE)
-  dat_test  <- data.frame(Y = test.data$Y,  Xi_test,  check.names = FALSE)
+  dat.train <- data.frame(Y = train.data$Y, Xi_train, check.names = FALSE)
+  dat.test  <- data.frame(Y = test.data$Y,  Xi_test,  check.names = FALSE)
   
   # Fit + predict (test only)
-  qda.fit <- tryCatch(qda(Y ~ ., data = dat_train),
+  qda.fit <- tryCatch(qda(Y ~ ., data = dat.train),
                       error = function(e) { warning("Batch ", b, ": ", e$message); NULL })
   if (is.null(qda.fit)) next
-  qda_models[[b]] <- qda.fit
+  qdaMod[[b]] <- qda.fit
   
-  pred <- predict(qda.fit, newdata = dat_test)
+  pred <- predict(qda.fit, newdata = dat.test)
   qda.class <- pred$class
   
   # Confusion matrix
-  print(table(Pred = qda.class, Actual = dat_test$Y))
+  print(table(Pred = qda.class, Actual = dat.test$Y))
   
   # Accuracy (handle any NAs safely)
-  acc <- mean(qda.class == dat_test$Y, na.rm = TRUE)
+  acc <- mean(qda.class == dat.test$Y, na.rm = TRUE)
   
   cat("Test Accuracy:", sprintf("%.4f", acc), "\n")
   
-  qda_perf <- rbind(qda_perf, data.frame(batch = names(qda_models)[b], Test_Acc = acc))
+  qdaPerf <- rbind(qdaPerf, data.frame(batch = names(qdaMod)[b], Test_Acc = acc))
 }
-# Summary across batches
-qda_perf
+
+qdaPerf
+
+#######
+# LDA #
+#######
+
+# Storage
+ldaMod <- vector("list", length(batches))
+names(ldaMod) <- paste0("batch_", seq_along(batches))
+ldaPerf <- data.frame(batch = character(), 
+                       Test_Acc = numeric(), 
+                       stringsAsFactors = FALSE)
+
+for (b in seq_along(batches)) {
+  genes_b <- batches[[b]]
+  cat("\n===== LDA Batch", b, "=====\n"); print(genes_b)
+  
+  Xi.tr <- train.data[, genes_b, drop = FALSE]
+  Xi.te <- test.data[,  genes_b, drop = FALSE]
+  
+  # --- Impute NAs using training medians (avoid info leak)
+  for (col in colnames(Xi_tr)) {
+    med <- median(Xi_tr[[col]], na.rm = TRUE)
+    if (!is.finite(med)) next
+    Xi_tr[[col]][is.na(Xi_tr[[col]])] <- med
+    Xi_te[[col]][is.na(Xi_te[[col]])] <- med
+  }
+  
+  # Drop any columns still constant (or all-NA)
+  nzv <- vapply(Xi_tr, function(x) length(unique(na.omit(x))) > 1, logical(1))
+  Xi.tr <- Xi.tr[, nzv, drop = FALSE]
+  Xi.te <- Xi.te[, nzv, drop = FALSE]
+  if (ncol(Xi.tr) == 0L) { warning("Batch ", b, ": no usable predictors; skipping."); next }
+  
+  dat.tr <- data.frame(Y = train.data$Y, Xi_tr, check.names = FALSE)
+  dat.te <- data.frame(Y = test.data$Y,  Xi_te, check.names = FALSE)
+  
+  # Fit LDA
+  lda.fit <- tryCatch(lda(Y ~ ., data = dat_tr),
+                      error = function(e){ warning("Batch ", b, ": ", e$message); NULL })
+  if (is.null(lda.fit)) next
+  ldaMod[[b]] <- lda.fit
+  
+  # Predict on TEST ONLY
+  lda.class <- predict(lda.fit, newdata = dat_te)$class
+  
+  # Confusion matrix + accuracy
+  print(table(Pred = lda.class, Actual = dat_te$Y))
+  acc <- mean(lda.class == dat_te$Y)
+  cat("Test Accuracy:", sprintf("%.4f", acc), "\n")
+  
+  ldaPerf <- rbind(ldaPerf, data.frame(batch = names(ldaMod)[b], Test_Acc = acc))
+}
+
+ldaPerf
