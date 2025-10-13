@@ -89,3 +89,5 @@ results <- results[order(results$P_value), ]
 
 head(results)
 
+alpha <- results[results$P_value < 0.05,]
+dim(alpha)
