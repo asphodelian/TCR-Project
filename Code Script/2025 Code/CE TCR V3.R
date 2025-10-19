@@ -179,6 +179,8 @@ if (nrow(batch_results)) {
 # inspect
 head(batch_results)
 
+# consider corr plots
+
 #######
 # QDA #
 #######
@@ -263,11 +265,11 @@ for (b in seq_along(batches)) {
     Xi_te[[col]][is.na(Xi_te[[col]])] <- med
   }
   
-  # Drop any columns still constant (or all-NA)
-  nzv <- vapply(Xi_tr, function(x) length(unique(na.omit(x))) > 1, logical(1))
-  Xi.tr <- Xi.tr[, nzv, drop = FALSE]
-  Xi.te <- Xi.te[, nzv, drop = FALSE]
-  if (ncol(Xi.tr) == 0L) { warning("Batch ", b, ": no usable predictors; skipping."); next }
+  # # Drop any columns still constant (or all-NA)
+  # nzv <- vapply(Xi_tr, function(x) length(unique(na.omit(x))) > 1, logical(1))
+  # Xi.tr <- Xi.tr[, nzv, drop = FALSE]
+  # Xi.te <- Xi.te[, nzv, drop = FALSE]
+  # if (ncol(Xi.tr) == 0L) { warning("Batch ", b, ": no usable predictors; skipping."); next }
   
   dat.tr <- data.frame(Y = train.data$Y, Xi_tr, check.names = FALSE)
   dat.te <- data.frame(Y = test.data$Y,  Xi_te, check.names = FALSE)
@@ -290,3 +292,16 @@ for (b in seq_along(batches)) {
 }
 
 ldaPerf
+
+#######
+# KNN #
+#######
+
+knnPerf <- data.frame(batch = character(), k = integer(), CV_Acc = numeric(), Test_Acc = numeric())
+knnMod  <- vector("list", length(batches))
+names(knnMod) <- paste0("batch_", seq_along(batches))
+
+kfold.idx <- function(n, K = 5){
+  idx <- sample(rep(1:K, length.out == n))
+  lapply()
+}
