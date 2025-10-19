@@ -20,4 +20,4 @@ library(tidyr)
 library(caret)
 library(stats)
 library(MASS) # QDA & LDA
-library(class) # KNN
+library(class) # KNN 
