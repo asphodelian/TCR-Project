@@ -61,3 +61,38 @@ train.data$Y <- as.numeric(y)
 test.data$Y[test.data$Y == "disease"] <- 1
 test.data$Y[test.data$Y == "healthy"] <- 0
 test.data$Y <- as.numeric(test.data$Y)
+
+#####################
+# Significant Genes #
+#####################
+
+col <- ncol(train.data)
+ycol <- col-1
+gene_idx <- 2:(col-2)
+gene.name <- names(train.data)[2:ncol(train.data)-2]
+pvalue <- rep(0,length(gene.name))
+
+for (i in seq_along(gene_idx))
+{
+  gene_name <- gene.name[i]
+  Xi <- train.data[, gene_idx[i], drop = FALSE]
+  names(Xi) <- gene.name  # set column name to the gene
+  
+  dat <- data.frame(Y = train.data[[ycol]], Xi, check.names = FALSE)
+  glm.fit <- glm(Y ~ ., data = dat, family = binomial())
+  pvalue[i] <- coef(summary(glm.fit))[2, 4]
+}
+
+# Combine results into a nice table:
+results <- data.frame(
+  Gene = gene.name,
+  P_value = pvalue
+)
+
+# Sort by significance
+results <- results[order(results$P_value), ]
+
+head(results)
+
+alpha <- results[results$P_value < 0.05,]
+dim(alpha)
