@@ -32,12 +32,12 @@ head(names(gene))
 table(is.na(gene$Y))
 table(is.na(gene$Y1))
 
-is.na(gene$Y[22])
-is.na(gene$Y1[22])
 genedit <- gene[-22,]
 dim(genedit)
 
-genedit[is.na(genedit)] <- "healthy" 
+for (lab in intersect(c("Y","Y1"), names(genedit))) {
+  genedit[[lab]][is.na(genedit[[lab]])] <- "healthy"
+}
 table(is.na(genedit$Y))
 table(is.na(genedit$Y1))
 
@@ -96,3 +96,14 @@ head(results)
 
 alpha <- results[results$P_value < 0.05,]
 dim(alpha)
+
+
+
+
+
+
+
+
+
+
+
