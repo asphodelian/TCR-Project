@@ -60,10 +60,11 @@ test.data$Y  <- as.numeric(ifelse(test.data$Y  == "disease", 1, 0))
 #####################
 
 col <- ncol(train.data)
-ycol <- col-1
-gene_idx <- 2:(col-2)
-gene.name <- names(train.data)[2:ncol(train.data)-2]
-pvalue <- rep(0,length(gene.name))
+ycol <- match("Y", names(train.data))
+gene_idx  <- 2:(col - 2)
+gene.name <- names(train.data)[gene_idx]
+
+pvalue <- numeric(length(gene_idx))
 
 for (i in seq_along(gene_idx))
 {
@@ -77,14 +78,10 @@ for (i in seq_along(gene_idx))
 }
 
 # Combine results into a nice table:
-results <- data.frame(
-  Gene = gene.name,
-  P_value = pvalue
-)
+results <- data.frame(Gene = gene.name, P_value = pvalue)
 
 # Sort by significance
 results <- results[order(results$P_value), ]
-
 head(results)
 
 alpha <- results[results$P_value < 0.05,]
