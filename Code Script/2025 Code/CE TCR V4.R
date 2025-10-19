@@ -48,19 +48,12 @@ table(is.na(genedit$Y1))
 set.seed(895)
 
 train <- sample(1:nrow(genedit),0.8*nrow(genedit))
-test <- -train
 train.data <- genedit[train,]
 test.data <- genedit[-train,]
 
 # turn Y binary
-y <- train.data$Y 
-y[y == "disease"] <- 1 
-y[y == "healthy"] <- 0
-train.data$Y <- as.numeric(y)
-
-test.data$Y[test.data$Y == "disease"] <- 1
-test.data$Y[test.data$Y == "healthy"] <- 0
-test.data$Y <- as.numeric(test.data$Y)
+train.data$Y <- as.numeric(ifelse(train.data$Y == "disease", 1, 0))
+test.data$Y  <- as.numeric(ifelse(test.data$Y  == "disease", 1, 0))
 
 #####################
 # Significant Genes #
