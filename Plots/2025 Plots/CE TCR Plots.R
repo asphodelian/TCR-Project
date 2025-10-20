@@ -54,30 +54,24 @@ train.data <- genedit[train,]
 test.data <- genedit[-train,]
 
 # turn Y binary
-y <- train.data$Y 
-y[y == "disease"] <- 1 
-y[y == "healthy"] <- 0
-train.data$Y <- as.numeric(y)
-
-test.data$Y[test.data$Y == "disease"] <- 1
-test.data$Y[test.data$Y == "healthy"] <- 0
-test.data$Y <- as.numeric(test.data$Y)
+train.data$Y <- as.numeric(ifelse(train.data$Y == "disease", 1, 0))
+test.data$Y  <- as.numeric(ifelse(test.data$Y  == "disease", 1, 0))
 
 #####################
 # Significant Genes #
 #####################
 
 col <- ncol(train.data)
-ycol <- col-1
-gene_idx <- 2:(col-2)
-gene.name <- names(train.data)[2:ncol(train.data)-2]
-pvalue <- rep(0,length(gene.name))
+ycol <- match("Y", names(train.data))
+gene_idx  <- 2:(col - 2)
+gene.name <- names(train.data)[gene_idx]
+pvalue <- numeric(length(gene_idx))
 
 for (i in seq_along(gene_idx))
 {
   gene_name <- gene.name[i]
   Xi <- train.data[, gene_idx[i], drop = FALSE]
-  names(Xi) <- gene.name  # set column name to the gene
+  names(Xi) <- gene_name  # set column name to the gene
   
   dat <- data.frame(Y = train.data[[ycol]], Xi, check.names = FALSE)
   glm.fit <- glm(Y ~ ., data = dat, family = binomial())
@@ -85,15 +79,28 @@ for (i in seq_along(gene_idx))
 }
 
 # Combine results into a nice table:
-results <- data.frame(
-  Gene = gene.name,
-  P_value = pvalue
-)
+results <- data.frame(Gene = gene.name, P_value = pvalue)
 
 # Sort by significance
 results <- results[order(results$P_value), ]
-
 head(results)
 
 alpha <- results[results$P_value < 0.05,]
 dim(alpha)
+
+ranked <- alpha$Gene
+ranked <- intersect(ranked, intersect(names(train.data), names(test.data)))
+
+#########
+# Plots #
+#########
+
+# Example: use your significant genes (alpha)
+genes_for_corr <- alpha$Gene
+subdata <- train.data[, genes_for_corr, drop = FALSE]
+
+# Compute correlation matrix
+cm <- cor(subdata, use = "pairwise.complete.obs")
+
+# Plot correlation heatmap
+corrplot(cm, method = "color", tl.cex = 0.6, order = "hclust")
