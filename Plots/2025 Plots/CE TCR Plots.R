@@ -350,4 +350,92 @@ ggplot(lda_curve, aes(x = TopGenes, y = Test_Acc)) +
        y = "Test Accuracy") +
   theme_minimal(base_size = 14)
 
+#######
+# KNN #
+######
 
+train.data$Y <- factor(train.data$Y, levels = c(0,1))
+test.data$Y  <- factor(test.data$Y,  levels = levels(train.data$Y))
+
+# 2) Steps: top 5 → top 37 (or all, if fewer than 37)
+max_k <- min(37L, length(ranked))
+if (max_k < 5L) max_k <- length(ranked)
+steps <- seq(5L, max_k, by = 5L)
+if (tail(steps, 1) != max_k) steps <- c(steps, max_k)
+
+# 3) Helper functions
+impute_from_train <- function(Xtr, Xte) {
+  for (nm in colnames(Xtr)) {
+    med <- median(Xtr[[nm]], na.rm = TRUE)
+    if (is.finite(med)) {
+      Xtr[[nm]][is.na(Xtr[[nm]])] <- med
+      if (nm %in% colnames(Xte)) Xte[[nm]][is.na(Xte[[nm]])] <- med
+    }
+  }
+  list(Xtr = Xtr, Xte = Xte)
+}
+drop_nzv <- function(Xtr, Xte) {
+  nzv <- vapply(Xtr, function(x) length(unique(na.omit(x))) > 1, logical(1))
+  list(
+    Xtr = Xtr[, nzv, drop = FALSE],
+    Xte = Xte[, nzv, drop = FALSE]
+  )
+}
+
+# 4) Run cumulative loops for k in {3,5,7}
+k_values <- c(3, 5, 7)
+all_knn <- list()
+
+for (k_neighbors in k_values) {
+  knn_curve <- data.frame(TopGenes = integer(), k = integer(), Test_Acc = numeric())
+  
+  for (m in steps) {
+    genes_m <- ranked[1:m]
+    
+    Xtr <- as.data.frame(train.data[, genes_m, drop = FALSE])
+    Xte <- as.data.frame(test.data[,  genes_m, drop = FALSE])
+    ytr <- train.data$Y
+    yte <- test.data$Y
+    
+    # Impute → drop NZV
+    tmp <- impute_from_train(Xtr, Xte); Xtr <- tmp$Xtr; Xte <- tmp$Xte
+    tmp <- drop_nzv(Xtr, Xte);          Xtr <- tmp$Xtr; Xte <- tmp$Xte
+    
+    if (ncol(Xtr) == 0L) {
+      knn_curve <- rbind(knn_curve, data.frame(TopGenes = m, k = k_neighbors, Test_Acc = NA_real_))
+      next
+    }
+    
+    # Standardize with TRAIN mean/sd
+    mu  <- vapply(Xtr, mean, numeric(1), na.rm = TRUE)
+    sdx <- vapply(Xtr, sd,   numeric(1), na.rm = TRUE); sdx[sdx == 0] <- 1
+    Xtr_sc <- scale(Xtr, center = mu, scale = sdx)
+    Xte_sc <- scale(Xte, center = mu, scale = sdx)
+    
+    # KNN on TEST ONLY
+    pred <- knn(train = Xtr_sc, test = Xte_sc, cl = ytr, k = k_neighbors)
+    acc  <- mean(pred == yte)
+    
+    cat("Top", m, "genes  →  k =", k_neighbors, "  Test Acc:", sprintf("%.4f", acc), "\n")
+    knn_curve <- rbind(knn_curve, data.frame(TopGenes = m, k = k_neighbors, Test_Acc = acc))
+  }
+  
+  all_knn[[as.character(k_neighbors)]] <- knn_curve
+}
+
+# 5) Combine and plot
+knn_curves <- do.call(rbind, all_knn)
+knn_curves$k <- factor(knn_curves$k, levels = k_values)
+
+# Highlight each k's best point
+best_by_k <- knn_curves[ave(knn_curves$Test_Acc, knn_curves$k, FUN = function(x) x == max(x, na.rm = TRUE)) == 1, ]
+
+ggplot(knn_curves, aes(x = TopGenes, y = Test_Acc, color = k, group = k)) +
+  geom_line(size = 1) +
+  geom_point(size = 2) +
+  geom_point(data = best_by_k, aes(x = TopGenes, y = Test_Acc), size = 3) +
+  labs(title = "KNN Test Accuracy vs Number of Top Genes",
+       x = "Number of Top Genes Included",
+       y = "Test Accuracy",
+       color = "k (neighbors)") +
+  theme_minimal(base_size = 14)
