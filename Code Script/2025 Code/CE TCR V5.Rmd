@@ -574,33 +574,59 @@ For loop
 ```{r}
 for (s in seq_along(steps)) {
   k <- steps[s]
-  genes_k <- ranked[1:k]
 
-  # extract predictors
+  ## 0) pick cumulative genes, but only those present in BOTH train & test
+  genes_k <- ranked[1:k]
+  genes_k <- intersect(genes_k, intersect(names(train.data), names(test.data)))
+  if (length(genes_k) == 0L) {
+    warning("No overlapping genes at top_", k)
+    tree_curve <- rbind(tree_curve, data.frame(TopGenes = k, Test_Error = NA_real_))
+    next
+  }
+
+  ## 1) extract predictors
   Xtr <- as.data.frame(train.data[, genes_k, drop = FALSE])
   Xte <- as.data.frame(test.data[,  genes_k, drop = FALSE])
+
+  ## 2) impute test from TRAIN medians (no leakage)
   tmp <- impute_from_train(Xtr, Xte); Xtr <- tmp$Xtr; Xte <- tmp$Xte
 
-  # rename BEFORE building dat_tr/dat_te (and keep the same mapping)
-  safe_names <- make.names(colnames(Xtr), unique = TRUE)
+  ## 3) create ONE canonical safe-name map from original genes_k
+  safe_names <- make.names(genes_k, unique = TRUE)
   colnames(Xtr) <- safe_names
   colnames(Xte) <- safe_names
 
-  dat_tr <- data.frame(Y = train.data$Y, Xtr, check.names = FALSE)
-  dat_te <- data.frame(Y = test.data$Y,  Xte,  check.names = FALSE)
+  ## 4) build modeling frames AFTER renaming, using the SAME columns/order
+  dat_tr <- data.frame(Y = train.data$Y, Xtr[, safe_names, drop = FALSE], check.names = FALSE)
+  dat_te <- data.frame(Y = test.data$Y,  Xte[, safe_names, drop = FALSE], check.names = FALSE)
 
-  # build formula with the renamed columns
+  ## 5) build formula from the SAME names
   formula_tree <- as.formula(paste("Y ~", paste(safe_names, collapse = " + ")))
 
-  fit <- tryCatch(tree(formula_tree, data = dat_tr),
+  ## 6) fit tree (guard errors)
+  fit <- tryCatch(tree::tree(formula_tree, data = dat_tr),
                   error = function(e){ warning("top_", k, ": ", e$message); NULL })
-  if (is.null(fit)) { tree_curve <- rbind(tree_curve, data.frame(TopGenes=k, Test_Acc=NA_real_)); next }
-
+  if (is.null(fit)) {
+    tree_curve <- rbind(tree_curve, data.frame(TopGenes = k, Test_Error = NA_real_))
+    next
+  }
   tree_models[[s]] <- fit
-  pred <- predict(fit, newdata = dat_te, type = "class")
-  acc  <- mean(pred == dat_te$Y)
-  cat("Top", k, "→ Test Acc:", sprintf("%.4f", acc), "\n")
-  tree_curve <- rbind(tree_curve, data.frame(TopGenes = k, Test_Acc = acc))
+
+  ## 7) align TEST to exactly what the model expects (term labels), then predict
+  vars_needed <- attr(fit$terms, "term.labels")
+
+  ## debug guards (uncomment if needed)
+  # cat("vars_needed: ", paste(vars_needed, collapse=", "), "\n")
+  # cat("missing in dat_te: ", paste(setdiff(vars_needed, names(dat_te)), collapse=", "), "\n")
+
+  new_te <- dat_te[, vars_needed, drop = FALSE]   # exact names & order
+  pred   <- predict(fit, newdata = new_te, type = "class")
+
+  ## 8) test error (misclassification rate)
+  test_error <- mean(pred != dat_te$Y)
+  cat("Top", k, "→ Test Error:", sprintf("%.4f", test_error), "\n")
+
+  tree_curve <- rbind(tree_curve, data.frame(TopGenes = k, Test_Error = test_error))
 }
 ```
 
