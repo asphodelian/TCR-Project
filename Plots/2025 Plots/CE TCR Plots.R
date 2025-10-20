@@ -104,3 +104,80 @@ cm <- cor(subdata, use = "pairwise.complete.obs")
 
 # Plot correlation heatmap
 corrplot(cm, method = "color", tl.cex = 0.6, order = "hclust")
+
+################
+# GLM Fit Plot #
+################
+
+steps <- seq(5, length(ranked), by = 5)
+
+if (length(ranked) > 0 && tail(steps, 1) != length(ranked)) {
+  steps <- c(steps, length(ranked))
+}
+
+glm_curve <- data.frame(TopGenes = integer(), Test_Acc = numeric())
+
+for (k in steps) {
+  genes_k <- ranked[1:k]
+  
+  Xi_tr <- as.data.frame(train.data[, genes_k, drop = FALSE])
+  Xi_te <- as.data.frame(test.data[,  genes_k, drop = FALSE])
+  
+  # Impute NAs in test with TRAIN medians (per feature)
+  for (nm in colnames(Xi_tr)) {
+    med <- median(Xi_tr[[nm]], na.rm = TRUE)
+    if (is.finite(med)) {
+      Xi_tr[[nm]][is.na(Xi_tr[[nm]])] <- med
+      Xi_te[[nm]][is.na(Xi_te[[nm]])] <- med
+    }
+  }
+  
+  # Drop zero-variance predictors
+  nzv <- vapply(Xi_tr, function(x) length(unique(na.omit(x))) > 1, logical(1))
+  Xi_tr <- Xi_tr[, nzv, drop = FALSE]
+  Xi_te <- Xi_te[, nzv, drop = FALSE]
+  if (ncol(Xi_tr) == 0L) {
+    glm_curve <- rbind(glm_curve, data.frame(TopGenes = k, Test_Acc = NA))
+    next
+  }
+  
+  # build modeling frames
+  dat_tr <- data.frame(Y = train.data$Y, Xi_tr, check.names = FALSE)
+  dat_te <- data.frame(Y = test.data$Y,  Xi_te,  check.names = FALSE)
+  
+  # Make Y a 2-level factor (most robust for binomial)
+  dat_tr$Y <- factor(dat_tr$Y, levels = c(0, 1))
+  dat_te$Y <- factor(dat_te$Y, levels = levels(dat_tr$Y))
+  
+  
+  # Separation-safe GLM (brglm2)
+  
+  fit <- tryCatch(glm(Y ~ ., data = dat_tr, 
+                      family = binomial(link = "logit"), 
+                      method = brglm2::brglmFit),
+                  error = function(e) NULL)
+  
+  if (is.null(fit)) {
+    glm_curve <- rbind(glm_curve, data.frame(TopGenes = k, 
+                                             Test_Acc = NA))
+    next
+  }
+  
+  prob <- predict(fit, newdata = dat_te, type = "response")
+  pred <- ifelse(prob > 0.5, 1, 0)
+  acc  <- mean(pred == dat_te$Y)
+  
+  cat("Top", k, "→ Test Acc:", sprintf("%.4f", acc), "\n")
+  glm_curve <- rbind(glm_curve, data.frame(TopGenes = k, 
+                                           Test_Acc = acc))
+}
+
+ggplot(glm_curve, aes(x = TopGenes, y = Test_Acc)) +
+  geom_line(color = "springgreen3", size = 1) +
+  geom_point(color = "#006400", size = 2) +
+  labs(
+    title = "GLM Test Accuracy vs Number of Top Genes",
+    x = "Number of Top Genes Included",
+    y = "Test Set Accuracy"
+  ) +
+  theme_minimal(base_size = 14)
