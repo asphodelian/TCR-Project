@@ -267,3 +267,87 @@ ggplot(qda_curve, aes(x = TopGenes, y = Test_Acc)) +
        x = "Number of Top Genes Included",
        y = "Test Accuracy") +
   theme_minimal(base_size = 14)
+
+#######
+# LDA #
+#######
+
+train.data$Y <- factor(train.data$Y, levels = c(0,1))
+test.data$Y  <- factor(test.data$Y,  levels = levels(train.data$Y))
+
+# helpers
+impute_from_train <- function(Xtr, Xte) {
+  for (nm in colnames(Xtr)) {
+    med <- median(Xtr[[nm]], na.rm = TRUE)
+    if (is.finite(med)) {
+      Xtr[[nm]][is.na(Xtr[[nm]])] <- med
+      if (nm %in% colnames(Xte)) Xte[[nm]][is.na(Xte[[nm]])] <- med
+    }
+  }
+  list(Xtr = Xtr, Xte = Xte)
+}
+drop_nzv <- function(Xtr, Xte) {
+  nzv <- vapply(Xtr, function(x) length(unique(na.omit(x))) > 1, logical(1))
+  Xtr <- Xtr[, nzv, drop = FALSE]
+  Xte <- Xte[, nzv, drop = FALSE]
+  list(Xtr = Xtr, Xte = Xte)
+}
+
+# lda prep
+lda_curve  <- data.frame(TopGenes = integer(), Test_Acc = numeric())
+lda_models <- vector("list", length(steps))
+names(lda_models) <- paste0("top_", steps)
+
+for (s in seq_along(steps)) {
+  k <- steps[s]
+  genes_k <- ranked[1:k]
+  
+  Xtr <- as.data.frame(train.data[, genes_k, drop = FALSE])
+  Xte <- as.data.frame(test.data[,  genes_k, drop = FALSE])
+  
+  # impute NAs (from TRAIN medians) + drop zero-variance
+  tmp <- impute_from_train(Xtr, Xte); Xtr <- tmp$Xtr; Xte <- tmp$Xte
+  tmp <- drop_nzv(Xtr, Xte);          Xtr <- tmp$Xtr; Xte <- tmp$Xte
+  if (ncol(Xtr) == 0L) {
+    lda_curve <- rbind(lda_curve, data.frame(TopGenes = k, 
+                                             Test_Acc = NA_real_))
+    next
+  }
+  
+  dat_tr <- data.frame(Y = train.data$Y, Xtr, check.names = FALSE)
+  dat_te <- data.frame(Y = test.data$Y,  Xte, check.names = FALSE)
+  
+  lda.fit <- tryCatch(lda(Y ~ ., data = dat_tr),
+                      error = function(e) 
+                      { warning("top_", k, ": ", e$message); NULL })
+  
+  if (is.null(lda.fit)) {
+    lda_curve <- rbind(lda_curve, data.frame(TopGenes = k, 
+                                             Test_Acc = NA_real_))
+    next
+  }
+  
+  lda_models[[s]] <- lda.fit
+  pred_test <- predict(lda.fit, newdata = dat_te)$class
+  acc <- mean(pred_test == dat_te$Y)
+  cat("Top", k, "→ LDA Test Acc:", sprintf("%.4f", acc), "\n")
+  
+  lda_curve <- rbind(lda_curve, data.frame(TopGenes = k, Test_Acc = acc))
+}
+
+best_lda <- lda_curve[which.max(lda_curve$Test_Acc), ]
+
+ggplot(lda_curve, aes(x = TopGenes, y = Test_Acc)) +
+  geom_line(size = 1, color = "slateblue1") +
+  geom_point(size = 2, color = "slateblue4") +
+  geom_point(data = best_lda, aes(x = TopGenes, y = Test_Acc),
+             color = "salmon", size = 3) +
+  geom_text(data = best_lda,
+            aes(label = paste0("Best (", TopGenes, "): ", round(Test_Acc, 3))),
+            vjust = -1.0, color = "salmon", size = 4) +
+  labs(title = "LDA Test Accuracy vs Number of Top Genes",
+       x = "Number of Top Genes Included",
+       y = "Test Accuracy") +
+  theme_minimal(base_size = 14)
+
+
