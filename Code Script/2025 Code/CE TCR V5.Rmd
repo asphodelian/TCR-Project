@@ -21,14 +21,16 @@ library(gridExtra)
 library(psych)
 library(readr)
 library(readxl)
-library(SKAT)
 library(tidyr)
 
 library(brglm2)
 library(caret)
-library(stats)
-library(MASS) # QDA & LDA
 library(class) # KNN 
+library(gbm)
+library(MASS) # QDA & LDA
+library(randomForest)
+library(stats)
+library(tree) # regression tree
 ```
 
 ## Dataset
@@ -533,6 +535,72 @@ for (m in steps) {
       sprintf("%.4f", acc), "\n")
   knn_curve <- rbind(knn_curve, data.frame(TopGenes = m, k = k3, 
                                            Test_Acc = acc))
+}
+```
+
+## Regression Tree
+
+Prepping for regression tree
+
+```{r}
+train.data$Y <- factor(train.data$Y, levels = c(0,1))
+test.data$Y  <- factor(test.data$Y,  levels = c(0,1))
+
+# helper
+max_k <- min(37L, length(ranked))
+if (max_k < 5L) max_k <- length(ranked)
+steps <- seq(5L, max_k, by = 5L)
+if (tail(steps, 1) != max_k) steps <- c(steps, max_k)
+
+impute_from_train <- function(Xtr, Xte) {
+  for (nm in colnames(Xtr)) {
+    med <- median(Xtr[[nm]], na.rm = TRUE)
+    if (is.finite(med)) {
+      Xtr[[nm]][is.na(Xtr[[nm]])] <- med
+      if (nm %in% colnames(Xte)) Xte[[nm]][is.na(Xte[[nm]])] <- med
+    }
+  }
+  list(Xtr = Xtr, Xte = Xte)
+}
+
+# storage
+tree_curve  <- data.frame(TopGenes = integer(), Test_Acc = numeric())
+tree_models <- vector("list", length(steps))
+names(tree_models) <- paste0("top_", steps)
+```
+
+For loop
+
+```{r}
+for (s in seq_along(steps)) {
+  k <- steps[s]
+  genes_k <- ranked[1:k]
+
+  # extract predictors
+  Xtr <- as.data.frame(train.data[, genes_k, drop = FALSE])
+  Xte <- as.data.frame(test.data[,  genes_k, drop = FALSE])
+  tmp <- impute_from_train(Xtr, Xte); Xtr <- tmp$Xtr; Xte <- tmp$Xte
+
+  # rename BEFORE building dat_tr/dat_te (and keep the same mapping)
+  safe_names <- make.names(colnames(Xtr), unique = TRUE)
+  colnames(Xtr) <- safe_names
+  colnames(Xte) <- safe_names
+
+  dat_tr <- data.frame(Y = train.data$Y, Xtr, check.names = FALSE)
+  dat_te <- data.frame(Y = test.data$Y,  Xte,  check.names = FALSE)
+
+  # build formula with the renamed columns
+  formula_tree <- as.formula(paste("Y ~", paste(safe_names, collapse = " + ")))
+
+  fit <- tryCatch(tree(formula_tree, data = dat_tr),
+                  error = function(e){ warning("top_", k, ": ", e$message); NULL })
+  if (is.null(fit)) { tree_curve <- rbind(tree_curve, data.frame(TopGenes=k, Test_Acc=NA_real_)); next }
+
+  tree_models[[s]] <- fit
+  pred <- predict(fit, newdata = dat_te, type = "class")
+  acc  <- mean(pred == dat_te$Y)
+  cat("Top", k, "→ Test Acc:", sprintf("%.4f", acc), "\n")
+  tree_curve <- rbind(tree_curve, data.frame(TopGenes = k, Test_Acc = acc))
 }
 ```
 
