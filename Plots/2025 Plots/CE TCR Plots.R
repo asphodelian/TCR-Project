@@ -91,9 +91,9 @@ dim(alpha)
 ranked <- alpha$Gene
 ranked <- intersect(ranked, intersect(names(train.data), names(test.data)))
 
-#########
-# Plots #
-#########
+#############
+# Corr Plot #
+#############
 
 # Example: use your significant genes (alpha)
 genes_for_corr <- alpha$Gene
