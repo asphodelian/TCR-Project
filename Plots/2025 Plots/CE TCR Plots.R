@@ -525,3 +525,61 @@ ggplot(tree_curve, aes(x = TopGenes, y = Test_Error)) +
   labs(title = "Classification Tree Test Error vs Top Genes",
        x = "Number of Top Genes", y = "Test Error (Lower = Better)") +
   theme_minimal(base_size = 14)
+
+###########
+# Bagging #
+###########
+
+# storage
+bag_curve <- data.frame(TopGenes = integer(), Test_Error = numeric())
+
+for (k in steps) {
+  genes_k <- ranked[1:k]
+  
+  # extract predictors
+  Xtr <- as.data.frame(train.data[, genes_k, drop = FALSE])
+  Xte <- as.data.frame(test.data[,  genes_k, drop = FALSE])
+  
+  # impute NAs from TRAIN medians
+  tmp <- impute_from_train(Xtr, Xte); Xtr <- tmp$Xtr; Xte <- tmp$Xte
+  
+  # sanitize names once, use everywhere
+  safe_names <- make.names(genes_k, unique = TRUE)
+  colnames(Xtr) <- safe_names
+  colnames(Xte) <- safe_names
+  
+  # modeling frames
+  dat_tr <- data.frame(Y = train.data$Y, Xtr, check.names = FALSE)
+  dat_te <- data.frame(Y = test.data$Y,  Xte, check.names = FALSE)
+  
+  # formula and fit bagging model (mtry = all predictors)
+  form_bag <- reformulate(termlabels = safe_names, response = "Y")
+  bag.fit <- randomForest(
+    form_bag, data = dat_tr,
+    mtry = length(safe_names),  # <- bagging
+    ntree = 500,
+    importance = FALSE
+  )
+  
+  # predict on TEST and compute misclassification rate
+  pred <- predict(bag.fit, newdata = dat_te, type = "class")
+  test_error <- mean(pred != dat_te$Y)
+  
+  # print only test error
+  cat("Top", k, "genes → Test Error:", sprintf("%.4f", test_error), "\n")
+  
+  # optional: store for plotting later
+  bag_curve <- rbind(bag_curve, data.frame(TopGenes = k, Test_Error = test_error))
+}
+
+best_bag <- bag_curve[which.min(bag_curve$Test_Error), ]
+
+ggplot(bag_curve, aes(x = TopGenes, y = Test_Error)) +
+  geom_line(size = 1, color = "#2c7bb6") +
+  geom_point(size = 2, color = "#2c7bb6") +
+  labs(
+    title = "Bagging Test Error vs Top Genes",
+    x = "Number of Top Genes Included",
+    y = "Test Error (Lower = Better)"
+  ) +
+  theme_minimal(base_size = 14)
