@@ -575,7 +575,7 @@ for (nm in colnames(Xtr)) {
 }
 ```
 
-For loop: Need to debug
+Top 5 test:
 
 ```{r}
 safe_names <- make.names(genes5, unique = TRUE)
@@ -608,11 +608,38 @@ pred <- predict(fit_pruned, newdata = dat_te, type = "class")
 conf <- table(Predicted = pred, Actual = dat_te$Y)
 test_error <- mean(pred != dat_te$Y)
 
-cat("Top-5 α genes used:", paste(genes5, collapse = ", "), "\n")
-cat("Optimal cp:", signif(cp_opt, 3), "\n")
-print(conf)
-cat("Test Error (misclassification rate):", sprintf("%.4f", test_error), "\n")
+cat("Test Error:", sprintf("%.4f", test_error), "\n")
 ```
+
+Prep for the true classification tree
+
+```{r}
+train.data$Y <- factor(train.data$Y, levels = c(0,1))
+test.data$Y  <- factor(test.data$Y,  levels = levels(train.data$Y))
+
+# steps
+max_k <- min(37L, length(ranked))
+if (max_k < 5L) max_k <- length(ranked)
+steps <- seq(5L, max_k, by = 5L)
+if (tail(steps, 1) != max_k) steps <- c(steps, max_k)
+
+# helper
+impute_from_train <- function(Xtr, Xte) {
+  for (nm in colnames(Xtr)) {
+    med <- suppressWarnings(median(Xtr[[nm]], na.rm = TRUE))
+    if (is.finite(med)) {
+      Xtr[[nm]][is.na(Xtr[[nm]])] <- med
+      Xte[[nm]][is.na(Xte[[nm]])] <- med
+    }
+  }
+  list(Xtr = Xtr, Xte = Xte)
+}
+
+# storage
+tree_curve <- data.frame(TopGenes = integer(), Test_Error = numeric())
+```
+
+
 
 
 ```{r, ref.label=knitr::all_labels(), echo = TRUE, eval = FALSE}
