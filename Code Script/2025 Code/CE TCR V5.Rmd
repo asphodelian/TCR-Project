@@ -565,71 +565,46 @@ stopifnot(length(genes5) > 0)
 # prevent leakage
 Xtr <- as.data.frame(train.data[, genes5, drop = FALSE])
 Xte <- as.data.frame(test.data[,  genes5, drop = FALSE])
+
+for (nm in colnames(Xtr)) {
+  med <- suppressWarnings(median(Xtr[[nm]], na.rm = TRUE))
+  if (is.finite(med)) {
+    Xtr[[nm]][is.na(Xtr[[nm]])] <- med
+    Xte[[nm]][is.na(Xte[[nm]])] <- med
+  }
+}
 ```
 
 For loop: Need to debug
 
 ```{r}
-for (s in seq_along(steps)) {
-  k <- steps[s]
-  genes_k <- ranked[1:k]
+safe_names <- make.names(genes5, unique = TRUE)
+colnames(Xtr) <- safe_names
+colnames(Xte) <- safe_names
 
-  # Extract predictors
-  Xtr <- as.data.frame(train.data[, genes_k, drop = FALSE])
-  Xte <- as.data.frame(test.data[,  genes_k, drop = FALSE])
+dat_tr <- data.frame(Y = train.data$Y, Xtr[, safe_names, drop = FALSE], check.names = FALSE)
+dat_te <- data.frame(Y = test.data$Y,  Xte[, safe_names, drop = FALSE], check.names = FALSE)
 
-  # Impute NAs (training medians → applied to test)
-  tmp <- impute_from_train(Xtr, Xte)
-  Xtr <- tmp$Xtr
-  Xte <- tmp$Xte
+## 4) build formula safely and fit rpart classification tree with CV
+form_tree <- reformulate(termlabels = safe_names, response = "Y")
+fit <- rpart(
+  form_tree, data = dat_tr, method = "class",
+  control = rpart.control(cp = 0.001, minsplit = 10, xval = 10)
+)
 
-  # Sanitize column names for formula safety
-  safe_names <- make.names(genes_k, unique = TRUE)
-  colnames(Xtr) <- safe_names
-  colnames(Xte) <- safe_names
+## 5) prune at optimal cp (smallest xerror)
+cp_opt <- with(fit$cptable, CP[which.min(xerror)])
+fit_pruned <- prune(fit, cp = cp_opt)
 
-  # Modeling data (Y + predictors)
-  dat_tr <- data.frame(Y = train.data$Y, 
-                       Xtr[, safe_names, drop = FALSE], 
-                       check.names = FALSE)
-  dat_te <- data.frame(Y = test.data$Y,  
-                       Xte[, safe_names, drop = FALSE], 
-                       check.names = FALSE)
+## 6) predict on TEST and compute test error
+pred <- predict(fit_pruned, newdata = dat_te, type = "class")
+conf <- table(Predicted = pred, Actual = dat_te$Y)
+test_error <- mean(pred != dat_te$Y)
 
-  # Formula using same names
-  form_tree <- as.formula(paste("Y ~", paste(safe_names, 
-                                             collapse = " + ")))
-
-  # Fit classification tree + CV pruning
-  fit <- tryCatch(
-    rpart(form_tree, data = dat_tr, method = "class",
-          control = rpart.control(cp = 0.001, 
-                                  minsplit = 10, xval = 10)),
-    error = function(e) NULL
-  )
-  if (is.null(fit)) {
-    tree_curve <- rbind(tree_curve, 
-                        data.frame(TopGenes = k, 
-                                   Test_Error = NA_real_))
-    next
-  }
-
-  # Prune using optimal cp (smallest cross-validation error)
-  cp_opt <- with(fit$cptable, CP[which.min(xerror)])
-  fit_pruned <- prune(fit, cp = cp_opt)
-  tree_models[[s]] <- fit_pruned
-
-  # Predict on test data + compute test error
-  pred <- predict(fit_pruned, newdata = dat_te, type = "class")
-  test_error <- mean(pred != dat_te$Y)
-
-  cat("Top", k, "→ Test Error:", sprintf("%.4f", test_error),
-      "  (cp* =", signif(cp_opt, 3), ")\n")
-
-  tree_curve <- rbind(tree_curve, 
-                      data.frame(TopGenes = k, 
-                                 Test_Error = test_error))
-}
+cat("Top-5 α genes used:", paste(genes5, collapse = ", "), "\n")
+cat("Optimal cp:", signif(cp_opt, 3), "\n")
+print(conf)
+cat("Test Error (misclassification rate):", sprintf("%.4f", test_error), "\n")
 ```
 
 
