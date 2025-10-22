@@ -29,6 +29,7 @@ library(class) # KNN
 library(gbm)
 library(MASS) # QDA & LDA
 library(randomForest)
+library(rpart)
 library(stats)
 library(tree) # regression tree
 ```
@@ -538,7 +539,7 @@ for (m in steps) {
 }
 ```
 
-## Regression Tree
+## Classification Tree
 
 Prepping for regression tree
 
@@ -564,7 +565,7 @@ impute_from_train <- function(Xtr, Xte) {
 }
 
 # storage
-tree_curve  <- data.frame(TopGenes = integer(), Test_Acc = numeric())
+tree_curve  <- data.frame(TopGenes = integer(), Test_Error = numeric())
 tree_models <- vector("list", length(steps))
 names(tree_models) <- paste0("top_", steps)
 ```
@@ -575,58 +576,61 @@ For loop: Need to debug
 for (s in seq_along(steps)) {
   k <- steps[s]
 
-  ## 0) pick cumulative genes, but only those present in BOTH train & test
   genes_k <- ranked[1:k]
-  genes_k <- intersect(genes_k, intersect(names(train.data), names(test.data)))
+  genes_k <- intersect(genes_k, intersect(names(train.data), 
+                                          names(test.data)))
   if (length(genes_k) == 0L) {
     warning("No overlapping genes at top_", k)
-    tree_curve <- rbind(tree_curve, data.frame(TopGenes = k, Test_Error = NA_real_))
+    tree_curve <- rbind(tree_curve, 
+                        data.frame(TopGenes = k, 
+                                   Test_Error = NA_real_))
     next
   }
 
-  ## 1) extract predictors
   Xtr <- as.data.frame(train.data[, genes_k, drop = FALSE])
   Xte <- as.data.frame(test.data[,  genes_k, drop = FALSE])
-
-  ## 2) impute test from TRAIN medians (no leakage)
   tmp <- impute_from_train(Xtr, Xte); Xtr <- tmp$Xtr; Xte <- tmp$Xte
 
-  ## 3) create ONE canonical safe-name map from original genes_k
   safe_names <- make.names(genes_k, unique = TRUE)
   colnames(Xtr) <- safe_names
   colnames(Xte) <- safe_names
 
-  ## 4) build modeling frames AFTER renaming, using the SAME columns/order
-  dat_tr <- data.frame(Y = train.data$Y, Xtr[, safe_names, drop = FALSE], check.names = FALSE)
-  dat_te <- data.frame(Y = test.data$Y,  Xte[, safe_names, drop = FALSE], check.names = FALSE)
+  # 4) Modeling frames (same columns, same order)
+  dat_tr <- data.frame(Y = train.data$Y, Xtr[, safe_names, 
+                                             drop = FALSE], 
+                       check.names = FALSE)
+  dat_te <- data.frame(Y = test.data$Y,  Xte[, safe_names, 
+                                             drop = FALSE], 
+                       check.names = FALSE)
 
-  ## 5) build formula from the SAME names
-  formula_tree <- as.formula(paste("Y ~", paste(safe_names, collapse = " + ")))
+  form_tree <- as.formula(paste("Y ~", paste(safe_names, 
+                                             collapse = " + ")))
 
-  ## 6) fit tree (guard errors)
-  fit <- tryCatch(tree::tree(formula_tree, data = dat_tr),
-                  error = function(e){ warning("top_", k, ": ", e$message); NULL })
+  fit <- tryCatch(
+    rpart(form_tree, data = dat_tr, method = "class",
+          control = rpart.control(cp = 0.001, minsplit = 10, 
+                                  xval = 10)),
+    error = function(e) NULL
+  )
   if (is.null(fit)) {
-    tree_curve <- rbind(tree_curve, data.frame(TopGenes = k, Test_Error = NA_real_))
+    tree_curve <- rbind(tree_curve, 
+                        data.frame(TopGenes = k, 
+                                   Test_Error = NA_real_))
     next
   }
-  tree_models[[s]] <- fit
 
-  ## 7) align TEST to exactly what the model expects (term labels), then predict
-  vars_needed <- attr(fit$terms, "term.labels")
+  cp_opt <- with(fit$cptable, CP[which.min(xerror)])
+  fit_pruned <- prune(fit, cp = cp_opt)
+  tree_models[[s]] <- fit_pruned
 
-  ## debug guards (uncomment if needed)
-  # cat("vars_needed: ", paste(vars_needed, collapse=", "), "\n")
-  # cat("missing in dat_te: ", paste(setdiff(vars_needed, names(dat_te)), collapse=", "), "\n")
-
-  new_te <- dat_te[, vars_needed, drop = FALSE]   # exact names & order
-  pred   <- predict(fit, newdata = new_te, type = "class")
-
-  ## 8) test error (misclassification rate)
+  pred <- predict(fit_pruned, newdata = dat_te, type = "class")
   test_error <- mean(pred != dat_te$Y)
-  cat("Top", k, "→ Test Error:", sprintf("%.4f", test_error), "\n")
 
-  tree_curve <- rbind(tree_curve, data.frame(TopGenes = k, Test_Error = test_error))
+  cat("Top", k, "→ Test Error:", sprintf("%.4f", test_error), 
+      " (cp* =", signif(cp_opt, 3), ")\n")
+  tree_curve <- rbind(tree_curve, 
+                      data.frame(TopGenes = k, 
+                                 Test_Error = test_error))
 }
 ```
 
