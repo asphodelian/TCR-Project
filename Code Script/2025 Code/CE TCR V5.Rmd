@@ -593,7 +593,14 @@ fit <- rpart(
 )
 
 ## 5) prune at optimal cp (smallest xerror)
-cp_opt <- with(fit$cptable, CP[which.min(xerror)])
+cpt <- fit$cptable
+if (is.null(cpt) || nrow(cpt) == 0) {
+  stop("rpart returned an empty cptable; try increasing cp or reducing predictors.")
+}
+imin   <- which.min(cpt[, "xerror"])
+cp_opt <- cpt[imin, "CP"]
+
+# prune and continue
 fit_pruned <- prune(fit, cp = cp_opt)
 
 ## 6) predict on TEST and compute test error
