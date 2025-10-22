@@ -439,3 +439,89 @@ ggplot(knn_curves, aes(x = TopGenes, y = Test_Acc, color = k, group = k)) +
        y = "Test Accuracy",
        color = "k (neighbors)") +
   theme_minimal(base_size = 14)
+
+#######################
+# Classification Tree #
+#######################
+
+train.data$Y <- factor(train.data$Y, levels = c(0,1))
+test.data$Y  <- factor(test.data$Y,  levels = levels(train.data$Y))
+
+# steps
+max_k <- min(37L, length(ranked))
+if (max_k < 5L) max_k <- length(ranked)
+steps <- seq(5L, max_k, by = 5L)
+if (tail(steps, 1) != max_k) steps <- c(steps, max_k)
+
+# helper
+impute_from_train <- function(Xtr, Xte) {
+  for (nm in colnames(Xtr)) {
+    med <- suppressWarnings(median(Xtr[[nm]], na.rm = TRUE))
+    if (is.finite(med)) {
+      Xtr[[nm]][is.na(Xtr[[nm]])] <- med
+      Xte[[nm]][is.na(Xte[[nm]])] <- med
+    }
+  }
+  list(Xtr = Xtr, Xte = Xte)
+}
+
+# storage
+tree_curve <- data.frame(TopGenes = integer(), Test_Error = numeric())
+
+# for loop
+for (s in seq_along(steps)) {
+  k <- steps[s]
+  genes_k <- ranked[1:k]
+  
+  # extract predictors
+  Xtr <- as.data.frame(train.data[, genes_k, drop = FALSE])
+  Xte <- as.data.frame(test.data[,  genes_k, drop = FALSE])
+  
+  # impute NAs
+  tmp <- impute_from_train(Xtr, Xte)
+  Xtr <- tmp$Xtr
+  Xte <- tmp$Xte
+  
+  # sanitize column names
+  safe_names <- make.names(genes_k, unique = TRUE)
+  colnames(Xtr) <- safe_names
+  colnames(Xte) <- safe_names
+  
+  # build modeling frames
+  dat_tr <- data.frame(Y = train.data$Y, Xtr, check.names = FALSE)
+  dat_te <- data.frame(Y = test.data$Y,  Xte, check.names = FALSE)
+  
+  # formula and fit tree
+  form_tree <- reformulate(termlabels = safe_names, response = "Y")
+  fit <- rpart(
+    form_tree, data = dat_tr, method = "class",
+    control = rpart.control(cp = 0.001, minsplit = 10, xval = 10)
+  )
+  
+  # prune to optimal cp (lowest cross-validated xerror)
+  cpt <- fit$cptable
+  imin <- which.min(replace(cpt[, "xerror"], 
+                            is.na(cpt[, "xerror"]), Inf))
+  cp_opt <- cpt[imin, "CP"]
+  fit_pruned <- prune(fit, cp = cp_opt)
+  
+  # predict on TEST and compute misclassification rate (test error)
+  pred <- predict(fit_pruned, newdata = dat_te, type = "class")
+  test_error <- mean(pred != dat_te$Y)
+  
+  # print only the test error for each k
+  cat("Top", k, "genes → Test Error:", 
+      sprintf("%.4f", test_error), "\n")
+  
+  # store for optional plotting later
+  tree_curve <- rbind(tree_curve, 
+                      data.frame(TopGenes = k, 
+                                 Test_Error = test_error))
+}
+
+ggplot(tree_curve, aes(x = TopGenes, y = Test_Error)) +
+  geom_line(size = 1, color = "maroon2") +
+  geom_point(size = 2, color = "maroon4") +
+  labs(title = "Classification Tree Test Error vs Top Genes",
+       x = "Number of Top Genes", y = "Test Error (Lower = Better)") +
+  theme_minimal(base_size = 14)
