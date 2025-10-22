@@ -545,46 +545,91 @@ for (m in steps) {
 
 ## Classification Tree
 
-Prepping for classification tree
+Prepping for classification tree (trying with just top 5, running into problems with going thru the dataset)
 
 ```{r}
-train.data$Y <- factor(train.data$Y, levels = c(0, 1))
+train.data$Y <- factor(train.data$Y, levels = c(0,1))
 test.data$Y  <- factor(test.data$Y,  levels = levels(train.data$Y))
+# top 5
+genes5 <- alpha[order(alpha$P_value), "Gene"]
+genes5 <- genes5[genes5 %in% names(train.data)]
+genes5 <- intersect(genes5, names(test.data))
+genes5 <- genes5[!duplicated(genes5)]
 
-# keep ranked genes present in BOTH sets
-ranked <- alpha[order(alpha$P_value), "Gene"]
-ranked <- intersect(ranked, intersect(names(train.data), names(test.data)))
-ranked <- ranked[!duplicated(ranked)]
-stopifnot(length(ranked) > 0)
-
-# cumulative
-max_k <- min(37L, length(ranked))
-if (max_k < 5L) max_k <- length(ranked)
-steps <- seq(5L, max_k, by = 5L)
-if (tail(steps, 1) != max_k) steps <- c(steps, max_k)
-
-# helper
-impute_from_train <- function(Xtr, Xte) {
-  for (nm in colnames(Xtr)) {
-    med <- suppressWarnings(median(Xtr[[nm]], na.rm = TRUE))
-    if (is.finite(med)) {
-      Xtr[[nm]][is.na(Xtr[[nm]])] <- med
-      if (nm %in% colnames(Xte)) Xte[[nm]][is.na(Xte[[nm]])] <- med
-    }
-  }
-  list(Xtr = Xtr, Xte = Xte)
+if (length(genes5) < 5) {
+  warning("Fewer than 5 alpha genes available in both train & test; using ", length(genes5))
 }
+genes5 <- genes5[1:min(5, length(genes5))]
+stopifnot(length(genes5) > 0)
 
-# 5) storage 
-tree_curve  <- data.frame(TopGenes = integer(), Test_Error = numeric())
-tree_models <- vector("list", length(steps))
-names(tree_models) <- paste0("top_", steps)
+# prevent leakage
+Xtr <- as.data.frame(train.data[, genes5, drop = FALSE])
+Xte <- as.data.frame(test.data[,  genes5, drop = FALSE])
 ```
 
 For loop: Need to debug
 
 ```{r}
+for (s in seq_along(steps)) {
+  k <- steps[s]
+  genes_k <- ranked[1:k]
 
+  # Extract predictors
+  Xtr <- as.data.frame(train.data[, genes_k, drop = FALSE])
+  Xte <- as.data.frame(test.data[,  genes_k, drop = FALSE])
+
+  # Impute NAs (training medians → applied to test)
+  tmp <- impute_from_train(Xtr, Xte)
+  Xtr <- tmp$Xtr
+  Xte <- tmp$Xte
+
+  # Sanitize column names for formula safety
+  safe_names <- make.names(genes_k, unique = TRUE)
+  colnames(Xtr) <- safe_names
+  colnames(Xte) <- safe_names
+
+  # Modeling data (Y + predictors)
+  dat_tr <- data.frame(Y = train.data$Y, 
+                       Xtr[, safe_names, drop = FALSE], 
+                       check.names = FALSE)
+  dat_te <- data.frame(Y = test.data$Y,  
+                       Xte[, safe_names, drop = FALSE], 
+                       check.names = FALSE)
+
+  # Formula using same names
+  form_tree <- as.formula(paste("Y ~", paste(safe_names, 
+                                             collapse = " + ")))
+
+  # Fit classification tree + CV pruning
+  fit <- tryCatch(
+    rpart(form_tree, data = dat_tr, method = "class",
+          control = rpart.control(cp = 0.001, 
+                                  minsplit = 10, xval = 10)),
+    error = function(e) NULL
+  )
+  if (is.null(fit)) {
+    tree_curve <- rbind(tree_curve, 
+                        data.frame(TopGenes = k, 
+                                   Test_Error = NA_real_))
+    next
+  }
+
+  # Prune using optimal cp (smallest cross-validation error)
+  cp_opt <- with(fit$cptable, CP[which.min(xerror)])
+  fit_pruned <- prune(fit, cp = cp_opt)
+  tree_models[[s]] <- fit_pruned
+
+  # Predict on test data + compute test error
+  pred <- predict(fit_pruned, newdata = dat_te, type = "class")
+  test_error <- mean(pred != dat_te$Y)
+
+  cat("Top", k, "→ Test Error:", sprintf("%.4f", test_error),
+      "  (cp* =", signif(cp_opt, 3), ")\n")
+
+  tree_curve <- rbind(tree_curve, 
+                      data.frame(TopGenes = k, 
+                                 Test_Error = test_error))
+}
 ```
 
 
