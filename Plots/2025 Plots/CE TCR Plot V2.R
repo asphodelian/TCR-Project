@@ -41,3 +41,18 @@ dim(genedit)
 genedit[is.na(genedit)] <- "healthy" 
 table(is.na(genedit$Y))
 table(is.na(genedit$Y1))
+
+##############
+# Train/Test #
+##############
+
+set.seed(895)
+
+train <- sample(1:nrow(genedit),0.8*nrow(genedit))
+test <- -train
+train.data <- genedit[train,]
+test.data <- genedit[-train,]
+
+# turn Y binary
+train.data$Y <- as.numeric(ifelse(train.data$Y == "disease", 1, 0))
+test.data$Y  <- as.numeric(ifelse(test.data$Y  == "disease", 1, 0))
