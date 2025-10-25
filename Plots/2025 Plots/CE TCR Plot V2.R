@@ -372,3 +372,65 @@ for (k_neighbors in k_values) {
 # 5) Combine and plot
 knn_curves <- do.call(rbind, all_knn)
 knn_curves$k <- factor(knn_curves$k, levels = k_values)
+
+########
+# Plot #
+########
+
+# ---- choose which K to plot for KNN (pick one) ----
+k_choice <- 7
+knn_plot <- knn_curves %>% filter(k == k_choice)
+
+# ---- normalize to the same metric: Test Error = 1 - Test_Acc ----
+glm_plot <- glm_curve %>%
+  transmute(TopGenes, Test_Acc, Method = "GLM")
+
+qda_plot <- qda_curve %>%
+  transmute(TopGenes, Test_Acc, Method = "QDA")
+
+lda_plot <- lda_curve %>%
+  transmute(TopGenes, Test_Acc, Method = "LDA")
+
+knn_plot <- knn_plot %>%
+  transmute(TopGenes, Test_Acc, Method = paste0("KNN (k=", k_choice, ")"))
+
+# ---- combine ----
+compare_df <- bind_rows(glm_plot, qda_plot, lda_plot, knn_plot)
+
+# (optional) remove any rows with missing metrics
+compare_df <- compare_df %>% filter(is.finite(Test_Acc))
+
+# ---- plot ----
+gg <- ggplot(compare_df, aes(x = TopGenes, y = Test_Acc, color = Method)) +
+  geom_line(linewidth = 1) +
+  geom_point(size = 2) +
+  labs(
+    title = "Test Accuracy vs Number of Genes",
+    x = "Number of Genes",
+    y = "Test Accuracy",
+    color = "Model"
+  ) +
+  theme_minimal(base_size = 14)
+print(gg)
+
+# ---- (optional) highlight the best point per method ----
+best_by_method <- compare_df %>%
+  group_by(Method) %>%
+  slice_min(Test_Acc, n = 1, with_ties = FALSE)
+
+gg + 
+  geom_point(data = best_by_method, aes(x = TopGenes, y = Test_Acc, color = Method),
+             size = 3) +
+  geom_text(
+    data = best_by_method,
+    aes(label = paste0("max=", round(Test_Acc, 3), " @", TopGenes)),
+    vjust = -1.0, size = 3.2, show.legend = FALSE
+  )
+
+
+
+
+
+
+
+
