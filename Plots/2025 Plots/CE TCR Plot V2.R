@@ -158,4 +158,73 @@ for (k in steps) {
                                            Test_Acc = acc))
 }
 
+#######
+# QDA #
+#######
 
+# 2-lvl factor in both sets
+train.data$Y <- factor(train.data$Y, levels = c(0,1))
+test.data$Y  <- factor(test.data$Y,  levels = levels(train.data$Y))
+
+# made sure to run through all the genes
+max_k <- min(37L, length(ranked))
+if (max_k < 5L) max_k <- length(ranked)  # if you have <5 genes, just do that many
+steps <- seq(5L, max_k, by = 5L)
+if (tail(steps, 1) != max_k) steps <- c(steps, max_k)
+
+# impute NAs in both train/test using TRAIN medians 
+impute_from_train <- function(Xtr, Xte) {
+  for (nm in colnames(Xtr)) {
+    med <- median(Xtr[[nm]], na.rm = TRUE)
+    if (is.finite(med)) {
+      Xtr[[nm]][is.na(Xtr[[nm]])] <- med
+      if (nm %in% colnames(Xte)) Xte[[nm]][is.na(Xte[[nm]])] <- med
+    }
+  }
+  list(Xtr = Xtr, Xte = Xte)
+}
+
+# drop 0-var cols
+drop_nzv <- function(Xtr, Xte) {
+  nzv <- vapply(Xtr, function(x) length(unique(na.omit(x))) > 1, logical(1))
+  Xtr <- Xtr[, nzv, drop = FALSE]
+  Xte <- Xte[, nzv, drop = FALSE]
+  list(Xtr = Xtr, Xte = Xte)
+}
+
+# storage
+qda_curve  <- data.frame(TopGenes = integer(), Test_Acc = numeric())
+qda_models <- vector("list", length(steps))
+names(qda_models) <- paste0("top_", steps)
+
+for (s in seq_along(steps)) {
+  k <- steps[s]
+  genes_k <- ranked[1:k]
+  
+  Xtr <- as.data.frame(train.data[, genes_k, drop = FALSE])
+  Xte <- as.data.frame(test.data[,  genes_k, drop = FALSE])
+  
+  tmp <- impute_from_train(Xtr, Xte); Xtr <- tmp$Xtr; Xte <- tmp$Xte
+  tmp <- drop_nzv(Xtr, Xte);          Xtr <- tmp$Xtr; Xte <- tmp$Xte
+  if (ncol(Xtr) == 0L) {
+    qda_curve <- rbind(qda_curve, data.frame(TopGenes = k, Test_Acc = NA_real_))
+    next
+  }
+  
+  dat_tr <- data.frame(Y = train.data$Y, Xtr, check.names = FALSE)
+  dat_te <- data.frame(Y = test.data$Y,  Xte, check.names = FALSE)
+  
+  qda.fit <- tryCatch(qda(Y ~ ., data = dat_tr),
+                      error = function(e) { warning("top_", k, ": ", e$message); NULL })
+  if (is.null(qda.fit)) {
+    qda_curve <- rbind(qda_curve, data.frame(TopGenes = k, Test_Acc = NA_real_))
+    next
+  }
+  
+  qda_models[[s]] <- qda.fit
+  pred_test <- predict(qda.fit, newdata = dat_te)$class
+  acc <- mean(pred_test == dat_te$Y)
+  cat("Top", k, "→ Test Acc:", sprintf("%.4f", acc), "\n")
+  
+  qda_curve <- rbind(qda_curve, data.frame(TopGenes = k, Test_Acc = acc))
+}
