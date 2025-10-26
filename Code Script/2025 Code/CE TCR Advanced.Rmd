@@ -270,7 +270,8 @@ for (k in steps) {
     form_bag, data = dat_tr,
     mtry = length(safe_names),     # <- bagging
     ntree = 500,
-    importance = FALSE
+    importance = FALSE,
+    nodesize = 20
   )
 
   # Predict on TEST and compute TEST ACCURACY
