@@ -135,7 +135,37 @@ ranked <- alpha$Gene
 ranked <- intersect(ranked, intersect(names(train.data), names(test.data)))
 ```
 
+## Classification Tree
 
+Prepping for classification tree (trying with just top 5, running into problems with going thru the dataset)
+
+```{r}
+train.data$Y <- factor(train.data$Y, levels = c(0,1))
+test.data$Y  <- factor(test.data$Y,  levels = levels(train.data$Y))
+# top 5
+genes5 <- alpha[order(alpha$P_value), "Gene"]
+genes5 <- genes5[genes5 %in% names(train.data)]
+genes5 <- intersect(genes5, names(test.data))
+genes5 <- genes5[!duplicated(genes5)]
+
+if (length(genes5) < 5) {
+  warning("Fewer than 5 alpha genes available in both train & test; using ", length(genes5))
+}
+genes5 <- genes5[1:min(5, length(genes5))]
+stopifnot(length(genes5) > 0)
+
+# prevent leakage
+Xtr <- as.data.frame(train.data[, genes5, drop = FALSE])
+Xte <- as.data.frame(test.data[,  genes5, drop = FALSE])
+
+for (nm in colnames(Xtr)) {
+  med <- suppressWarnings(median(Xtr[[nm]], na.rm = TRUE))
+  if (is.finite(med)) {
+    Xtr[[nm]][is.na(Xtr[[nm]])] <- med
+    Xte[[nm]][is.na(Xte[[nm]])] <- med
+  }
+}
+```
 
 
 
