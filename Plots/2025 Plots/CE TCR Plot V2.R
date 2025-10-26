@@ -378,7 +378,7 @@ knn_curves$k <- factor(knn_curves$k, levels = k_values)
 ########
 
 # ---- choose which K to plot for KNN (pick one) ----
-k_choice <- 7
+k_choice <- 5
 knn_plot <- knn_curves %>% filter(k == k_choice)
 
 # ---- normalize to the same metric: Test Error = 1 - Test_Acc ----
