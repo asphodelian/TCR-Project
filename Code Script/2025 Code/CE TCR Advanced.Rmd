@@ -242,7 +242,7 @@ Prep for Bagging
 bag_curve <- data.frame(TopGenes = integer(), Test_Error = numeric())
 ```
 
-For loop: try tuning parameters
+For loop
 
 ```{r}
 for (k in steps) {
@@ -284,6 +284,32 @@ for (k in steps) {
   bag_curve <- rbind(bag_curve, data.frame(TopGenes = k, Test_Acc = test_acc))
 }
 ```
+
+Tree node size test
+
+```{r}
+# grid of nodesizes to test
+nodesize_grid <- c(1, 3, 5, 10, 20)
+
+bag_size_curve <- data.frame(nodesize = integer(), Test_Acc = numeric())
+
+for (ns in nodesize_grid) {
+  bag.fit <- randomForest(
+    Y ~ ., data = dat_tr,
+    mtry = ncol(dat_tr) - 1,    # all predictors
+    ntree = 500,
+    nodesize = ns
+  )
+
+  pred <- predict(bag.fit, newdata = dat_te, type = "class")
+  test_acc <- mean(pred == dat_te$Y)
+  cat("nodesize =", ns, "→ Test Accuracy:", sprintf("%.4f", test_acc), "\n")
+
+  bag_size_curve <- rbind(bag_size_curve,
+                          data.frame(nodesize = ns, Test_Acc = test_acc))
+}
+```
+
 
 ## Random Forest
 
