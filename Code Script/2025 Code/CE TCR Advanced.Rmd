@@ -68,5 +68,22 @@ cat("\nin the Y1 column?")
 table(is.na(genedit$Y1))
 ```
 
+## Training and Test Set
+
+```{r}
+set.seed(895)
+
+train <- sample(1:nrow(genedit),0.8*nrow(genedit))
+train.data <- genedit[train,]
+test.data <- genedit[-train,]
+
+cat("The dimensions of the training set is:", dim(train.data), "\n")
+cat("The dimensions of the test is:", dim(test.data), "\n")
+
+# turn Y binary
+train.data$Y <- as.numeric(ifelse(train.data$Y == "disease", 1, 0))
+test.data$Y  <- as.numeric(ifelse(test.data$Y  == "disease", 1, 0))
+```
+
 ```{r, ref.label=knitr::all_labels(), echo = TRUE, eval = FALSE}
 ```
