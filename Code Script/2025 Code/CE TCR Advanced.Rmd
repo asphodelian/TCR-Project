@@ -290,8 +290,58 @@ for (k in steps) {
 Prep
 
 ```{r}
+rf_curve <- data.frame(TopGenes = integer(), Test_Acc = numeric())
+```
+
+for loop
+
+```{r}
+for (k in steps) {
+  genes_k <- ranked[1:k]
+
+  # Extract predictors
+  Xtr <- as.data.frame(train.data[, genes_k, drop = FALSE])
+  Xte <- as.data.frame(test.data[,  genes_k, drop = FALSE])
+
+  # Impute NAs
+  tmp <- impute_from_train(Xtr, Xte); Xtr <- tmp$Xtr; Xte <- tmp$Xte
+
+  # Sanitize names consistently
+  safe_names <- make.names(genes_k, unique = TRUE)
+  colnames(Xtr) <- safe_names
+  colnames(Xte) <- safe_names
+
+  # Modeling frames
+  dat_tr <- data.frame(Y = train.data$Y, Xtr, check.names = FALSE)
+  dat_te <- data.frame(Y = test.data$Y,  Xte, check.names = FALSE)
+
+  # Random Forest: mtry = floor(sqrt(p)) for classification
+  p <- length(safe_names)
+  mtry_val <- max(1L, floor(sqrt(p)))
+
+  form_rf <- reformulate(termlabels = safe_names, response = "Y")
+  rf.fit <- randomForest(
+    form_rf, data = dat_tr,
+    mtry = mtry_val,
+    ntree = 500,
+    importance = TRUE
+  )
+
+  # Predict on TEST and compute TEST ACCURACY
+  pred <- predict(rf.fit, newdata = dat_te, type = "class")
+  test_acc <- mean(pred == dat_te$Y)
+
+  # Print only accuracy
+  cat("Top ", k, " genes → Test Accuracy: ", sprintf("%.4f", test_acc),
+      " (mtry = ", mtry_val, ", ntree = 500)\n", sep="")
+
+  # Store
+  rf_curve <- rbind(rf_curve, data.frame(TopGenes = k, Test_Acc = test_acc))
+}
 
 ```
+
+
 
 ```{r, ref.label=knitr::all_labels(), echo = TRUE, eval = FALSE}
 ```
