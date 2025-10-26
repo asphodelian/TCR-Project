@@ -1,0 +1,39 @@
+---
+title: "CE TCR Basics"
+author: "Gabrielle Salamanca"
+date: "October 25, 2025"
+output: word_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+## Libraries
+
+```{r}
+# data manipulation
+library(dplyr)
+library(psych)
+library(readr)
+library(readxl)
+library(tidyr)
+
+# visualize
+library(factoextra)
+library(ggfortify)
+library(ggplot2)
+library(gridExtra)
+
+# techniques
+library(brglm2) # bias-reduced log regress
+library(caret) # data partition, CV
+library(class) # KNN 
+library(gbm) # boosting
+library(MASS) # QDA & LDA
+library(randomForest) # bag, rand forest
+library(rpart) # class tree
+library(stats)
+library(tree) # regression tree
+```
+
