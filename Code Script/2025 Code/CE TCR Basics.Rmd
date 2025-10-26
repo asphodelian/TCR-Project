@@ -37,3 +37,33 @@ library(stats)
 library(tree) # regression tree
 ```
 
+## Dataset
+
+We read in the dataset, and replace a handful of NAs. The HD patients' Y and Y1 were filled in with "healthy", because Professor Tao confirmed they were healthy patients. Row 22 was removed, because there was confirmation that it didn't have any results, even in its own ID.
+
+```{r}
+gene <- read_excel("D:/Coding/R Storage/Summer TCR Project/TCR Datasets/2025/fullgenes.xlsx")
+
+cat("The dimensions of the dataset is:")
+dim(gene)
+
+cat("\nAre there any NAs in the Y column?")
+table(is.na(gene$Y))
+cat("\nAre there NAs in the Y1 column?")
+table(is.na(gene$Y1))
+
+cat("\nWe remove row 22, to then have the dimensions:")
+genedit <- gene[-22,]
+dim(genedit)
+
+cat("\n")
+
+for (lab in intersect(c("Y","Y1"), names(genedit))) {
+  genedit[[lab]][is.na(genedit[[lab]])] <- "healthy"
+}
+
+cat("After replacing NAs with the healthy tag, are there any lingering NAs in the Y column?")
+table(is.na(genedit$Y))
+cat("\nin the Y1 column?")
+table(is.na(genedit$Y1))
+```
