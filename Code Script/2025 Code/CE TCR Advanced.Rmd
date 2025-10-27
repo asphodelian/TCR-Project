@@ -439,6 +439,34 @@ for (k in steps) {
 }
 ```
 
+## Boosting
+
+Prep
+
+```{r}
+boost_curve <- data.frame(TopGenes = integer(), Test_Acc = numeric())
+
+# Tuning grids
+shrinkage_grid <- c(0.1, 0.05, 0.01)
+depth_grid     <- c(1, 2, 3, 4)
+n_trees_max    <- 3000   # enough for small shrinkage
+cv_folds       <- 5
+
+# Storage
+boost_tuned_curve <- data.frame(
+  TopGenes  = integer(),
+  shrinkage = numeric(),
+  depth     = integer(),
+  best_iter = integer(),
+  CV_Deviance = numeric(),
+  Test_Acc  = numeric()
+)
+```
+
+
+
+
+
 
 ```{r, ref.label=knitr::all_labels(), echo = TRUE, eval = FALSE}
 ```
