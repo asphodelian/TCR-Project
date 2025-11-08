@@ -90,3 +90,32 @@ dim(alpha)
 
 ranked <- alpha$Gene
 ranked <- intersect(ranked, intersect(names(train.data), names(test.data)))
+
+########
+# Prep #
+########
+
+train.data$Y <- factor(train.data$Y, levels = c(0,1))
+test.data$Y  <- factor(test.data$Y,  levels = levels(train.data$Y))
+
+# steps
+max_k <- min(37L, length(ranked))
+if (max_k < 5L) max_k <- length(ranked)
+steps <- seq(5L, max_k, by = 5L)
+if (tail(steps, 1) != max_k) steps <- c(steps, max_k)
+
+# helper
+impute_from_train <- function(Xtr, Xte) {
+  for (nm in colnames(Xtr)) {
+    med <- suppressWarnings(median(Xtr[[nm]], na.rm = TRUE))
+    if (is.finite(med)) {
+      Xtr[[nm]][is.na(Xtr[[nm]])] <- med
+      Xte[[nm]][is.na(Xte[[nm]])] <- med
+    }
+  }
+  list(Xtr = Xtr, Xte = Xte)
+}
+
+#######################
+# Classification Tree #
+#######################
