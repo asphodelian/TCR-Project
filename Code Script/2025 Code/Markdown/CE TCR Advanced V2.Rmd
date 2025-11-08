@@ -238,17 +238,99 @@ for (k in steps) {
 Prep for Bagging
 
 ```{r}
+impute_from_train <- function(Xtr, Xte) {
+  for (nm in colnames(Xtr)) {
+    med <- suppressWarnings(median(Xtr[[nm]], na.rm = TRUE))
+    if (is.finite(med)) {
+      Xtr[[nm]][is.na(Xtr[[nm]])] <- med
+      if (nm %in% colnames(Xte)) Xte[[nm]][is.na(Xte[[nm]])] <- med
+    }
+  }
+  list(Xtr = Xtr, Xte = Xte)
+}
+# parameters
 ntree_grid <- c(200, 500, 1000)
 nodesize_grid <- c(1, 5, 10)
-sampsize_grid <- c(0.5, 0.7, 1.0) * nrow(dat_tr)
+sampsize_grid <- c(0.5, 0.7, 1.0)
 # storage
-bag_curve <- data.frame(TopGenes = integer(), Test_Error = numeric())
+bag_curve <- data.frame(TopGenes = integer(), ntree = integer(),
+                        nodesize  = integer(), sampsize  = integer(),
+                        OOB_Error = numeric(), Test_Acc  = numeric())
 ```
 
 For loop
 
 ```{r}
+for (k in steps) {
+  genes_k <- ranked[1:k]
 
+  # Extract predictors
+  Xtr <- as.data.frame(train.data[, genes_k, drop = FALSE])
+  Xte <- as.data.frame(test.data[,  genes_k, drop = FALSE])
+
+  # Impute NAs
+  tmp <- impute_from_train(Xtr, Xte); Xtr <- tmp$Xtr; Xte <- tmp$Xte
+
+  # Safe names
+  safe_names <- make.names(genes_k, unique = TRUE)
+  colnames(Xtr) <- safe_names
+  colnames(Xte) <- safe_names
+
+  # Model frames
+  dat_tr <- data.frame(Y = train.data$Y, Xtr, check.names = FALSE)
+  dat_te <- data.frame(Y = test.data$Y,  Xte, check.names = FALSE)
+
+  # Build formula
+  form_bag <- reformulate(termlabels = safe_names, response = "Y")
+
+  # ---- Autotune by OOB error (no test leakage) ----
+  best <- list(oob = Inf, fit = NULL, nt = NA_integer_, ns = NA_integer_, ss = NA_integer_)
+  n_tr <- nrow(dat_tr)
+
+  for (nt in ntree_grid) {
+    for (ns in nodesize_grid) {
+      for (sf in sampsize_grid) {
+        ss <- max(1L, round(sf * n_tr))
+        fit <- randomForest(
+          form_bag, data = dat_tr,
+          mtry = length(safe_names),  # bagging = all predictors
+          ntree = nt,
+          nodesize = ns,
+          sampsize = ss,
+          importance = FALSE
+        )
+        # OOB error from err.rate
+        oob_err <- tail(fit$err.rate[, "OOB"], 1)
+        if (!is.finite(oob_err)) {
+          oob_err <- mean(fit$y != fit$predicted, na.rm = TRUE) # rare fallback
+        }
+        if (oob_err < best$oob) {
+          best <- list(oob = oob_err, fit = fit, nt = nt, ns = ns, ss = ss)
+        }
+      }
+    }
+  }
+
+  # Evaluate the best model on TEST (accuracy)
+  pred <- predict(best$fit, newdata = dat_te, type = "class")
+  test_acc <- mean(pred == dat_te$Y)
+
+  cat("Top", k, "genes → Test Accuracy:", sprintf("%.4f", test_acc),
+      " | best ntree=", best$nt,
+      " nodesize=", best$ns,
+      " sampsize=", best$ss,
+      " | OOB Err=", sprintf("%.4f", best$oob), "\n", sep="")
+
+  bag_curve <- rbind(
+    bag_curve,
+    data.frame(TopGenes = k,
+               ntree = best$nt,
+               nodesize = best$ns,
+               sampsize = best$ss,
+               OOB_Error = best$oob,
+               Test_Acc = test_acc)
+  )
+}
 ```
 
 
