@@ -185,3 +185,102 @@ for (k in steps) {
   cat("Top", k, "genes → Test Accuracy:", sprintf("%.4f", test_acc), "\n")
   tree_curve <- rbind(tree_curve, data.frame(TopGenes = k, Test_Acc = test_acc))
 }
+
+###########
+# Bagging #
+###########
+
+bag_curve <- data.frame(TopGenes = integer(), ntree = integer(),
+                        nodesize  = integer(), sampsize  = integer(),
+                        OOB_Error = numeric(), Test_Acc  = numeric())
+
+for (k in steps) {
+  genes_k <- ranked[1:k]
+  
+  # Extract predictors and impute
+  Xtr <- as.data.frame(train.data[, genes_k, drop = FALSE])
+  Xte <- as.data.frame(test.data[,  genes_k, drop = FALSE])
+  tmp <- impute_from_train(Xtr, Xte); Xtr <- tmp$Xtr; Xte <- tmp$Xte
+  
+  # Safe names
+  safe_names <- make.names(genes_k, unique = TRUE)
+  colnames(Xtr) <- safe_names
+  colnames(Xte) <- safe_names
+  
+  dat_tr <- data.frame(Y = train.data$Y, Xtr, check.names = FALSE)
+  dat_te <- data.frame(Y = test.data$Y,  Xte, check.names = FALSE)
+  
+  # ---- Auto grids derived from data (no manual params) ----
+  n_tr <- nrow(dat_tr)
+  p    <- length(safe_names)
+  
+  # nodesize: tiny → moderate, scaled by n (kept small for classification)
+  nodesize_grid <- unique(pmax(1L, round(c(1, sqrt(n_tr)/4, sqrt(n_tr)/2, sqrt(n_tr)))))
+  nodesize_grid <- nodesize_grid[nodesize_grid <= max(1L, round(n_tr/5))]
+  
+  # sampsize: bootstrap fraction set adaptively
+  sampfrac_grid <- c(0.6, 0.75, 0.9, 1.0)
+  sampsize_grid <- unique(pmax(1L, round(sampfrac_grid * n_tr)))
+  
+  # ntree: pick best by scanning OOB curve from one large forest
+  NTREE_MAX <- 2000L
+  
+  form_bag <- reformulate(termlabels = safe_names, response = "Y")
+  
+  best <- list(oob = Inf, nt = NA_integer_, ns = NA_integer_, ss = NA_integer_, fit = NULL)
+  
+  for (ns in nodesize_grid) {
+    for (ss in sampsize_grid) {
+      
+      # 1) Fit a large forest once; read its OOB error curve to pick ntree*
+      rf_big <- randomForest(
+        form_bag, data = dat_tr,
+        mtry = p,                    # bagging = all predictors
+        ntree = NTREE_MAX,
+        nodesize = ns,
+        sampsize = ss,
+        importance = FALSE
+      )
+      oob_vec <- rf_big$err.rate[, "OOB"]
+      oob_vec[!is.finite(oob_vec)] <- Inf
+      nt_star <- which.min(oob_vec)
+      oob_min <- oob_vec[nt_star]
+      
+      # 2) Refit exactly at ntree* for final model (predict uses all trees)
+      rf_best <- randomForest(
+        form_bag, data = dat_tr,
+        mtry = p,
+        ntree = nt_star,
+        nodesize = ns,
+        sampsize = ss,
+        importance = FALSE
+      )
+      
+      if (oob_min < best$oob) {
+        best <- list(oob = oob_min, nt = nt_star, ns = ns, ss = ss, fit = rf_best)
+      }
+    }
+  }
+  
+  # Predict on TEST for the best combo
+  pred <- predict(best$fit, newdata = dat_te, type = "class")
+  test_acc <- mean(pred == dat_te$Y)
+  
+  cat("Top ", k, " genes → Test Accuracy:", sprintf("%.4f", test_acc),
+      " | best ntree = ", best$nt,
+      " nodesize = ", best$ns,
+      " sampsize = ", best$ss,
+      " | OOB Err = ", sprintf("%.4f", best$oob), "\n", sep = "")
+  
+  bag_curve <- rbind(
+    bag_curve,
+    data.frame(
+      TopGenes  = k,
+      ntree     = best$nt,
+      nodesize  = best$ns,
+      sampsize  = best$ss,
+      OOB_Error = best$oob,
+      Test_Acc  = test_acc
+    )
+  )
+}
