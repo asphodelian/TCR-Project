@@ -1,0 +1,590 @@
+---
+title: "CE TCR Advanced"
+author: "Gabrielle Salamanca"
+date: "October 25, 2025"
+output: word_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Libraries
+
+```{r}
+# data manipulation
+library(dplyr)
+library(psych)
+library(readr)
+library(readxl)
+library(tidyr)
+
+# visualize
+library(factoextra)
+library(ggfortify)
+library(ggplot2)
+library(gridExtra)
+
+# techniques
+library(brglm2) # bias-reduced log regress
+library(caret) # data partition, CV
+library(class) # KNN 
+library(gbm) # boosting
+library(MASS) # QDA & LDA
+library(randomForest) # bag, rand forest
+library(rpart) # class tree
+library(stats)
+library(tree) # regression tree
+```
+
+## Dataset
+
+We read in the dataset, and replace a handful of NAs. The HD patients' Y and Y1 were filled in with "healthy", because Professor Tao confirmed they were healthy patients. Row 22 was removed, because there was confirmation that it didn't have any results, even in its own ID.
+
+```{r}
+gene <- read_excel("D:/Coding/R Storage/Summer TCR Project/TCR Datasets/2025/fullgenes.xlsx")
+
+cat("The dimensions of the dataset is:")
+dim(gene)
+
+cat("\nAre there any NAs in the Y column?")
+table(is.na(gene$Y))
+cat("\nAre there NAs in the Y1 column?")
+table(is.na(gene$Y1))
+
+cat("\nWe remove row 22, to then have the dimensions:")
+genedit <- gene[-22,]
+dim(genedit)
+
+cat("\n")
+
+for (lab in intersect(c("Y","Y1"), names(genedit))) {
+  genedit[[lab]][is.na(genedit[[lab]])] <- "healthy"
+}
+
+cat("After replacing NAs with the healthy tag, are there any lingering NAs in the Y column?")
+table(is.na(genedit$Y))
+cat("\nin the Y1 column?")
+table(is.na(genedit$Y1))
+```
+
+## Training and Test Set
+
+```{r}
+set.seed(895)
+
+train <- sample(1:nrow(genedit),0.8*nrow(genedit))
+train.data <- genedit[train,]
+test.data <- genedit[-train,]
+
+cat("The dimensions of the training set is:", dim(train.data), "\n")
+cat("The dimensions of the test is:", dim(test.data), "\n")
+
+# turn Y binary
+train.data$Y <- as.numeric(ifelse(train.data$Y == "disease", 1, 0))
+test.data$Y  <- as.numeric(ifelse(test.data$Y  == "disease", 1, 0))
+```
+
+## Finding the Significant Genes
+
+Prepping for the for loop:
+
+```{r}
+col <- ncol(train.data)
+ycol <- match("Y", names(train.data))
+gene_idx  <- 2:(col - 2)
+gene.name <- names(train.data)[gene_idx]
+pvalue <- numeric(length(gene_idx))
+```
+
+For loop to find the significant genes
+
+```{r}
+for (i in seq_along(gene_idx))
+{
+  gene_name <- gene.name[i]
+  Xi <- train.data[, gene_idx[i], drop = FALSE]
+  names(Xi) <- gene_name  # set column name to the gene
+  
+  dat <- data.frame(Y = train.data[[ycol]], Xi, 
+                    check.names = FALSE)
+  glm.fit <- glm(Y ~ ., data = dat, family = binomial())
+  pvalue[i] <- coef(summary(glm.fit))[2, 4]
+}
+```
+
+Create the results table and sort by significance
+
+```{r}
+# Combine results into a nice table:
+results <- data.frame(Gene = gene.name, P_value = pvalue)
+
+# Sort by significance
+results <- results[order(results$P_value), ]
+head(results)
+```
+
+Get only the genes that have a p-value less than 0.05, and make sure the genes are in both the training and test data
+
+```{r}
+alpha <- results[results$P_value < 0.05,]
+cat("The dimensions of the significant genes (alpha) dataset is:")
+dim(alpha)
+
+ranked <- alpha$Gene
+ranked <- intersect(ranked, intersect(names(train.data), names(test.data)))
+```
+
+## Classification Tree
+
+Prep for the true classification tree
+
+```{r}
+train.data$Y <- factor(train.data$Y, levels = c(0,1))
+test.data$Y  <- factor(test.data$Y,  levels = levels(train.data$Y))
+
+# steps
+max_k <- min(37L, length(ranked))
+if (max_k < 5L) max_k <- length(ranked)
+steps <- seq(5L, max_k, by = 5L)
+if (tail(steps, 1) != max_k) steps <- c(steps, max_k)
+
+# helper
+impute_from_train <- function(Xtr, Xte) {
+  for (nm in colnames(Xtr)) {
+    med <- suppressWarnings(median(Xtr[[nm]], na.rm = TRUE))
+    if (is.finite(med)) {
+      Xtr[[nm]][is.na(Xtr[[nm]])] <- med
+      Xte[[nm]][is.na(Xte[[nm]])] <- med
+    }
+  }
+  list(Xtr = Xtr, Xte = Xte)
+}
+
+# storage
+tree_curve <- data.frame(TopGenes = integer(), Test_Error = numeric())
+```
+
+For loop
+
+```{r}
+for (k in steps) {
+  genes_k <- ranked[1:k]
+  genes_k <- intersect(genes_k, intersect(names(train.data), names(test.data)))
+  if (!length(genes_k)) {
+    tree_curve <- rbind(tree_curve, data.frame(TopGenes = k, Test_Acc = NA_real_))
+    next
+  }
+
+  # 1) Extract predictors
+  Xtr <- as.data.frame(train.data[, genes_k, drop = FALSE])
+  Xte <- as.data.frame(test.data[,  genes_k, drop = FALSE])
+
+  # 2) Impute TEST from TRAIN medians
+  for (nm in colnames(Xtr)) {
+    med <- suppressWarnings(median(Xtr[[nm]], na.rm = TRUE))
+    if (is.finite(med)) {
+      Xtr[[nm]][is.na(Xtr[[nm]])] <- med
+      Xte[[nm]][is.na(Xte[[nm]])] <- med
+    }
+  }
+
+  # 3) ONE canonical name map; apply to BOTH sets BEFORE building data frames
+  safe_names <- make.names(genes_k, unique = TRUE)
+  colnames(Xtr) <- safe_names
+  colnames(Xte) <- safe_names
+
+  # 4) Modeling frames (same columns & order)
+  dat_tr <- data.frame(Y = factor(train.data$Y, levels = c(0,1)),
+                       Xtr[, safe_names, drop = FALSE],
+                       check.names = FALSE)
+  dat_te <- data.frame(Y = factor(test.data$Y, levels = c(0,1)),
+                       Xte[, safe_names, drop = FALSE],
+                       check.names = FALSE)
+
+  # 5) Formula from the SAME names (avoid paste() pitfalls)
+  form_tree <- reformulate(termlabels = safe_names, response = "Y")
+
+  # 6) Fit + prune
+  fit <- rpart(form_tree, data = dat_tr, method = "class",
+               control = rpart.control(cp = 0.001, minsplit = 10, xval = 10))
+
+  cpt <- fit$cptable
+  imin <- which.min(replace(cpt[, "xerror"], is.na(cpt[, "xerror"]), Inf))
+  cp_opt <- cpt[imin, "CP"]
+  fit_pruned <- prune(fit, cp = cp_opt)
+
+  # 7) Align TEST to what the model expects (names & order)
+  vars_needed <- attr(fit_pruned$terms, "term.labels")   # should equal safe_names
+  # quick guard: must be empty
+  if (length(setdiff(vars_needed, names(dat_te)))) {
+    stop("Missing in test: ", paste(setdiff(vars_needed, names(dat_te)), collapse = ", "))
+  }
+  new_te <- dat_te[, vars_needed, drop = FALSE]
+  # ensure identical name vector
+  stopifnot(identical(names(new_te), vars_needed))
+
+  # 8) Predict & TEST ACCURACY
+  pred <- predict(fit_pruned, newdata = new_te, type = "class")
+  test_acc <- mean(pred == dat_te$Y)
+
+  cat("Top", k, "genes → Test Accuracy:", sprintf("%.4f", test_acc), "\n")
+  tree_curve <- rbind(tree_curve, data.frame(TopGenes = k, Test_Acc = test_acc))
+}
+```
+
+## Bagging
+
+Prep for Bagging
+
+```{r}
+# storage
+bag_curve <- data.frame(TopGenes = integer(), Test_Error = numeric())
+```
+
+For loop
+
+```{r}
+for (k in steps) {
+  genes_k <- ranked[1:k]
+
+  # Extract predictors
+  Xtr <- as.data.frame(train.data[, genes_k, drop = FALSE])
+  Xte <- as.data.frame(test.data[,  genes_k, drop = FALSE])
+
+  # Impute NAs
+  tmp <- impute_from_train(Xtr, Xte); Xtr <- tmp$Xtr; Xte <- tmp$Xte
+
+  # Sanitize names consistently
+  safe_names <- make.names(genes_k, unique = TRUE)
+  colnames(Xtr) <- safe_names
+  colnames(Xte) <- safe_names
+
+  # Modeling frames
+  dat_tr <- data.frame(Y = train.data$Y, Xtr, check.names = FALSE)
+  dat_te <- data.frame(Y = test.data$Y,  Xte, check.names = FALSE)
+
+  # Bagging = randomForest with mtry = p (all predictors)
+  form_bag <- reformulate(termlabels = safe_names, response = "Y")
+  bag.fit <- randomForest(
+    form_bag, data = dat_tr,
+    mtry = length(safe_names),     # <- bagging
+    ntree = 500,
+    importance = FALSE,
+    nodesize = 20
+  )
+
+  # Predict on TEST and compute TEST ACCURACY
+  pred <- predict(bag.fit, newdata = dat_te, type = "class")
+  test_acc <- mean(pred == dat_te$Y)
+
+  # Print only accuracy
+  cat("Top", k, "genes → Test Accuracy:", sprintf("%.4f", test_acc), "\n")
+
+  # Store (optional)
+  bag_curve <- rbind(bag_curve, data.frame(TopGenes = k, Test_Acc = test_acc))
+}
+```
+
+Tree node size test
+
+```{r}
+# grid of nodesizes to test
+nodesize_grid <- c(1, 3, 5, 10, 20)
+
+bag_size_curve <- data.frame(nodesize = integer(), Test_Acc = numeric())
+
+for (ns in nodesize_grid) {
+  bag.fit <- randomForest(
+    Y ~ ., data = dat_tr,
+    mtry = ncol(dat_tr) - 1,    # all predictors
+    ntree = 500,
+    nodesize = ns
+  )
+
+  pred <- predict(bag.fit, newdata = dat_te, type = "class")
+  test_acc <- mean(pred == dat_te$Y)
+  cat("nodesize =", ns, "→ Test Accuracy:", sprintf("%.4f", test_acc), "\n")
+
+  bag_size_curve <- rbind(bag_size_curve,
+                          data.frame(nodesize = ns, Test_Acc = test_acc))
+}
+```
+
+## Random Forest
+
+Prep
+
+```{r}
+rf_curve <- data.frame(TopGenes = integer(), Test_Acc = numeric())
+
+rf_tuned_curve <- data.frame(TopGenes = integer(),
+                             mtry = integer(),
+                             OOB_Error = numeric(),
+                             Test_Acc = numeric())
+```
+
+for loop
+
+```{r}
+for (k in steps) {
+  genes_k <- ranked[1:k]
+
+  # Extract predictors
+  Xtr <- as.data.frame(train.data[, genes_k, drop = FALSE])
+  Xte <- as.data.frame(test.data[,  genes_k, drop = FALSE])
+
+  # Impute NAs
+  tmp <- impute_from_train(Xtr, Xte); Xtr <- tmp$Xtr; Xte <- tmp$Xte
+
+  # Sanitize names consistently
+  safe_names <- make.names(genes_k, unique = TRUE)
+  colnames(Xtr) <- safe_names
+  colnames(Xte) <- safe_names
+
+  # Modeling frames
+  dat_tr <- data.frame(Y = train.data$Y, Xtr, check.names = FALSE)
+  dat_te <- data.frame(Y = test.data$Y,  Xte, check.names = FALSE)
+
+  # Random Forest: mtry = floor(sqrt(p)) for classification
+  p <- length(safe_names)
+  mtry_val <- max(1L, floor(sqrt(p)))
+
+  form_rf <- reformulate(termlabels = safe_names, response = "Y")
+  rf.fit <- randomForest(
+    form_rf, data = dat_tr,
+    mtry = mtry_val,
+    ntree = 500,
+    importance = TRUE
+  )
+
+  # Predict on TEST and compute TEST ACCURACY
+  pred <- predict(rf.fit, newdata = dat_te, type = "class")
+  test_acc <- mean(pred == dat_te$Y)
+
+  # Print only accuracy
+  cat("Top ", k, " genes → Test Accuracy: ", sprintf("%.4f", test_acc),
+      " (mtry = ", mtry_val, ", ntree = 500)\n", sep="")
+
+  # Store
+  rf_curve <- rbind(rf_curve, data.frame(TopGenes = k, Test_Acc = test_acc))
+}
+
+```
+
+For loop with best mtry & Out-Of-Bag error reported
+
+```{r}
+for (k in steps) {
+  genes_k <- ranked[1:k]
+
+  # Extract predictors
+  Xtr <- as.data.frame(train.data[, genes_k, drop = FALSE])
+  Xte <- as.data.frame(test.data[,  genes_k, drop = FALSE])
+
+  # Impute NAs (train medians → apply to test)
+  tmp <- impute_from_train(Xtr, Xte); Xtr <- tmp$Xtr; Xte <- tmp$Xte
+
+  # Safe, consistent names
+  safe_names <- make.names(genes_k, unique = TRUE)
+  colnames(Xtr) <- safe_names
+  colnames(Xte) <- safe_names
+
+  dat_tr <- data.frame(Y = train.data$Y, Xtr, check.names = FALSE)
+  dat_te <- data.frame(Y = test.data$Y,  Xte, check.names = FALSE)
+
+  # ----- Auto-tune mtry via OOB error -----
+  p <- length(safe_names)
+  # candidate grid (clipped to [1, p], unique integers)
+  grid_raw <- c(sqrt(p)/2, sqrt(p), 2*sqrt(p), p/3, p/2, p)
+  mtry_grid <- sort(unique(pmax(1L, pmin(p, round(grid_raw)))))
+
+  best_oob <- Inf
+  best_fit <- NULL
+  best_mtry <- NA_integer_
+
+  form_rf <- reformulate(termlabels = safe_names, response = "Y")
+
+  for (m in mtry_grid) {
+    rf.fit <- randomForest(form_rf, data = dat_tr,
+                           mtry = m, ntree = 500,
+                           nodesize = 1, importance = FALSE)
+    # OOB error from the running err.rate table
+    oob_err <- tail(rf.fit$err.rate[, "OOB"], 1)
+    if (!is.finite(oob_err)) {
+      # rare fallback if OOB is NA
+      oob_err <- mean(rf.fit$y != rf.fit$predicted, na.rm = TRUE)
+    }
+    if (oob_err < best_oob) {
+      best_oob <- oob_err
+      best_fit <- rf.fit
+      best_mtry <- m
+    }
+  }
+
+  # Predict on TEST with the best model and compute TEST ACCURACY
+  pred <- predict(best_fit, newdata = dat_te, type = "class")
+  test_acc <- mean(pred == dat_te$Y)
+
+  # Print minimal info (as requested)
+  cat("Top", k, "genes → Test Accuracy:", sprintf("%.4f", test_acc),
+      " | best mtry =", best_mtry, " | OOB Err =", sprintf("%.4f", best_oob), "\n")
+
+  # Store
+  rf_tuned_curve <- rbind(rf_tuned_curve,
+                          data.frame(TopGenes = k,
+                                     mtry = best_mtry,
+                                     OOB_Error = best_oob,
+                                     Test_Acc = test_acc))
+}
+```
+
+## Boosting
+
+Prep
+
+```{r}
+boost_curve <- data.frame(TopGenes = integer(), Test_Acc = numeric())
+
+# Tuning grids
+shrinkage_grid <- c(0.1, 0.05, 0.01)
+depth_grid     <- c(1, 2, 3, 4)
+n_trees_max    <- 3000   # enough for small shrinkage
+cv_folds       <- 5
+
+# Storage
+boost_tuned_curve <- data.frame(
+  TopGenes  = integer(),
+  shrinkage = numeric(),
+  depth     = integer(),
+  best_iter = integer(),
+  CV_Deviance = numeric(),
+  Test_Acc  = numeric()
+)
+```
+
+Regular for loop
+
+```{r}
+for (k in steps) {
+  genes_k <- ranked[1:k]
+
+  # extract predictors
+  Xtr <- as.data.frame(train.data[, genes_k, drop = FALSE])
+  Xte <- as.data.frame(test.data[,  genes_k, drop = FALSE])
+
+  # impute NAs
+  tmp <- impute_from_train(Xtr, Xte); Xtr <- tmp$Xtr; Xte <- tmp$Xte
+
+  # sanitize names
+  safe_names <- make.names(genes_k, unique = TRUE)
+  colnames(Xtr) <- safe_names
+  colnames(Xte) <- safe_names
+
+  dat_tr <- data.frame(Y = as.numeric(as.character(train.data$Y)), Xtr, check.names = FALSE)
+  dat_te <- data.frame(Y = as.numeric(as.character(test.data$Y)),  Xte, check.names = FALSE)
+
+  # --- Fit Boosting model ---
+  boost.fit <- gbm(
+    formula = reformulate(safe_names, response = "Y"),
+    data = dat_tr,
+    distribution = "bernoulli",
+    n.trees = 2000,              # number of trees
+    interaction.depth = 3,       # tree depth
+    shrinkage = 0.01,            # learning rate
+    n.minobsinnode = 10,         # min samples per leaf
+    cv.folds = 5,                # 5-fold CV for early stopping
+    verbose = FALSE
+  )
+
+  # Find optimal number of trees by CV
+  best_iter <- gbm.perf(boost.fit, method = "cv", plot.it = FALSE)
+
+  # predict probabilities & classify at 0.5 cutoff
+  prob <- predict(boost.fit, newdata = dat_te, n.trees = best_iter, type = "response")
+  pred <- ifelse(prob > 0.5, 1, 0)
+  test_acc <- mean(pred == dat_te$Y)
+
+  cat("Top", k, "genes → Test Accuracy:", sprintf("%.4f", test_acc),
+      " (trees =", best_iter, ")\n")
+
+  boost_curve <- rbind(boost_curve, data.frame(TopGenes = k, Test_Acc = test_acc))
+}
+```
+
+Tuned for loop
+
+```{r}
+for (k in steps) {
+
+  genes_k <- ranked[1:k]
+  # Extract & impute
+  Xtr <- as.data.frame(train.data[, genes_k, drop = FALSE])
+  Xte <- as.data.frame(test.data[,  genes_k, drop = FALSE])
+  tmp <- impute_from_train(Xtr, Xte); Xtr <- tmp$Xtr; Xte <- tmp$Xte
+
+  # Safe names
+  safe_names <- make.names(genes_k, unique = TRUE)
+  colnames(Xtr) <- safe_names
+  colnames(Xte) <- safe_names
+
+  # gbm wants 0/1 numeric Y
+  dat_tr <- data.frame(Y = as.integer(train.data$Y) - 1L, Xtr, check.names = FALSE)
+  dat_te <- data.frame(Y = as.integer(test.data$Y)  - 1L, Xte, check.names = FALSE)
+
+  # Auto-tune shrinkage & depth by CV deviance
+  best_fit <- NULL
+  best_iter <- NA_integer_
+  best_cv   <- Inf
+  best_pars <- c(shrink = NA_real_, depth = NA_integer_)
+
+  form_boost <- reformulate(termlabels = safe_names, response = "Y")
+
+  for (sh in shrinkage_grid) {
+    for (dp in depth_grid) {
+      fit <- gbm(
+        formula = form_boost, data = dat_tr, distribution = "bernoulli",
+        n.trees = n_trees_max, interaction.depth = dp,
+        shrinkage = sh, n.minobsinnode = 10, bag.fraction = 0.5,
+        cv.folds = cv_folds, keep.data = FALSE, verbose = FALSE
+      )
+      bi <- gbm.perf(fit, method = "cv", plot.it = FALSE)
+      cv_min <- suppressWarnings(min(fit$cv.error[is.finite(fit$cv.error)]))
+
+      if (is.finite(cv_min) && cv_min < best_cv) {
+        best_cv <- cv_min
+        best_fit <- fit
+        best_iter <- bi
+        best_pars <- c(shrink = sh, depth = dp)
+      }
+    }
+  }
+  
+  # Predict TEST with tuned model
+  prob <- predict(best_fit, newdata = dat_te, n.trees = best_iter, type = "response")
+  pred <- ifelse(prob > 0.5, 1L, 0L)
+  test_acc <- mean(pred == dat_te$Y)
+
+  cat("Top ", k, " genes → Test Accuracy:", sprintf("%.4f", test_acc),
+      " | shrinkage = ", best_pars["shrink"], " depth = ", best_pars["depth"],
+      " trees = ", best_iter, "\n", sep="")
+
+  boost_tuned_curve <- rbind(
+    boost_tuned_curve,
+    data.frame(
+      TopGenes   = k,
+      shrinkage  = as.numeric(best_pars["shrink"]),
+      depth      = as.integer(best_pars["depth"]),
+      best_iter  = best_iter,
+      CV_Deviance = best_cv,
+      Test_Acc   = test_acc
+    )
+  )
+}
+```
+
+
+
+
+```{r, ref.label=knitr::all_labels(), echo = TRUE, eval = FALSE}
+```
