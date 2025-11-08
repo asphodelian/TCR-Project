@@ -15,6 +15,7 @@ library(gridExtra)
 library(psych)
 library(readr)
 library(readxl)
+library(scales)
 library(SKAT)
 library(tidyr)
 
@@ -436,3 +437,98 @@ for (k in steps) {
     )
   )
 }
+
+########
+# Plot #
+########
+
+as_method_df <- function(df, method_name, acc_col = "Test_Acc") {
+  stopifnot(is.data.frame(df))
+  if (!("TopGenes" %in% names(df))) stop(method_name, ": missing column TopGenes")
+  if (!(acc_col %in% names(df))) stop(method_name, ": missing column ", acc_col)
+  df %>%
+    transmute(TopGenes = TopGenes,
+              Test_Acc = .data[[acc_col]],
+              Method = method_name)
+}
+
+curves <- list()
+
+# 1) Classification Tree
+if (exists("tree_curve", inherits = FALSE)) {
+  curves[["Classification Tree"]] <- as_method_df(tree_curve, "Classification Tree")
+}
+
+# 2) Bagging (prefer tuned if available)
+if (exists("bag_tuned_curve", inherits = FALSE)) {
+  curves[["Bagging (tuned)"]] <- as_method_df(bag_tuned_curve, "Bagging (tuned)")
+} else if (exists("bag_curve", inherits = FALSE)) {
+  curves[["Bagging"]] <- as_method_df(bag_curve, "Bagging")
+}
+
+# 3) Random Forest (prefer tuned if available)
+if (exists("rf_tuned_curve", inherits = FALSE)) {
+  curves[["Random Forest (tuned mtry)"]] <- as_method_df(rf_tuned_curve, "Random Forest (tuned mtry)")
+} else if (exists("rf_curve", inherits = FALSE)) {
+  curves[["Random Forest"]] <- as_method_df(rf_curve, "Random Forest")
+}
+
+# 4) Boosting (prefer tuned if available)
+if (exists("boost_tuned_curve", inherits = FALSE)) {
+  curves[["Boosting (tuned)"]] <- as_method_df(boost_tuned_curve, "Boosting (tuned)")
+} else if (exists("boost_curve", inherits = FALSE)) {
+  curves[["Boosting"]] <- as_method_df(boost_curve, "Boosting")
+}
+
+# Bind the available curves
+if (length(curves) == 0) stop("No model curves found to plot.")
+compare_df <- bind_rows(curves) %>% filter(is.finite(Test_Acc))
+
+# Optional: fix legend order if you like
+method_order <- intersect(
+  c("Classification Tree",
+    "Bagging", "Bagging (tuned)",
+    "Random Forest", "Random Forest (tuned mtry)",
+    "Boosting", "Boosting (tuned)"),
+  unique(compare_df$Method)
+)
+compare_df$Method <- factor(compare_df$Method, levels = method_order)
+
+# Plot: Test Accuracy vs Number of Top Genes
+gg <- ggplot(compare_df, aes(x = TopGenes, y = Test_Acc, color = Method)) +
+  geom_line(linewidth = 1) +
+  geom_point(size = 2) +
+  labs(
+    title = "Test Accuracy vs Number of Top Genes",
+    x = "Number of Top Genes",
+    y = "Test Accuracy (Higher = Better)",
+    color = "Model"
+  ) +
+  # precise y-axis (tweak limits to your range)
+  scale_y_continuous(
+    limits = c(0.70, 1.00),
+    breaks = seq(0.70, 1.00, by = 0.02),
+    labels = number_format(accuracy = 0.001)
+  ) +
+  coord_cartesian(expand = FALSE) +
+  theme_minimal(base_size = 14) +
+  theme(
+    plot.title = element_text(face = "bold", hjust = 0.5),
+    legend.position = "right"
+  )
+print(gg)
+
+# Highlight best point per method
+best_by_method <- compare_df %>%
+  group_by(Method) %>%
+  slice_max(Test_Acc, n = 1, with_ties = FALSE)
+
+gg +
+  geom_point(data = best_by_method,
+             aes(x = TopGenes, y = Test_Acc, color = Method),
+             size = 3) +
+  geom_text(
+    data = best_by_method,
+    aes(label = paste0("max=", round(Test_Acc, 3), " @", TopGenes)),
+    vjust = -1.0, size = 3.2, show.legend = FALSE
+  )
