@@ -18,6 +18,7 @@ library(factoextra)
 library(ggfortify)
 library(ggplot2)
 library(gridExtra)
+library(scales)
 
 # techniques
 library(brglm2) # bias-reduced log regress
@@ -279,17 +280,11 @@ for (k in steps) {
       " sampsize = ", best$ss,
       " | OOB Err = ", sprintf("%.4f", best$oob), "\n", sep = "")
   
-  bag_curve <- rbind(
-    bag_curve,
-    data.frame(
-      TopGenes  = k,
-      ntree     = best$nt,
-      nodesize  = best$ns,
-      sampsize  = best$ss,
-      OOB_Error = best$oob,
-      Test_Acc  = test_acc
-    )
-  )
+  bag_curve <- rbind(bag_curve, 
+                     data.frame(TopGenes = k, ntree = best$nt,
+                                           nodesize = best$ns, sampsize = best$ss,
+                                           OOB_Error = best$oob, Test_Acc = test_acc)
+                     )
 }
 
 ################# 
@@ -500,35 +495,56 @@ method_order <- intersect(
 )
 compare_df$Method <- factor(compare_df$Method, levels = method_order)
 
-# Plot: Test Accuracy vs Number of Top Genes
-gg <- ggplot(compare_df, aes(x = TopGenes, y = Test_Acc, color = Method)) +
+# compare_df: built the same way as before (bind_rows of the method curves)
+# Ensure TopGenes is numeric
+compare_df <- compare_df %>% mutate(TopGenes = as.integer(TopGenes))
+
+# --- Diagnostics: how many usable points per method?
+by_method <- compare_df %>%
+  group_by(Method) %>%
+  summarise(
+    n_total = n(),
+    n_missing = sum(!is.finite(Test_Acc)),
+    n_used = sum(is.finite(Test_Acc)),
+    min_acc = suppressWarnings(min(Test_Acc, na.rm = TRUE)),
+    max_acc = suppressWarnings(max(Test_Acc, na.rm = TRUE))
+  )
+print(by_method)
+
+# --- Filter out NAs for plotting
+df_plot <- compare_df %>% filter(is.finite(Test_Acc))
+
+# Dynamic y-limits with a little padding (no hard clamp that drops points)
+ymin <- max(0, min(df_plot$Test_Acc, na.rm = TRUE) - 0.02)
+ymax <- min(1, max(df_plot$Test_Acc, na.rm = TRUE) + 0.02)
+
+gg <- ggplot(df_plot, aes(x = TopGenes, y = Test_Acc, color = Method, group = Method)) +
   geom_line(linewidth = 1) +
   geom_point(size = 2) +
   labs(
     title = "Test Accuracy vs Number of Top Genes",
-    x = "Number of Top Genes",
-    y = "Test Accuracy (Higher = Better)",
+    x = "Top Genes",
+    y = "Test Accuracy",
     color = "Model"
   ) +
-  # precise y-axis (tweak limits to your range)
   scale_y_continuous(
-    limits = c(0.70, 1.00),
-    breaks = seq(0.70, 1.00, by = 0.02),
+    breaks = breaks_width(0.02),
     labels = number_format(accuracy = 0.001)
   ) +
-  coord_cartesian(expand = FALSE) +
+  scale_x_continuous(expand = expansion(mult = c(0.10, 0.10))) +  # <-- padding
+  coord_cartesian(ylim = c(ymin, ymax)) +
   theme_minimal(base_size = 14) +
   theme(
     plot.title = element_text(face = "bold", hjust = 0.5),
     legend.position = "right"
   )
+
 print(gg)
 
-# Highlight best point per method
-best_by_method <- compare_df %>%
+# (optional) highlight best point per method (only if method has >=1 point)
+best_by_method <- df_plot %>%
   group_by(Method) %>%
   slice_max(Test_Acc, n = 1, with_ties = FALSE)
-
 gg +
   geom_point(data = best_by_method,
              aes(x = TopGenes, y = Test_Acc, color = Method),
