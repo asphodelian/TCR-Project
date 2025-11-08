@@ -238,6 +238,9 @@ for (k in steps) {
 Prep for Bagging
 
 ```{r}
+ntree_grid <- c(200, 500, 1000)
+nodesize_grid <- c(1, 5, 10)
+sampsize_grid <- c(0.5, 0.7, 1.0) * nrow(dat_tr)
 # storage
 bag_curve <- data.frame(TopGenes = integer(), Test_Error = numeric())
 ```
@@ -245,71 +248,9 @@ bag_curve <- data.frame(TopGenes = integer(), Test_Error = numeric())
 For loop
 
 ```{r}
-for (k in steps) {
-  genes_k <- ranked[1:k]
 
-  # Extract predictors
-  Xtr <- as.data.frame(train.data[, genes_k, drop = FALSE])
-  Xte <- as.data.frame(test.data[,  genes_k, drop = FALSE])
-
-  # Impute NAs
-  tmp <- impute_from_train(Xtr, Xte); Xtr <- tmp$Xtr; Xte <- tmp$Xte
-
-  # Sanitize names consistently
-  safe_names <- make.names(genes_k, unique = TRUE)
-  colnames(Xtr) <- safe_names
-  colnames(Xte) <- safe_names
-
-  # Modeling frames
-  dat_tr <- data.frame(Y = train.data$Y, Xtr, check.names = FALSE)
-  dat_te <- data.frame(Y = test.data$Y,  Xte, check.names = FALSE)
-
-  # Bagging = randomForest with mtry = p (all predictors)
-  form_bag <- reformulate(termlabels = safe_names, response = "Y")
-  bag.fit <- randomForest(
-    form_bag, data = dat_tr,
-    mtry = length(safe_names),     # <- bagging
-    ntree = 500,
-    importance = FALSE,
-    nodesize = 20
-  )
-
-  # Predict on TEST and compute TEST ACCURACY
-  pred <- predict(bag.fit, newdata = dat_te, type = "class")
-  test_acc <- mean(pred == dat_te$Y)
-
-  # Print only accuracy
-  cat("Top", k, "genes → Test Accuracy:", sprintf("%.4f", test_acc), "\n")
-
-  # Store (optional)
-  bag_curve <- rbind(bag_curve, data.frame(TopGenes = k, Test_Acc = test_acc))
-}
 ```
 
-Tree node size test
-
-```{r}
-# grid of nodesizes to test
-nodesize_grid <- c(1, 3, 5, 10, 20)
-
-bag_size_curve <- data.frame(nodesize = integer(), Test_Acc = numeric())
-
-for (ns in nodesize_grid) {
-  bag.fit <- randomForest(
-    Y ~ ., data = dat_tr,
-    mtry = ncol(dat_tr) - 1,    # all predictors
-    ntree = 500,
-    nodesize = ns
-  )
-
-  pred <- predict(bag.fit, newdata = dat_te, type = "class")
-  test_acc <- mean(pred == dat_te$Y)
-  cat("nodesize =", ns, "→ Test Accuracy:", sprintf("%.4f", test_acc), "\n")
-
-  bag_size_curve <- rbind(bag_size_curve,
-                          data.frame(nodesize = ns, Test_Acc = test_acc))
-}
-```
 
 ## Random Forest
 
