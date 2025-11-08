@@ -315,11 +315,11 @@ for (k in steps) {
   pred <- predict(best$fit, newdata = dat_te, type = "class")
   test_acc <- mean(pred == dat_te$Y)
 
-  cat("Top", k, "genes → Test Accuracy:", sprintf("%.4f", test_acc),
-      " | best ntree=", best$nt,
-      " nodesize=", best$ns,
-      " sampsize=", best$ss,
-      " | OOB Err=", sprintf("%.4f", best$oob), "\n", sep="")
+  cat("Top ", k, " genes → Test Accuracy:", sprintf("%.4f", test_acc),
+      " | best ntree = ", best$nt,
+      " nodesize = ", best$ns,
+      " sampsize = ", best$ss,
+      " | OOB Err = ", sprintf("%.4f", best$oob), "\n", sep="")
 
   bag_curve <- rbind(
     bag_curve,
