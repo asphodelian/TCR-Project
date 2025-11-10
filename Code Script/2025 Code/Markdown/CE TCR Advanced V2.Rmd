@@ -251,7 +251,7 @@ impute_from_train <- function(Xtr, Xte) {
 # parameters
 ntree_grid <- c(200, 500, 1000)
 nodesize_grid <- c(1, 5, 10)
-sampsize_grid <- c(0.5, 0.7, 1.0)
+sampsize_grid <- c(0.5, 0.7, 1.0) # remove
 # storage
 bag_curve <- data.frame(TopGenes = integer(), ntree = integer(),
                         nodesize  = integer(), sampsize  = integer(),
@@ -361,8 +361,8 @@ for (k in steps) {
   nodesize_grid <- nodesize_grid[nodesize_grid <= max(1L, round(n_tr/5))]
 
   # sampsize: bootstrap fraction set adaptively
-  sampfrac_grid <- c(0.6, 0.75, 0.9, 1.0)
-  sampsize_grid <- unique(pmax(1L, round(sampfrac_grid * n_tr)))
+  #sampfrac_grid <- c(0.6, 0.75, 0.9, 1.0)
+  #sampsize_grid <- unique(pmax(1L, round(sampfrac_grid * n_tr)))
 
   # ntree: pick best by scanning OOB curve from one large forest
   NTREE_MAX <- 2000L
@@ -372,7 +372,7 @@ for (k in steps) {
   best <- list(oob = Inf, nt = NA_integer_, ns = NA_integer_, ss = NA_integer_, fit = NULL)
 
   for (ns in nodesize_grid) {
-    for (ss in sampsize_grid) {
+    #for (ss in sampsize_grid) {
 
       # 1) Fit a large forest once; read its OOB error curve to pick ntree*
       rf_big <- randomForest(
@@ -402,16 +402,21 @@ for (k in steps) {
         best <- list(oob = oob_min, nt = nt_star, ns = ns, ss = ss, fit = rf_best)
       }
     }
-  }
+  #}
 
   # Predict on TEST for the best combo
   pred <- predict(best$fit, newdata = dat_te, type = "class")
   test_acc <- mean(pred == dat_te$Y)
 
+  #cat("Top ", k, " genes → Test Accuracy:", sprintf("%.4f", test_acc),
+  #    " | best ntree = ", best$nt,
+  #    " nodesize = ", best$ns,
+  #    " sampsize = ", best$ss,
+  #    " | OOB Err = ", sprintf("%.4f", best$oob), "\n", sep = "")
+  
   cat("Top ", k, " genes → Test Accuracy:", sprintf("%.4f", test_acc),
       " | best ntree = ", best$nt,
       " nodesize = ", best$ns,
-      " sampsize = ", best$ss,
       " | OOB Err = ", sprintf("%.4f", best$oob), "\n", sep = "")
 
   bag_curve <- rbind(
@@ -420,7 +425,6 @@ for (k in steps) {
       TopGenes  = k,
       ntree     = best$nt,
       nodesize  = best$ns,
-      sampsize  = best$ss,
       OOB_Error = best$oob,
       Test_Acc  = test_acc
     )
