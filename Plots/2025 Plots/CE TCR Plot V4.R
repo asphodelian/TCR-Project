@@ -124,6 +124,14 @@ impute_from_train <- function(Xtr, Xte) {
   list(Xtr = Xtr, Xte = Xte)
 }
 
+# drop 0-var cols
+drop_nzv <- function(Xtr, Xte) {
+  nzv <- vapply(Xtr, function(x) length(unique(na.omit(x))) > 1, logical(1))
+  Xtr <- Xtr[, nzv, drop = FALSE]
+  Xte <- Xte[, nzv, drop = FALSE]
+  list(Xtr = Xtr, Xte = Xte)
+}
+
 ###########
 # GLM Fit #
 ###########
