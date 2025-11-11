@@ -236,3 +236,50 @@ for (s in seq_along(steps)) {
   
   qda_curve <- rbind(qda_curve, data.frame(TopGenes = k, Test_Acc = acc))
 }
+
+####### 
+# LDA #
+#######
+
+# lda prep
+lda_curve  <- data.frame(TopGenes = integer(), Test_Acc = numeric())
+lda_models <- vector("list", length(steps))
+names(lda_models) <- paste0("top_", steps)
+
+# for loop
+for (s in seq_along(steps)) {
+  k <- steps[s]
+  genes_k <- ranked[1:k]
+  
+  Xtr <- as.data.frame(train.data[, genes_k, drop = FALSE])
+  Xte <- as.data.frame(test.data[,  genes_k, drop = FALSE])
+  
+  # impute NAs (from TRAIN medians) + drop zero-variance
+  tmp <- impute_from_train(Xtr, Xte); Xtr <- tmp$Xtr; Xte <- tmp$Xte
+  tmp <- drop_nzv(Xtr, Xte);          Xtr <- tmp$Xtr; Xte <- tmp$Xte
+  if (ncol(Xtr) == 0L) {
+    lda_curve <- rbind(lda_curve, data.frame(TopGenes = k, 
+                                             Test_Acc = NA_real_))
+    next
+  }
+  
+  dat_tr <- data.frame(Y = train.data$Y, Xtr, check.names = FALSE)
+  dat_te <- data.frame(Y = test.data$Y,  Xte, check.names = FALSE)
+  
+  lda.fit <- tryCatch(lda(Y ~ ., data = dat_tr),
+                      error = function(e) 
+                      { warning("top_", k, ": ", e$message); NULL })
+  
+  if (is.null(lda.fit)) {
+    lda_curve <- rbind(lda_curve, data.frame(TopGenes = k, 
+                                             Test_Acc = NA_real_))
+    next
+  }
+  
+  lda_models[[s]] <- lda.fit
+  pred_test <- predict(lda.fit, newdata = dat_te)$class
+  acc <- mean(pred_test == dat_te$Y)
+  cat("Top", k, "→ LDA Test Acc:", sprintf("%.4f", acc), "\n")
+  
+  lda_curve <- rbind(lda_curve, data.frame(TopGenes = k, Test_Acc = acc))
+}
