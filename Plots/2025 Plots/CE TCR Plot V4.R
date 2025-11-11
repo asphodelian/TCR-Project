@@ -123,3 +123,66 @@ impute_from_train <- function(Xtr, Xte) {
   }
   list(Xtr = Xtr, Xte = Xte)
 }
+
+###########
+# GLM Fit #
+###########
+
+steps <- seq(5, length(ranked), by = 5)
+
+if (length(ranked) > 0 && tail(steps, 1) != length(ranked)) {
+  steps <- c(steps, length(ranked))
+}
+
+# storage
+glm_curve <- data.frame(TopGenes = integer(), Test_Acc = numeric())
+
+# for loop
+for (k in steps) {
+  genes_k <- ranked[1:k]
+  
+  Xi_tr <- as.data.frame(train.data[, genes_k, drop = FALSE])
+  Xi_te <- as.data.frame(test.data[,  genes_k, drop = FALSE])
+  
+  # Impute NAs in test with TRAIN medians (per feature)
+  for (nm in colnames(Xi_tr)) {
+    med <- median(Xi_tr[[nm]], na.rm = TRUE)
+    if (is.finite(med)) {
+      Xi_tr[[nm]][is.na(Xi_tr[[nm]])] <- med
+      Xi_te[[nm]][is.na(Xi_te[[nm]])] <- med
+    }
+  }
+  
+  # Drop zero-variance predictors
+  nzv <- vapply(Xi_tr, function(x) length(unique(na.omit(x))) > 1, logical(1))
+  Xi_tr <- Xi_tr[, nzv, drop = FALSE]
+  Xi_te <- Xi_te[, nzv, drop = FALSE]
+  if (ncol(Xi_tr) == 0L) {
+    glm_curve <- rbind(glm_curve, data.frame(TopGenes = k, Test_Acc = NA))
+    next
+  }
+  
+  # build modeling frames
+  dat_tr <- data.frame(Y = train.data$Y, Xi_tr, check.names = FALSE)
+  dat_te <- data.frame(Y = test.data$Y,  Xi_te,  check.names = FALSE)
+  
+  
+  fit <- tryCatch(glm(Y ~ ., data = dat_tr, 
+                      family = binomial(link = "logit"), 
+                      method = brglm2::brglmFit),
+                  error = function(e) NULL)
+  
+  if (is.null(fit)) {
+    glm_curve <- rbind(glm_curve, data.frame(TopGenes = k, 
+                                             Test_Acc = NA))
+    next
+  }
+  
+  prob <- predict(fit, newdata = dat_te, type = "response")
+  pred <- ifelse(prob > 0.5, 1, 0)
+  acc  <- mean(pred == dat_te$Y)
+  
+  cat("Top", k, "→ Test Acc:", sprintf("%.4f", acc), "\n")
+  glm_curve <- rbind(glm_curve, data.frame(TopGenes = k, 
+                                           Test_Acc = acc))
+}
