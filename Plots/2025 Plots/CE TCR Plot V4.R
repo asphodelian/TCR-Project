@@ -283,3 +283,55 @@ for (s in seq_along(steps)) {
   
   lda_curve <- rbind(lda_curve, data.frame(TopGenes = k, Test_Acc = acc))
 }
+
+#######
+# KNN #
+#######
+
+# storage
+knn_curve <- data.frame(TopGenes = integer(), k = integer(), 
+                        Test_Acc = numeric())
+
+# for loop
+for (m in steps) {
+  genes_m <- ranked[1:m]
+  
+  Xtr <- as.data.frame(train.data[, genes_m, drop = FALSE])
+  Xte <- as.data.frame(test.data[,  genes_m, drop = FALSE])
+  ytr <- train.data$Y
+  yte <- test.data$Y
+  
+  # --- Impute NAs with TRAIN medians (per feature) ---
+  for (nm in colnames(Xtr)) {
+    med <- median(Xtr[[nm]], na.rm = TRUE)
+    if (is.finite(med)) {
+      Xtr[[nm]][is.na(Xtr[[nm]])] <- med
+      Xte[[nm]][is.na(Xte[[nm]])] <- med
+    }
+  }
+  
+  # --- Drop zero-variance columns (after impute) ---
+  nzv <- vapply(Xtr, function(x) length(unique(na.omit(x))) > 1, logical(1))
+  if (!any(nzv)) {
+    knn_curve <- rbind(knn_curve, data.frame(TopGenes = m, k = 7, 
+                                             Test_Acc = NA_real_))
+    next
+  }
+  Xtr <- Xtr[, nzv, drop = FALSE]
+  Xte <- Xte[, nzv, drop = FALSE]
+  
+  # --- Standardize using TRAIN mean/sd (critical for KNN) ---
+  mu  <- vapply(Xtr, mean, numeric(1), na.rm = TRUE)
+  sdx <- vapply(Xtr, sd,   numeric(1), na.rm = TRUE); sdx[sdx == 0] <- 1
+  Xtr_sc <- scale(Xtr, center = mu, scale = sdx)
+  Xte_sc <- scale(Xte, center = mu, scale = sdx)
+  
+  # --- KNN prediction on TEST ONLY ---
+  pred <- knn(train = Xtr_sc, test = Xte_sc, cl = ytr, k = k3)
+  acc  <- mean(pred == yte)
+  
+  cat("Top", m, "genes  →  K = 7 Test Acc:", 
+      sprintf("%.4f", acc), "\n")
+  knn_curve <- rbind(knn_curve, data.frame(TopGenes = m, k = 7, 
+                                           Test_Acc = acc))
+}
