@@ -479,3 +479,75 @@ for (k in steps) {
                               OOB_Error = best_oob,
                               Test_Acc = test_acc))
 }
+
+############ 
+# Boosting #
+############
+
+boost <- data.frame(TopGenes = integer(), shrinkage = numeric(),
+                    depth = integer(), best_iter = integer(),
+                    CV_Deviance = numeric(), Test_Acc  = numeric())
+
+# for loop
+for (k in steps) {
+  
+  genes_k <- ranked[1:k]
+  # Extract & impute
+  Xtr <- as.data.frame(train.data[, genes_k, drop = FALSE])
+  Xte <- as.data.frame(test.data[,  genes_k, drop = FALSE])
+  tmp <- impute_from_train(Xtr, Xte); Xtr <- tmp$Xtr; Xte <- tmp$Xte
+  
+  # Safe names
+  safe_names <- make.names(genes_k, unique = TRUE)
+  colnames(Xtr) <- safe_names
+  colnames(Xte) <- safe_names
+  
+  # gbm wants 0/1 numeric Y
+  dat_tr <- data.frame(Y = as.integer(train.data$Y) - 1L, Xtr, check.names = FALSE)
+  dat_te <- data.frame(Y = as.integer(test.data$Y)  - 1L, Xte, check.names = FALSE)
+  
+  # Auto-tune shrinkage & depth by CV deviance
+  best_fit <- NULL
+  best_iter <- NA_integer_
+  best_cv   <- Inf
+  best_pars <- c(shrink = NA_real_, depth = NA_integer_)
+  
+  form_boost <- reformulate(termlabels = safe_names, response = "Y")
+  
+  for (sh in shrinkage_grid) {
+    for (dp in depth_grid) {
+      fit <- gbm(
+        formula = form_boost, data = dat_tr, distribution = "bernoulli",
+        n.trees = n_trees_max, interaction.depth = dp,
+        shrinkage = sh, n.minobsinnode = 10, bag.fraction = 0.5,
+        cv.folds = cv_folds, keep.data = FALSE, verbose = FALSE
+      )
+      bi <- gbm.perf(fit, method = "cv", plot.it = FALSE)
+      cv_min <- suppressWarnings(min(fit$cv.error[is.finite(fit$cv.error)]))
+      
+      if (is.finite(cv_min) && cv_min < best_cv) {
+        best_cv <- cv_min
+        best_fit <- fit
+        best_iter <- bi
+        best_pars <- c(shrink = sh, depth = dp)
+      }
+    }
+  }
+  
+  # Predict TEST with tuned model
+  prob <- predict(best_fit, newdata = dat_te, n.trees = best_iter, type = "response")
+  pred <- ifelse(prob > 0.5, 1L, 0L)
+  test_acc <- mean(pred == dat_te$Y)
+  
+  cat("Top ", k, " genes → Test Accuracy:", sprintf("%.4f", test_acc),
+      " | shrinkage = ", best_pars["shrink"], " depth = ", best_pars["depth"],
+      " trees = ", best_iter, "\n", sep="")
+  
+  boost <- rbind(boost, data.frame(TopGenes = k, 
+                                   shrinkage  = as.numeric(best_pars["shrink"]),
+                                   depth = as.integer(best_pars["depth"]),
+                                   best_iter = best_iter,
+                                   CV_Deviance = best_cv, 
+                                   Test_Acc = test_acc)
+  )
+}
