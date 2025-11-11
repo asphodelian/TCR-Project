@@ -235,7 +235,85 @@ for (k in steps) {
 }
 ```
 
+## Random Forest
 
+Prep
+
+```{r}
+rf_curve <- data.frame(TopGenes = integer(), Test_Acc = numeric())
+
+rf_tuned_curve <- data.frame(TopGenes = integer(),
+                             mtry = integer(),
+                             OOB_Error = numeric(),
+                             Test_Acc = numeric())
+```
+
+For loop with best mtry & Out-Of-Bag error reported
+
+```{r}
+for (k in steps) {
+  genes_k <- ranked[1:k]
+
+  # Extract predictors
+  Xtr <- as.data.frame(train.data[, genes_k, drop = FALSE])
+  Xte <- as.data.frame(test.data[,  genes_k, drop = FALSE])
+
+  # Impute NAs (train medians → apply to test)
+  tmp <- impute_from_train(Xtr, Xte); Xtr <- tmp$Xtr; Xte <- tmp$Xte
+
+  # Safe, consistent names
+  safe_names <- make.names(genes_k, unique = TRUE)
+  colnames(Xtr) <- safe_names
+  colnames(Xte) <- safe_names
+
+  dat_tr <- data.frame(Y = train.data$Y, Xtr, check.names = FALSE)
+  dat_te <- data.frame(Y = test.data$Y,  Xte, check.names = FALSE)
+
+  # ----- Auto-tune mtry via OOB error -----
+  p <- length(safe_names)
+  # candidate grid (clipped to [1, p], unique integers)
+  grid_raw <- c(sqrt(p)/2, sqrt(p), 2*sqrt(p), p/3, p/2, p)
+  mtry_grid <- sort(unique(pmax(1L, pmin(p, round(grid_raw)))))
+
+  best_oob <- Inf
+  best_fit <- NULL
+  best_mtry <- NA_integer_
+
+  form_rf <- reformulate(termlabels = safe_names, response = "Y")
+
+  for (m in mtry_grid) {
+    rf.fit <- randomForest(form_rf, data = dat_tr,
+                           mtry = m, ntree = 500,
+                           nodesize = 1, importance = FALSE)
+    # OOB error from the running err.rate table
+    oob_err <- tail(rf.fit$err.rate[, "OOB"], 1)
+    if (!is.finite(oob_err)) {
+      # rare fallback if OOB is NA
+      oob_err <- mean(rf.fit$y != rf.fit$predicted, na.rm = TRUE)
+    }
+    if (oob_err < best_oob) {
+      best_oob <- oob_err
+      best_fit <- rf.fit
+      best_mtry <- m
+    }
+  }
+
+  # Predict on TEST with the best model and compute TEST ACCURACY
+  pred <- predict(best_fit, newdata = dat_te, type = "class")
+  test_acc <- mean(pred == dat_te$Y)
+
+  # Print minimal info (as requested)
+  cat("Top", k, "genes → Test Accuracy:", sprintf("%.4f", test_acc),
+      " | best mtry =", best_mtry, " | OOB Err =", sprintf("%.4f", best_oob), "\n")
+
+  # Store
+  rf_tuned_curve <- rbind(rf_tuned_curve,
+                          data.frame(TopGenes = k,
+                                     mtry = best_mtry,
+                                     OOB_Error = best_oob,
+                                     Test_Acc = test_acc))
+}
+```
 
 
 
