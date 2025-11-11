@@ -551,3 +551,112 @@ for (k in steps) {
                                    Test_Acc = test_acc)
   )
 }
+
+############
+# Plotting #
+############
+
+# helper: coerce any curve df to (TopGenes, Test_Acc, Method)
+as_method_df <- function(df, method_name, acc_col = "Test_Acc") {
+  stopifnot(is.data.frame(df))
+  if (!("TopGenes" %in% names(df))) stop(method_name, ": missing column TopGenes")
+  if (!(acc_col %in% names(df))) stop(method_name, ": missing column ", acc_col)
+  df %>% transmute(TopGenes = as.integer(TopGenes),
+                   Test_Acc = .data[[acc_col]],
+                   Method = method_name)
+}
+
+curves <- list()
+
+# 1) GLM / QDA / LDA (assumed to have Test_Acc already)
+if (exists("glm_curve", inherits = FALSE))
+  curves[["GLM"]] <- as_method_df(glm_curve, "GLM")
+
+if (exists("qda_curve", inherits = FALSE))
+  curves[["QDA"]] <- as_method_df(qda_curve, "QDA")
+
+if (exists("lda_curve", inherits = FALSE))
+  curves[["LDA"]] <- as_method_df(lda_curve, "LDA")
+
+# 2) KNN (pick k=7)
+if (exists("knn_curves", inherits = FALSE)) {
+  stopifnot("k" %in% names(knn_curves))
+  knn7 <- knn_curves %>% filter(k == 7)
+  if (nrow(knn7) > 0)
+    curves[["KNN (k=7)"]] <- as_method_df(knn7, "KNN (k=7)")
+}
+
+# 3) Classification Tree
+if (exists("tree_curve", inherits = FALSE))
+  curves[["Classification Tree"]] <- as_method_df(tree_curve, "Classification Tree")
+
+# 4) Random Forest (prefer tuned)
+if (exists("randFor", inherits = FALSE))
+  curves[["Random Forest (tuned mtry)"]] <- as_method_df(rf_tuned_curve, "Random Forest (tuned mtry)")
+else if (exists("rf_curve", inherits = FALSE))
+  curves[["Random Forest"]] <- as_method_df(rf_curve, "Random Forest")
+
+# 5) Boosting (prefer tuned)
+if (exists("boost", inherits = FALSE))
+  curves[["Boosting (tuned)"]] <- as_method_df(boost_tuned_curve, "Boosting (tuned)")
+else if (exists("boost_curve", inherits = FALSE))
+  curves[["Boosting"]] <- as_method_df(boost_curve, "Boosting")
+
+# bind and clean
+if (length(curves) == 0) stop("No model curves found to plot.")
+compare_df <- bind_rows(curves) %>% filter(is.finite(Test_Acc))
+
+# diagnostics (optional)
+# compare_df %>% count(Method, name = "n_points") %>% print()
+
+# legend order (adjust as you like)
+method_order <- intersect(
+  c("GLM","QDA","LDA","KNN (k=7)",
+    "Classification Tree",
+    "Random Forest", "Random Forest (tuned mtry)",
+    "Boosting", "Boosting (tuned)"),
+  unique(compare_df$Method)
+)
+compare_df$Method <- factor(compare_df$Method, levels = method_order)
+
+# dynamic y range with padding; x padding so the 37-point isn’t cramped
+df_plot <- compare_df
+ymin <- max(0, min(df_plot$Test_Acc, na.rm = TRUE) - 0.02)
+ymax <- min(1, max(df_plot$Test_Acc, na.rm = TRUE) + 0.02)
+
+gg <- ggplot(df_plot, aes(x = TopGenes, y = Test_Acc, color = Method, group = Method)) +
+  geom_line(linewidth = 1, na.rm = TRUE) +
+  geom_point(size = 2, na.rm = TRUE) +
+  labs(
+    title = "Test Accuracy vs Number of Top Genes",
+    x = "Number of Top Genes",
+    y = "Test Accuracy (Higher = Better)",
+    color = "Model"
+  ) +
+  scale_y_continuous(
+    breaks = breaks_width(0.02),
+    labels = number_format(accuracy = 0.001)
+  ) +
+  scale_x_continuous(expand = expansion(mult = c(0.08, 0.08))) +  # left/right padding
+  coord_cartesian(ylim = c(ymin, ymax)) +
+  theme_minimal(base_size = 14) +
+  theme(
+    plot.title = element_text(face = "bold", hjust = 0.5),
+    legend.position = "right"
+  )
+print(gg)
+
+# highlight best per method
+best_by_method <- df_plot %>%
+  group_by(Method) %>%
+  slice_max(Test_Acc, n = 1, with_ties = FALSE)
+
+gg +
+  geom_point(data = best_by_method,
+             aes(x = TopGenes, y = Test_Acc, color = Method),
+             size = 3) +
+  geom_text(
+    data = best_by_method,
+    aes(label = paste0("max=", round(Test_Acc, 3), " @", TopGenes)),
+    vjust = -1.0, size = 3.2, show.legend = FALSE
+  )
