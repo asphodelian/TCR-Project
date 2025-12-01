@@ -10,61 +10,32 @@ We have also added in two datasets concerning lung patients and will be applying
 ## Fall 2025 Update
 This project has been picked up again in Fall 2025, Gabrielle's last semester of her Statistical Data Science Master's program. This is for the Culminating Experience, Math 895: Project and Exam. A new folder will be made within existing folders to hold the new work and will have 2025 within the name.
 
-The goal of this project is to try to create a model to predict the data, first with a binary Y, and if possible, with a multiple classes Y.
+The goal of this project is to try to create a model to predict the data, first with a binary Y, and if possible, with a multiple classes Y. If you wish to look at the presentation I made for this project, click [here](https://docs.google.com/presentation/d/1HlnEI0kWB3usWeK4IZqvphaXPEEnY4txCCzHe4P6UVQ/edit?usp=sharing)
 
 ## Inside the Repo
 1. Code Script
 - contains all the code I've done for this project
-```
-Disease Testing
-- holds all the scripts for the covid/healthy datasets
-Lung Testing
-- holds all the scripts for the lung datasets
-Gene Timeout
-```
+
 2. Datasets
 - contains all the datasets used for this project
-```
-Disease Data
-- holds datasets related to covid/healthy patients
-Lung Data
-- holds datasets related to lung patients
-```
+
 3. Final Docs
 - contains the final "official" documentation of this project
 - word doc versions included
-```
-New RMD
-- The new markdowns of the final docs
-New Word
-- The new word docs of the final docs
-Old Docs
-- The old markdowns and work docs of the final versions
-```
-4. PCA Plots
-- contains all PCA plots done for this project
+
+4. Plots
+- contains all the plots done for this project
+
 5. Reading
 - contains all the reading I needed to do
-```
-Annotated Latex R-V Association
-- my annotated latex write-up
-Intro to Stat Learning Ch12
-- PCA reading
-Latex R-V Assocation
-- latex writeup of only the required reading in the article
-Rare-Variant Association Testing Article
-- the full article on SKAT
-```
+
 6. Test Code
 - contains code that's related to gene testing
-```
-SKAT test
-- testing the SKAT package
-Tao He Research
-- initial EDA
-vj Names
-- text doc containing v and j gene names
-```
+
 7. LICENSE
+
 8. README
 - What you're reading now!
+
+9. TCR 2025 Results
+- An excel sheet containing the test accuracy results for Math 895 as well as a ranking
