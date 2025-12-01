@@ -10,7 +10,7 @@ We have also added in two datasets concerning lung patients and will be applying
 ## Fall 2025 Update
 This project has been picked up again in Fall 2025, Gabrielle's last semester of her Statistical Data Science Master's program. This is for the Culminating Experience, Math 895: Project and Exam. A new folder will be made within existing folders to hold the new work and will have 2025 within the name.
 
-The goal of this project is to try to create a model to predict the data, first with a binary Y, and if possible, with a multiple classes Y. If you wish to look at the presentation I made for this project, click [here](https://docs.google.com/presentation/d/1HlnEI0kWB3usWeK4IZqvphaXPEEnY4txCCzHe4P6UVQ/edit?usp=sharing)
+The goal of this project is to try to create a model to predict the data, first with a binary Y, and if possible, with a multiple classes Y. If you wish to look at the presentation I made for this project, click [here](https://docs.google.com/presentation/d/1HlnEI0kWB3usWeK4IZqvphaXPEEnY4txCCzHe4P6UVQ/edit?usp=sharing).
 
 ## Inside the Repo
 1. Code Script
