@@ -519,3 +519,6 @@ for (m in steps) {
                                            Test_Acc = acc))
 }
 ```
+
+```{r, ref.label=knitr::all_labels(), echo = TRUE, eval = FALSE}
+```
