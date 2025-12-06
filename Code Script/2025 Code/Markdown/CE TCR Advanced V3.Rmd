@@ -6,7 +6,7 @@ output: word_document
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = FALSE)
 ```
 
 ## Libraries
@@ -305,7 +305,7 @@ for (k in steps) {
       " | best mtry =", best_mtry, " | OOB Err =", sprintf("%.4f", best_oob), "\n")
 
   # Store
-  randFor <- rbind(rf_tuned_curve,
+  randFor <- rbind(randFor,
                           data.frame(TopGenes = k,
                                      mtry = best_mtry,
                                      OOB_Error = best_oob,
@@ -318,6 +318,12 @@ for (k in steps) {
 Prep
 
 ```{r}
+# Tuning grids
+shrinkage_grid <- c(0.1, 0.05, 0.01)
+depth_grid     <- c(1, 2, 3, 4)
+n_trees_max    <- 3000   # enough for small shrinkage
+cv_folds       <- 5
+# storage
 boost <- data.frame(TopGenes = integer(), shrinkage = numeric(),
                     depth = integer(), best_iter = integer(),
                     CV_Deviance = numeric(), Test_Acc  = numeric())
@@ -390,7 +396,8 @@ for (k in steps) {
 }
 ```
 
-
+```{r, ref.label=knitr::all_labels(), echo = TRUE, eval = FALSE}
+```
 
 
 
