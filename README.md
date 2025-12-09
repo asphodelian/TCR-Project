@@ -10,7 +10,7 @@ We have also added in two datasets concerning lung patients and will be applying
 ## Fall 2025 Update
 This project has been picked up again in Fall 2025, Gabrielle's last semester of her Statistical Data Science Master's program. This is for the Culminating Experience, Math 895: Project and Exam. A new folder will be made within existing folders to hold the new work and will have 2025 within the name.
 
-The goal of this project is to try to create a model to predict the data, first with a binary Y, and if possible, with a multiple classes Y. If you wish to look at the presentation I made for this project, click [here](https://docs.google.com/presentation/d/1HlnEI0kWB3usWeK4IZqvphaXPEEnY4txCCzHe4P6UVQ/edit?usp=sharing).
+The goal of this project is to try to find the best method to predict the response variable, first with a binary Y, and if possible, with a multiple classes Y. If you wish to look at the presentation I made for this project, click [here](https://github.com/asphodelian/TCR-Project/blob/main/Final%20Docs/CE%20M895%202025/M895%20TCR-Project%20Cont%20Presentation.pdf). The report, both word and pdf versions, can be found [here](https://github.com/asphodelian/TCR-Project/tree/main/Final%20Docs/CE%20M895%202025/Report).
 
 ## Inside the Repo
 1. Code Script
@@ -20,7 +20,7 @@ The goal of this project is to try to create a model to predict the data, first 
 - contains all the datasets used for this project
 
 3. Final Docs
-- contains the final "official" documentation of this project
+- contains the final official documentation of this project
 
 4. Plots
 - contains all the plots done for this project
