@@ -21,13 +21,12 @@ The goal of this project is to try to create a model to predict the data, first 
 
 3. Final Docs
 - contains the final "official" documentation of this project
-- word doc versions included
 
 4. Plots
 - contains all the plots done for this project
 
 5. Reading
-- contains all the reading I needed to do
+- contains all the reading I did back when I was a research assistant
 
 6. Test Code
 - contains code that's related to gene testing
@@ -37,5 +36,3 @@ The goal of this project is to try to create a model to predict the data, first 
 8. README
 - What you're reading now!
 
-9. TCR 2025 Results
-- An excel sheet containing the test accuracy results for Math 895 as well as a ranking
